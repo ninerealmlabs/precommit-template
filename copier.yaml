@@ -1,0 +1,64 @@
+---
+# --- COPIER CONFIGURATION ---------------------------------------------------
+_min_copier_version: "9"
+_answers_file: .copier-answers.yaml
+_envops:
+  autoescape: false
+  keep_trailing_newline: true
+_jinja_extensions:
+  - copier_templates_extensions.TemplateExtensionLoader
+_subdirectory: template
+_message_after_copy: &postmessage |
+  Your pre-commit configuration has been generated.
+  You should:
+  1. Review and commit these changes
+  2. Run `pre-commit run --all-files` to ensure your repo's current state matches the configured rules
+  3. Run `pre-commit install` to ensure these checks run on every commit
+_message_after_update: *postmessage
+_templates_suffix: .jinja
+
+# --- PROMPT -----------------------------------------------------------------
+editorconfig:
+  type: bool
+  help: "Use editorconfig?"
+  default: true
+
+hadolint:
+  type: bool
+  help: "Use hadolint?"
+  default: true
+
+markdownlint:
+  type: bool
+  help: "Use markdownlint?"
+  default: true
+
+prettier:
+  type: bool
+  help: "Use prettier?"
+  default: true
+
+ruff:
+  type: bool
+  help: "Use ruff?"
+  default: true
+
+shellcheck:
+  type: bool
+  help: "Use shellcheck?"
+  default: true
+
+shfmt:
+  type: bool
+  help: "Use shfmt?"
+  default: true
+
+typos:
+  type: bool
+  help: "Use typos?"
+  default: true
+
+yamllint:
+  type: bool
+  help: "Use yamllint?"
+  default: true

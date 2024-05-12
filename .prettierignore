@@ -1,0 +1,10 @@
+# in addition to files in .gitignore, prettier should ignore
+.**/
+.*
+# *.md
+# *.y*ml
+node_modules
+**/node_modules
+**/lib
+**/package.json
+!/package.json

@@ -1,0 +1,80 @@
+---
+name: "Link Check"
+
+on: # yamllint disable-line rule:truthy
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 0"
+
+env:
+  WORKFLOW_ISSUE_TITLE: "Link Checker Dashboard 🔗"
+
+jobs:
+  link-check:
+    name: Link Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@a0de6af83968303c8c955486bf9739a57d23c7f1 # v1
+        id: app-token
+        with:
+          app-id: "${{ secrets.BOT_APP_ID }}"
+          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+
+      - name: Checkout
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+
+      - name: Restore lychee cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4
+        with:
+          path: .lycheecache
+          key: cache-lychee-${{ github.sha }}
+          restore-keys: cache-lychee-
+
+      - name: Setup Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Setup Workflow Tools
+        shell: bash
+        run: brew install lychee
+
+      - name: Scan For Broken Links
+        shell: bash
+        env:
+          GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
+        run: |
+          lychee --verbose --no-progress \
+              --format markdown \
+              --output results.md \
+              --exclude-all-private \
+              --exclude-mail \
+              ./**/*.md || true
+
+      - name: Print Output
+        run: cat results.md
+
+      - name: Find Link Checker Issue
+        id: find-issue
+        shell: bash
+        env:
+          GH_TOKEN: "${{ steps.app-token.outputs.token }}"
+        run: |
+          issue_number=$( \
+              gh issue list \
+                  --search "in:title ${{ env.WORKFLOW_ISSUE_TITLE }}" \
+                  --state open \
+                  --json number \
+                  | jq --raw-output '.[0].number' \
+          )
+          echo "issue-number=${issue_number}" >> $GITHUB_OUTPUT
+          echo "${issue_number}"
+
+      - name: Create or Update Issue
+        uses: peter-evans/create-issue-from-file@24452a72d85239eacf1468b0f1982a9f3fec4c94 # v5
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+          title: "${{ env.WORKFLOW_ISSUE_TITLE }}"
+          issue-number: "${{ steps.find-issue.outputs.issue-number || '' }}"
+          content-filepath: results.md
