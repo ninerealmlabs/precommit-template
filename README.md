@@ -98,9 +98,19 @@ pipx install pre-commit
 
 ## Local development
 
-> You can run `precommit-template` to update itself using:
->
-> ```sh
-> # use current branch's committed files ("HEAD") to run precommit-template on itself
-> copier recopy --trust --vcs-ref "HEAD" /path/to/precommit-template /path/to/precommit-template  --answers-file .copier-answers.yaml
-> ```
+1. Install development dependencides
+
+   ```sh
+   python -m venv .venv
+   source .venv/bin/activate
+   pip install -r requirements.txt
+   ```
+
+2. Test updates
+
+   You can run `precommit-template` to update itself using:
+
+   ```sh
+   # use current branch's committed files ("HEAD") to run precommit-template on itself
+   copier recopy --trust --vcs-ref "HEAD" /path/to/precommit-template /path/to/precommit-template  --answers-file .copier-answers.yaml
+   ```
