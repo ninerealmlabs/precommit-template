@@ -12,7 +12,8 @@ on answers to a survey during the setup phase.
 We will use [pipx](https://pipx.pypa.io/stable/) to install and run applications from isolated globally-available
 python environments.
 
-Some pre-commit hooks (`hadolint`, `prettier`), expect to find the tool available in your path.
+Some pre-commit hooks (`hadolint`, `prettier`, `shellcheck`), expect to find the tool available in your path. You may
+need to install them.
 
 ### Install `copier` and `pre-commit`
 

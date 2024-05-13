@@ -116,13 +116,14 @@ repos:
         name: Lint and Format with Ruff
         args: [--fix]
         stages: [commit]
-  - repo: https://github.com/koalaman/shellcheck-precommit
-    rev: "v0.10.0"
+  - repo: local
     hooks:
       - id: shellcheck
         name: Lint shell scripts
-        # ignore '*.zsh" scripts'
-        exclude: "^.*zsh$"
+        language: system
+        entry: shellcheck
+        types: ["shell"]
+        exclude: "^.*zsh$" # ignore '*.zsh" scripts'
         stages: [commit]
   - repo: https://github.com/scop/pre-commit-shfmt
     rev: "v3.8.0-1"
@@ -130,7 +131,8 @@ repos:
       - id: shfmt
         name: Format shell scripts
         args:
-          - -i 2
+          - -i
+          - "2"
           - -ci
           - -bn
         stages: [commit]
