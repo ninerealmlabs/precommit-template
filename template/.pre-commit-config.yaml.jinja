@@ -95,7 +95,9 @@ repos:
     hooks:
       - id: markdownlint
         name: Lint markdown files
-        args: ["-f"]
+        args:
+          - --config=.markdownlint.yaml
+          - --fix
         stages: [commit]
   {%- endif %}{% if prettier %}
   - repo: local
@@ -125,7 +127,8 @@ repos:
     hooks:
       - id: shellcheck
         name: Lint shell scripts
-        # args: ["--severity=warning"]  # Optionally only show errors and warnings
+        # ignore '*.zsh" scripts'
+        exclude: "^.*zsh$"
         stages: [commit]
   {%- endif %}{% if shfmt %}
   - repo: https://github.com/scop/pre-commit-shfmt
@@ -150,7 +153,7 @@ repos:
         args: ["--config", ".typos.toml"]
         exclude: |
           (?x)^(
-            ^.*(typos\.toml).*$
+            ^.*(\.typos\.toml)$
           )$
         stages: [commit]
   {%- endif %}{% if yamllint %}

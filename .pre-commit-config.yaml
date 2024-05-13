@@ -92,7 +92,9 @@ repos:
     hooks:
       - id: markdownlint
         name: Lint markdown files
-        args: ["-f"]
+        args:
+          - --config=.markdownlint.yaml
+          - --fix
         stages: [commit]
   - repo: local
     hooks:
@@ -119,7 +121,8 @@ repos:
     hooks:
       - id: shellcheck
         name: Lint shell scripts
-        # args: ["--severity=warning"]  # Optionally only show errors and warnings
+        # ignore '*.zsh" scripts'
+        exclude: "^.*zsh$"
         stages: [commit]
   - repo: https://github.com/scop/pre-commit-shfmt
     rev: "v3.8.0-1"
@@ -142,7 +145,7 @@ repos:
         args: ["--config", ".typos.toml"]
         exclude: |
           (?x)^(
-            ^.*(typos\.toml).*$
+            ^.*(\.typos\.toml).*$
           )$
         stages: [commit]
   - repo: https://github.com/adrienverge/yamllint.git

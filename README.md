@@ -1,17 +1,16 @@
 # Pre-commit Template
 
-Provides a set of configuration files to standardize [pre-commit](https://pre-commit.com/) hooks
-across repos.
+Provides a set of configuration files to standardize [pre-commit](https://pre-commit.com/) hooks across repos.
 
-[copier](https://copier.readthedocs.io/) is used to render a pre-commit config and associated tool
-configurations based on answers to a survey during the setup phase.
+[copier](https://copier.readthedocs.io/) is used to render a pre-commit config and associated tool configurations based
+on answers to a survey during the setup phase.
 
 ## Quick Start
 
 ### Prerequisites
 
-We will use [pipx](https://pipx.pypa.io/stable/) to install and run applications from isolated
-globally-available python environments.
+We will use [pipx](https://pipx.pypa.io/stable/) to install and run applications from isolated globally-available
+python environments.
 
 Some pre-commit hooks (`hadolint`, `prettier`), expect to find the tool available in your path.
 
@@ -35,10 +34,9 @@ pipx install pre-commit
 
 2. Answer the questionnaire
 
-   `Copier` will render your configuration based on your selection. Then it will commit these new
-   changes automatically (but it will not push the commit). This allows you to have a clean git
-   status before running `pre-commit run --all-files` to ensure your repo is in compliance with your
-   new configuration.
+   `Copier` will render your configuration based on your selection. Then it will commit these new changes automatically
+   (but it will not push the commit). This allows you to have a clean git status before running
+   `pre-commit run --all-files` to ensure your repo is in compliance with your new configuration.
 
 3. Run `pre-commit run --all-files` and fix any errors that pre-commit's checks have found
 
@@ -48,17 +46,14 @@ pipx install pre-commit
 
 (opinionated) configuration of formatting and linting tools, including:
 
-- [EditorConfig](https://editorconfig.org/) - Maintains consistent coding styles across various
-  editors and IDEs
-- [hadolint](https://github.com/hadolint/hadolint) - A smarter Dockerfile linter that ensures best
-  practice Docker images
-- [markdownlint](https://github.com/markdownlint/markdownlint) - A tool to check markdown files and
-  flag style issues
-- [Prettier](https://github.com/prettier/prettier) - Opinionated code formatter (JS, TS, JSON, CSS,
-  HTML, Markdown, YAML)
+- [EditorConfig](https://editorconfig.org/) - Maintains consistent coding styles across various editors and IDEs
+- [hadolint](https://github.com/hadolint/hadolint) - A smarter Dockerfile linter that ensures best practice Docker
+  images
+- [markdownlint](https://github.com/markdownlint/markdownlint) - A tool to check markdown files and flag style issues
+- [Prettier](https://github.com/prettier/prettier) - Opinionated code formatter (JS, TS, JSON, CSS, HTML, Markdown,
+  YAML)
 - [ruff](https://github.com/astral-sh/ruff) - An extremely fast Python linter and code formatter
-- [shellcheck](https://github.com/koalaman/shellcheck) - A static analysis tool for shell scripts
-  (sh, bash)
+- [shellcheck](https://github.com/koalaman/shellcheck) - A static analysis tool for shell scripts (sh, bash)
 - [typos](https://github.com/crate-ci/typos) - A source code spell checker
 - [yamllint](https://github.com/adrienverge/yamllint) - A linter for YAML files
 
@@ -81,9 +76,9 @@ pipx install pre-commit
    copier update --trust . --answers-file .copier-answers.yaml
    ```
 
-> If `copier` is unable to resolve the diff between current and latest revisions, it will create
-> `*.rej` files that contain the unresolved differences. These must be reviewed (and
-> resolved/implemented) prior to commit (this is enforced by `pre-commit`)
+> If `copier` is unable to resolve the diff between current and latest revisions, it will create `*.rej` files that
+> contain the unresolved differences. These must be reviewed (and resolved/implemented) prior to commit (this is
+> enforced by `pre-commit`)
 
 ### What does `copier update` do?
 
