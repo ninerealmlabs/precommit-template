@@ -11,6 +11,7 @@ overrides:
     options:
       parser: "markdown"
       # proseWrap: "preserve"
+  - files: "*.toml"
   - files: "*.yaml"
     options:
       parser: "yaml"
