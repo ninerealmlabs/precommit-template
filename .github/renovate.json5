@@ -81,7 +81,7 @@
     }
   ],
   // pre-commit
-  "precommit": {
+  "pre-commit": {
     "commitMessageTopic": "pre-commit hook {{depName}}",
     "enabled": true,
     "fileMatch": [
