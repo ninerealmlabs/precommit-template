@@ -79,14 +79,6 @@ repos:
             ^.*(\.rst)$
           )$
         stages: [commit]
-  - repo: local
-    hooks:
-      - id: hadolint
-        name: Lint Dockerfiles
-        language: system
-        entry: hadolint
-        types: ["dockerfile"]
-        stages: [commit]
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: "v0.40.0"
     hooks:
@@ -116,26 +108,6 @@ repos:
         name: Lint and Format with Ruff
         args: [--fix]
         stages: [commit]
-  - repo: local
-    hooks:
-      - id: shellcheck
-        name: Lint shell scripts
-        language: system
-        entry: shellcheck
-        types: ["shell"]
-        exclude: "^.*zsh$" # ignore '*.zsh" scripts'
-        stages: [commit]
-  - repo: https://github.com/scop/pre-commit-shfmt
-    rev: "v3.8.0-1"
-    hooks:
-      - id: shfmt
-        name: Format shell scripts
-        args:
-          - -i
-          - "2"
-          - -ci
-          - -bn
-        stages: [commit]
   ### NOTE: ".typos.toml" may be required to have _already been committed_
   ### in order for typos pre-commit hook to read it.
   ### In this case, comment out this block until ".typos.toml" has been committed successfully
@@ -147,6 +119,7 @@ repos:
         args: ["--config", ".typos.toml"]
         exclude: |
           (?x)^(
+            # need to include typos configs in templates/ as well
             ^.*(\.typos\.toml).*$
           )$
         stages: [commit]

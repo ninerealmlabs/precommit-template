@@ -3,6 +3,7 @@
 [files]
 # glob/gitignore-style file exclusions
 extend-exclude = [
+  # need to include typos configs in templates/ as well
   "*.typos.toml*",
   "*_typos.toml*",
   "*typos.toml*",
@@ -46,7 +47,7 @@ AKS = "AKS"
 ## When the correction is the key, the word is *always* valid.
 [default.extend-words]
 "arange" = "arange"  # e.g. `numpy.arange`
-"keypair" = "keypair"
+keypair = "keypair"
 
 
 ## Specific rules for lockfiles

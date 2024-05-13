@@ -1,13 +1,13 @@
 # Changes here will be overwritten by Copier
-_commit: 643d329
+_commit: 2024.5.2
 _src_path: .
 editorconfig: true
-hadolint: true
+hadolint: false
 markdownlint: true
 prettier: true
 ruff: true
-shellcheck: true
-shfmt: true
+shellcheck: false
+shfmt: false
 typos: true
 yamllint: true
 
