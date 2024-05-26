@@ -134,7 +134,7 @@ section-order = ["future", "standard-library", "third-party", "sci", "torch", "p
 "sci" = ["numpy", "pandas", "scipy", "sklearn", "statsmodels"]
 "torch" = ["datasets", "lightning", "torch", "torch*", "tokenizers", "transformers", "sentence-transformers"]
 "llm" = ["langchain*", "llama-index*", "semantic_kernel"]
-"plot" = ["cmcrameri", "matplotlib", "plotly", "plotnine", "seaborn"]
+"plot" = ["cmcrameri", "matplotlib", "mizani", "plotly", "plotnine", "seaborn"]
 
 [lint.mccabe]
 max-complexity = 18
