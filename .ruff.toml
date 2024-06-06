@@ -5,16 +5,16 @@ preview = false  # do not use unstable rules/fixes
 
 # file selection
 extend-exclude = [
-  '.ci',
-  '.pytest_cache',
-  'docs',
-  '*.egg-info',
-  '.ipynb_checkpoints',
-  '.env',
-  '.envrc',
-  '.git',
-  '.nox',
-  '.tox',
+  ".ci",
+  ".pytest_cache",
+  "docs",
+  "*.egg-info",
+  ".ipynb_checkpoints",
+  ".env",
+  ".envrc",
+  ".git",
+  ".nox",
+  ".tox",
 ]
 extend-include = ["*.ipynb"]
 
@@ -44,22 +44,23 @@ docstring-code-format = true
 exclude = ["*.pyi"]
 
 select = [
-  'A', # flake8 builtins
-  'B', # flake8 bugbear
-  'C4', # flake8 comprehensions
-  'C90', # mccabe
-  'D', # pydocstyle
-  'E', # pycodestyle
-  'F', # pyflakes
-  'I', # isort
-  'N', # pep8-naming
-  # 'PTH', # flake8-use-pathlib
-  'Q',  # flake8-quotes
-  'S',  # bandit
-  'SIM',  # flake8-simplify
-  'TRY',  # tryceratops
-  'W', # pycodestyle
-  # 'T20', # flake8 print
+  "A", # flake8 builtins
+  "B", # flake8 bugbear
+  "C4", # flake8 comprehensions
+  "C90", # mccabe
+  "D", # pydocstyle
+  "E", # pycodestyle
+  "F", # pyflakes
+  "I", # isort
+  "N", # pep8-naming
+  "NPY201", # numpy2.0 migration
+  # "PTH", # flake8-use-pathlib
+  "Q",  # flake8-quotes
+  "S",  # bandit
+  "SIM",  # flake8-simplify
+  "TRY",  # tryceratops
+  "W", # pycodestyle
+  # "T20", # flake8 print
 ]
 
 ignore = [
