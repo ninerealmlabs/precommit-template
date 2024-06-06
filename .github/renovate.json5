@@ -25,6 +25,21 @@
       "matchUpdateTypes": ["minor", "patch"]
     },
     {
+        "description": ["Auto-merge updates for trusted pre-commit packages"],
+        "matchDatasources": ["github-tags"],
+        "automerge": true,
+        "automergeType": "branch",
+        "matchUpdateTypes": ["patch"],
+        "matchPackagePatterns": [
+            "adrienverge/yamllint",
+            "charliermarsh/ruff-pre-commit",
+            "crate-ci/typos",
+            "igorshubovych/markdownlint-cli",
+            "sirosen/texthooks",
+            "zricethezav/gitleaks"
+        ]
+    },
+    {
       "matchDatasources": ["github-releases", "github-tags"],
       "matchUpdateTypes": ["major"],
       "commitMessagePrefix": "feat(github-release)!: "
