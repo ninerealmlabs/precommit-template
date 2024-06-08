@@ -112,7 +112,7 @@ repos:
   ### in order for typos pre-commit hook to read it.
   ### In this case, comment out this block until ".typos.toml" has been committed successfully
   - repo: https://github.com/crate-ci/typos
-    rev: "v1.22.1"
+    rev: "v1.22.2"
     hooks:
       - id: typos
         name: Spellcheck with Typos
@@ -120,7 +120,8 @@ repos:
         exclude: |
           (?x)^(
             # need to include typos configs in templates/ as well
-            ^.*(\.typos\.toml).*$
+            ^.*(\.typos\.toml).*$ |
+            ^.*(\.git.*)$
           )$
         stages: [commit]
   - repo: https://github.com/adrienverge/yamllint.git
