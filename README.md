@@ -30,7 +30,7 @@ pipx install pre-commit
 1. Run `copier` in your local repo
 
    ```sh
-   copier copy --trust "gh:ninerealmlabs/precommit.template" "$(git rev-parse --show-toplevel)"
+   copier copy --trust "gh:ninerealmlabs/precommit-template" "$(git rev-parse --show-toplevel)"
    ```
 
 2. Answer the questionnaire
