@@ -28,40 +28,40 @@ repos:
     hooks:
       - id: check-added-large-files
         args: [--maxkb=500000]
-        stages: [commit]
+        stages: [pre-commit]
       - id: check-case-conflict
-        stages: [commit]
+        stages: [pre-commit]
       - id: check-merge-conflict
-        stages: [commit]
+        stages: [pre-commit]
       - id: check-ast
-        stages: [commit]
+        stages: [pre-commit]
       - id: check-json
-        stages: [commit]
+        stages: [pre-commit]
       - id: check-toml
-        stages: [commit]
+        stages: [pre-commit]
       - id: check-yaml
-        stages: [commit]
+        stages: [pre-commit]
       - id: end-of-file-fixer
-        stages: [commit]
+        stages: [pre-commit]
       - id: mixed-line-ending
-        stages: [commit]
+        stages: [pre-commit]
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
-        stages: [commit]
+        stages: [pre-commit]
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: "v1.5.5"
     hooks:
       - id: remove-crlf
-        stages: [commit]
+        stages: [pre-commit]
       # - id: remove-tabs
-      #   stages: [commit]
+      #   stages: [pre-commit]
   - repo: https://github.com/sirosen/texthooks
     rev: "0.6.6"
     hooks:
       - id: fix-smartquotes
-        stages: [commit]
+        stages: [pre-commit]
       - id: fix-ligatures
-        stages: [commit]
+        stages: [pre-commit]
   - repo: https://github.com/zricethezav/gitleaks
     rev: "v8.18.2"
     hooks:
@@ -79,7 +79,14 @@ repos:
             ^.*(\.md)$ |
             ^.*(\.rst)$
           )$
-        stages: [commit]
+        stages: [pre-commit]
+  {%- endif %}{% if exif-stripper %}
+  - repo: https://github.com/stefmolin/exif-stripper
+    rev: 0.5.0
+    hooks:
+      - id: strip-exif
+        name: Strip exif metadata from images
+        stages: [pre-commit]
   {%- endif %}{% if hadolint %}
   - repo: local
     hooks:
@@ -88,7 +95,7 @@ repos:
         language: system
         entry: hadolint
         types: ["dockerfile"]
-        stages: [commit]
+        stages: [pre-commit]
   {%- endif %}{% if markdownlint %}
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: "v0.40.0"
@@ -98,7 +105,14 @@ repos:
         args:
           - --config=.markdownlint.yaml
           - --fix
-        stages: [commit]
+        stages: [pre-commit]
+  {%- endif %}{% if nbstripout %}
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.8.0
+    hooks:
+      - id: nbstripout
+        name: Strip metadata and outputs from ipynb files
+        stages: [pre-commit]
   {%- endif %}{% if prettier %}
   - repo: local
     hooks:
@@ -112,7 +126,7 @@ repos:
           - --no-error-on-unmatched-pattern
           # - "--ignore-path '**/*.md'"
           # - "--ignore-path '**/*.y*ml'"
-        stages: [commit]
+        stages: [pre-commit]
   {%- endif %}{% if ruff %}
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     rev: "v0.4.4"
@@ -120,7 +134,7 @@ repos:
       - id: ruff
         name: Lint and Format with Ruff
         args: [--fix]
-        stages: [commit]
+        stages: [pre-commit]
   {%- endif %}{% if shellcheck %}
   - repo: local
     hooks:
@@ -130,7 +144,7 @@ repos:
         entry: shellcheck
         types: ["shell"]
         exclude: "^.*zsh$" # ignore '*.zsh" scripts'
-        stages: [commit]
+        stages: [pre-commit]
   {%- endif %}{% if shfmt %}
   - repo: https://github.com/scop/pre-commit-shfmt
     rev: "v3.8.0-1"
@@ -142,7 +156,7 @@ repos:
           - "2"
           - -ci
           - -bn
-        stages: [commit]
+        stages: [pre-commit]
   {%- endif %}{% if typos %}
   ### NOTE: ".typos.toml" may be required to have _already been committed_
   ### in order for typos pre-commit hook to read it.
@@ -158,7 +172,7 @@ repos:
             ^.*(\.typos\.toml)$ |
             ^.*(\.git.*)$
           )$
-        stages: [commit]
+        stages: [pre-commit]
   {%- endif %}{% if yamllint %}
   - repo: https://github.com/adrienverge/yamllint.git
     rev: "v1.35.1"
@@ -166,5 +180,5 @@ repos:
       - id: yamllint
         name: Lint yaml files
         args: [-c=.yamllint.yaml]
-        stages: [commit]
+        stages: [pre-commit]
   {%- endif %}

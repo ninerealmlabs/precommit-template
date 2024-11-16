@@ -23,6 +23,11 @@ editorconfig:
   help: "Use editorconfig?"
   default: true
 
+exif-stripper:
+  type: bool
+  help: "Use exif-stripper?"
+  default: true
+
 hadolint:
   type: bool
   help: "Use hadolint?"
@@ -31,6 +36,11 @@ hadolint:
 markdownlint:
   type: bool
   help: "Use markdownlint?"
+  default: true
+
+nbstripout:
+  type: bool
+  help: "Use nbstripout?"
   default: true
 
 prettier:
