@@ -23,7 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          token: "${{ steps.app-token.outputs.token }}"
+          # token: "${{ steps.app-token.outputs.token }}"
           fetch-depth: 0
 
       - name: Link Checker
