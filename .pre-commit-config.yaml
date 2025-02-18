@@ -80,7 +80,7 @@ repos:
           )$
         stages: [pre-commit]
   - repo: https://github.com/stefmolin/exif-stripper
-    rev: 0.6.1
+    rev: 0.6.2
     hooks:
       - id: strip-exif
         name: Strip exif metadata from images
