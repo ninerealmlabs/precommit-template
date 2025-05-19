@@ -1,4 +1,6 @@
 ---
+# renovate: datasource=github-tags depName=pre-commit/pre-commit-hooks
+#
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 exclude: |
@@ -23,6 +25,7 @@ repos:
         entry: Forbid .rej file extensions from `copier update`
         language: fail
         files: \.rej$
+  # renovate: datasource=github-tags depName=pre-commit/pre-commit-hooks
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: "v5.0.0"
     hooks:
@@ -48,6 +51,7 @@ repos:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
         stages: [pre-commit]
+  # renovate: datasource=github-tags depName=Lucas-C/pre-commit-hooks
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: "v1.5.5"
     hooks:
@@ -55,6 +59,7 @@ repos:
         stages: [pre-commit]
       # - id: remove-tabs
       #   stages: [pre-commit]
+  # renovate: datasource=github-tags depName=sirosen/texthooks
   - repo: https://github.com/sirosen/texthooks
     rev: "0.6.8"
     hooks:
@@ -62,10 +67,12 @@ repos:
         stages: [pre-commit]
       - id: fix-ligatures
         stages: [pre-commit]
+  # renovate: datasource=github-tags depName=zricethezav/gitleaks
   - repo: https://github.com/zricethezav/gitleaks
     rev: "v8.24.2"
     hooks:
       - id: gitleaks
+  # renovate: datasource=github-tags depName=editorconfig-checker/editorconfig-checker.python
   - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
     rev: "3.2.1"
     hooks:
@@ -79,12 +86,14 @@ repos:
             ^.*(\.rst)$
           )$
         stages: [pre-commit]
+  # renovate: datasource=github-tags depName=stefmolin/exif-stripper
   - repo: https://github.com/stefmolin/exif-stripper
     rev: 0.6.2
     hooks:
       - id: strip-exif
         name: Strip exif metadata from images
         stages: [pre-commit]
+  # renovate: datasource=github-tags depName=igorshubovych/markdownlint-cli
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: "v0.44.0"
     hooks:
@@ -94,6 +103,7 @@ repos:
           - --config=.markdownlint.yaml
           - --fix
         stages: [pre-commit]
+  # renovate: datasource=github-tags depName=kynan/nbstripout
   - repo: https://github.com/kynan/nbstripout
     rev: 0.8.1
     hooks:
@@ -113,6 +123,7 @@ repos:
           # - "--ignore-path '**/*.md'"
           # - "--ignore-path '**/*.y*ml'"
         stages: [pre-commit]
+  # renovate: datasource=github-tags depName=charliermarsh/ruff-pre-commit
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     rev: "v0.11.2"
     hooks:
@@ -123,6 +134,7 @@ repos:
   ### NOTE: ".typos.toml" may be required to have _already been committed_
   ### in order for typos pre-commit hook to read it.
   ### In this case, comment out this block until ".typos.toml" has been committed successfully
+  # renovate: datasource=github-tags depName=crate-ci/typos
   - repo: https://github.com/crate-ci/typos
     rev: "v1.31.0"
     hooks:
@@ -136,6 +148,7 @@ repos:
             ^.*(\.git.*)$
           )$
         stages: [pre-commit]
+  # renovate: datasource=github-tags depName=adrienverge/yamllint
   - repo: https://github.com/adrienverge/yamllint.git
     rev: "v1.37.0"
     hooks:
