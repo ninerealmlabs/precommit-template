@@ -98,7 +98,7 @@
     commitMessageTopic: "pre-commit hook {{depName}}",
     enabled: true,
     managerFilePatterns: [
-      '/(^|/)\\.pre-commit-config\\.ya?ml$/'i,
+      '/(^|/)\\.pre-commit-config\\.ya?ml$/i',
       '/template/\\.pre-commit-config\\.ya?ml\\.jinja$/i',
     ],
     prBodyNotes: [
