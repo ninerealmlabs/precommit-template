@@ -13,6 +13,7 @@
   commitMessageExtra: "to {{newVersion}}",
   commitMessageSuffix: "",
   packageRules: [
+    // automerge
     {
       description: ["Auto merge Github Actions"],
       matchManagers: ["github-actions"],
@@ -28,12 +29,15 @@
       automergeType: "branch",
       matchUpdateTypes: ["patch"],
       matchPackageNames: [
-        "/adrienverge/yamllint/",
-        "/charliermarsh/ruff-pre-commit/",
-        "/crate-ci/typos/",
-        "/igorshubovych/markdownlint-cli/",
+        "/pre-commit/pre-commit-hooks",
+        "/Lucas-C/pre-commit-hooks",
         "/sirosen/texthooks/",
         "/zricethezav/gitleaks/",
+        "/stefmolin/exif-stripper",
+        "/charliermarsh/ruff-pre-commit/",
+        "/igorshubovych/markdownlint-cli/",
+        "/adrienverge/yamllint/",
+        "/crate-ci/typos/",
       ],
     },
     {
@@ -70,6 +74,7 @@
       semanticCommitType: "fix",
       semanticCommitScope: "github-action",
     },
+    // labels
     {
       matchUpdateTypes: ["major"],
       labels: ["type/major"],
@@ -91,12 +96,13 @@
       addLabels: ["renovate/github-action"],
     },
   ],
+  // pre-commit
   "pre-commit": {
-    commitMessageTopic: "pre-commit hook {{depName}}",
-    enabled: true,
-    managerFilePatterns: [
-      "/(^|/)\\.pre-commit-config\\.ya?ml$/",
-      "/(^|/)template/\\.pre-commit-config\\.ya?ml(?:\\.jinja)$/",
+    "commitMessageTopic": "pre-commit hook {{depName}}",
+    "enabled": true,
+    "fileMatch": [
+      "(^|/)\\.pre-commit-config\\.ya?ml$",
+      "(^|/)\\.pre-commit-config\\.ya?ml\\.jinja$"
     ],
     prBodyNotes: [
       "Note: The `pre-commit` manager in Renovate is not supported by the `pre-commit` maintainers or community.\\\nPlease do not report any problems there, instead [create a Discussion in the Renovate repository](https://github.com/renovatebot/renovate/discussions/new) if you have any questions.",
