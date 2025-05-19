@@ -1,99 +1,100 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: [
     "config:recommended",
     ":dependencyDashboard",
     ":enablePreCommit",
     ":automergeBranch",
   ],
-  "dependencyDashboard": true,
-  "dependencyDashboardTitle": "Renovate Dashboard 🤖",
-  "schedule": ["before 5am"],
-  // commit message topics
-  "commitMessageTopic": "{{depName}}",
-  "commitMessageExtra": "to {{newVersion}}",
-  "commitMessageSuffix": "",
-  // package rules
-  "packageRules": [
+  dependencyDashboard: true,
+  dependencyDashboardTitle: "Renovate Dashboard 🤖",
+  schedule: ["before 5am"],
+  commitMessageTopic: "{{depName}}",
+  commitMessageExtra: "to {{newVersion}}",
+  commitMessageSuffix: "",
+  packageRules: [
     // automerge
     {
-      "description": ["Auto merge Github Actions"],
-      "matchManagers": ["github-actions"],
-      "automerge": true,
-      "automergeType": "branch",
-      "ignoreTests": true,
-      "matchUpdateTypes": ["minor", "patch"]
+      description: ["Auto merge Github Actions"],
+      matchManagers: ["github-actions"],
+      automerge: true,
+      automergeType: "branch",
+      ignoreTests: true,
+      matchUpdateTypes: ["minor", "patch"],
     },
     {
-        "description": ["Auto-merge updates for trusted pre-commit packages"],
-        "matchDatasources": ["github-tags"],
-        "automerge": true,
-        "automergeType": "branch",
-        "matchUpdateTypes": ["patch"],
-        "matchPackagePatterns": [
-            "adrienverge/yamllint",
-            "charliermarsh/ruff-pre-commit",
-            "crate-ci/typos",
-            "igorshubovych/markdownlint-cli",
-            "sirosen/texthooks",
-            "zricethezav/gitleaks"
-        ]
+      description: ["Auto-merge updates for trusted pre-commit packages"],
+      matchDatasources: ["github-tags"],
+      automerge: true,
+      automergeType: "branch",
+      matchUpdateTypes: ["patch"],
+      matchPackageNames: [
+        "/pre-commit/pre-commit-hooks",
+        "/Lucas-C/pre-commit-hooks",
+        "/sirosen/texthooks/",
+        "/zricethezav/gitleaks/",
+        "/stefmolin/exif-stripper",
+        "/charliermarsh/ruff-pre-commit/",
+        "/igorshubovych/markdownlint-cli/",
+        "/adrienverge/yamllint/",
+        "/crate-ci/typos/",
+      ],
     },
     {
-      "matchDatasources": ["github-releases", "github-tags"],
-      "matchUpdateTypes": ["major"],
-      "commitMessagePrefix": "feat(github-release)!: "
+      matchDatasources: ["github-releases", "github-tags"],
+      matchUpdateTypes: ["major"],
+      commitMessagePrefix: "feat(github-release)!: ",
     },
     {
-      "matchDatasources": ["github-releases", "github-tags"],
-      "matchUpdateTypes": ["minor"],
-      "semanticCommitType": "feat",
-      "semanticCommitScope": "github-release"
+      matchDatasources: ["github-releases", "github-tags"],
+      matchUpdateTypes: ["minor"],
+      semanticCommitType: "feat",
+      semanticCommitScope: "github-release",
     },
     {
-      "matchDatasources": ["github-releases", "github-tags"],
-      "matchUpdateTypes": ["patch"],
-      "semanticCommitType": "fix",
-      "semanticCommitScope": "github-release"
+      matchDatasources: ["github-releases", "github-tags"],
+      matchUpdateTypes: ["patch"],
+      semanticCommitType: "fix",
+      semanticCommitScope: "github-release",
     },
     {
-      "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["major"],
-      "commitMessagePrefix": "feat(github-action)!: "
+      matchManagers: ["github-actions"],
+      matchUpdateTypes: ["major"],
+      commitMessagePrefix: "feat(github-action)!: ",
     },
     {
-      "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["minor"],
-      "semanticCommitType": "feat",
-      "semanticCommitScope": "github-action"
+      matchManagers: ["github-actions"],
+      matchUpdateTypes: ["minor"],
+      semanticCommitType: "feat",
+      semanticCommitScope: "github-action",
     },
     {
-      "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["patch"],
-      "semanticCommitType": "fix",
-      "semanticCommitScope": "github-action"
+      matchManagers: ["github-actions"],
+      matchUpdateTypes: ["patch"],
+      semanticCommitType: "fix",
+      semanticCommitScope: "github-action",
     },
     // labels
     {
-      "matchUpdateTypes": ["major"],
-      "labels": ["type/major"]
+      matchUpdateTypes: ["major"],
+      labels: ["type/major"],
     },
     {
-      "matchUpdateTypes": ["minor"],
-      "labels": ["type/minor"]
+      matchUpdateTypes: ["minor"],
+      labels: ["type/minor"],
     },
     {
-      "matchUpdateTypes": ["patch"],
-      "labels": ["type/patch"]
+      matchUpdateTypes: ["patch"],
+      labels: ["type/patch"],
     },
     {
-      "matchDatasources": ["github-releases", "github-tags"],
-      "addLabels": ["renovate/github-release"]
+      matchDatasources: ["github-releases", "github-tags"],
+      addLabels: ["renovate/github-release"],
     },
     {
-      "matchManagers": ["github-actions"],
-      "addLabels": ["renovate/github-action"]
-    }
+      matchManagers: ["github-actions"],
+      addLabels: ["renovate/github-action"],
+    },
   ],
   // pre-commit
   "pre-commit": {
@@ -101,10 +102,10 @@
     "enabled": true,
     "fileMatch": [
       "(^|/)\\.pre-commit-config\\.ya?ml$",
-      "(^|/)template/\\.pre-commit-config\\.ya?ml(?:\\.jinja)$"
+      "(^|/)\\.pre-commit-config\\.ya?ml\\.jinja$"
     ],
-    "prBodyNotes": [
-      "Note: The `pre-commit` manager in Renovate is not supported by the `pre-commit` maintainers or community.\\\nPlease do not report any problems there, instead [create a Discussion in the Renovate repository](https://github.com/renovatebot/renovate/discussions/new) if you have any questions."
-    ]
-  }
+    prBodyNotes: [
+      "Note: The `pre-commit` manager in Renovate is not supported by the `pre-commit` maintainers or community.\\\nPlease do not report any problems there, instead [create a Discussion in the Renovate repository](https://github.com/renovatebot/renovate/discussions/new) if you have any questions.",
+    ],
+  },
 }
