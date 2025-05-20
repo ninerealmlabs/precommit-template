@@ -3,6 +3,20 @@
 #
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
+
+default_install_hook_types:
+  - pre-commit
+  - post-checkout
+  - post-merge
+  - post-rewrite
+  {%- if conventional_commits %}
+  - pre-push
+  - commit-msg
+  {%- endif %}
+
+default_stages:
+  - pre-commit
+
 exclude: |
   (?x)^(
     ^.*(copier-answers\.ya?ml)$
@@ -75,7 +89,23 @@ repos:
     rev: "v8.18.2"
     hooks:
       - id: gitleaks
-  {%- if editorconfig %}
+  {% if conventional_commits -%}
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.5.1
+    hooks:
+    - id: commitizen
+      {%- if cz_gitmoji %}
+      {%- if repository_provider == 'github' %}
+      # needed by Renovate to support additional dependencies
+      # see https://docs.renovatebot.com/modules/manager/pre-commit/
+      language: python
+      {%- endif %}
+      additional_dependencies:
+        - cz-conventional-gitmoji
+      {%- endif %}
+      stages:
+      - commit-msg
+  {%- endif %}{%- if editorconfig %}
   # renovate: datasource=github-tags depName=editorconfig-checker/editorconfig-checker.python
   - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
     rev: "2.7.3"
@@ -168,7 +198,7 @@ repos:
         types: ["shell"]
         exclude: "^.*zsh$" # ignore '*.zsh" scripts'
         stages: [pre-commit]
-  # renovate: datasource=github-tags depName=scop/pre-commit-shfmt
+  # renovate: datasource=github-tags depName=scop/pre-commit-shfmt versioning=loose
   - repo: https://github.com/scop/pre-commit-shfmt
     rev: "v3.8.0-1"
     hooks:
@@ -200,7 +230,7 @@ repos:
   {%- endif %}{% if yaml %}
   # renovate: datasource=github-tags depName=adrienverge/yamllint
   - repo: https://github.com/adrienverge/yamllint.git
-    rev: "v1.35.1"
+    rev: "v1.37.0"
     hooks:
       - id: yamllint
         name: Lint yaml files
