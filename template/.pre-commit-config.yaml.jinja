@@ -129,7 +129,7 @@ repos:
         stages: [pre-commit]
   {%- endif %}{% if ruff %}
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: "v0.4.4"
+    rev: "v0.11.10"
     hooks:
       - id: ruff
         name: Lint and Format with Ruff
