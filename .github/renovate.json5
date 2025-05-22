@@ -3,8 +3,16 @@
   extends: [
     "config:recommended",
     ":dependencyDashboard",
+    ":disableRateLimiting",
     ":enablePreCommit",
     ":automergeBranch",
+    ":semanticCommits",
+    ":timezone(America/New_York)",
+    "github>ninerealmlabs/precommit-template//.github/renovate/autoMerge.json5",
+    "github>ninerealmlabs/precommit-template//.github/renovate/customManagers.json5",
+    "github>ninerealmlabs/precommit-template//.github/renovate/labels.json5",
+    "github>ninerealmlabs/precommit-template//.github/renovate/packageRules.json5",
+    "github>ninerealmlabs/precommit-template//.github/renovate/semanticCommits.json5",
   ],
   dependencyDashboard: true,
   dependencyDashboardTitle: "Renovate Dashboard 🤖",
@@ -12,94 +20,15 @@
   commitMessageTopic: "{{depName}}",
   commitMessageExtra: "to {{newVersion}}",
   commitMessageSuffix: "",
-  packageRules: [
-    {
-      description: ["Auto merge Github Actions"],
-      matchManagers: ["github-actions"],
-      automerge: true,
-      automergeType: "branch",
-      ignoreTests: true,
-      matchUpdateTypes: ["minor", "patch"],
-    },
-    {
-      description: ["Auto-merge updates for trusted pre-commit packages"],
-      matchDatasources: ["github-tags"],
-      automerge: true,
-      automergeType: "branch",
-      matchUpdateTypes: ["patch"],
-      matchPackageNames: [
-        "/adrienverge/yamllint/",
-        "/charliermarsh/ruff-pre-commit/",
-        "/crate-ci/typos/",
-        "/igorshubovych/markdownlint-cli/",
-        "/sirosen/texthooks/",
-        "/zricethezav/gitleaks/",
-      ],
-    },
-    {
-      matchDatasources: ["github-releases", "github-tags"],
-      matchUpdateTypes: ["major"],
-      commitMessagePrefix: "feat(github-release)!: ",
-    },
-    {
-      matchDatasources: ["github-releases", "github-tags"],
-      matchUpdateTypes: ["minor"],
-      semanticCommitType: "feat",
-      semanticCommitScope: "github-release",
-    },
-    {
-      matchDatasources: ["github-releases", "github-tags"],
-      matchUpdateTypes: ["patch"],
-      semanticCommitType: "fix",
-      semanticCommitScope: "github-release",
-    },
-    {
-      matchManagers: ["github-actions"],
-      matchUpdateTypes: ["major"],
-      commitMessagePrefix: "feat(github-action)!: ",
-    },
-    {
-      matchManagers: ["github-actions"],
-      matchUpdateTypes: ["minor"],
-      semanticCommitType: "feat",
-      semanticCommitScope: "github-action",
-    },
-    {
-      matchManagers: ["github-actions"],
-      matchUpdateTypes: ["patch"],
-      semanticCommitType: "fix",
-      semanticCommitScope: "github-action",
-    },
-    {
-      matchUpdateTypes: ["major"],
-      labels: ["type/major"],
-    },
-    {
-      matchUpdateTypes: ["minor"],
-      labels: ["type/minor"],
-    },
-    {
-      matchUpdateTypes: ["patch"],
-      labels: ["type/patch"],
-    },
-    {
-      matchDatasources: ["github-releases", "github-tags"],
-      addLabels: ["renovate/github-release"],
-    },
-    {
-      matchManagers: ["github-actions"],
-      addLabels: ["renovate/github-action"],
-    },
-  ],
-  "pre-commit": {
-    commitMessageTopic: "pre-commit hook {{depName}}",
-    enabled: true,
-    managerFilePatterns: [
-      "/(^|/)\\.pre-commit-config\\.ya?ml$/",
-      "/(^|/)template/\\.pre-commit-config\\.ya?ml(?:\\.jinja)$/",
-    ],
-    prBodyNotes: [
-      "Note: The `pre-commit` manager in Renovate is not supported by the `pre-commit` maintainers or community.\\\nPlease do not report any problems there, instead [create a Discussion in the Renovate repository](https://github.com/renovatebot/renovate/discussions/new) if you have any questions.",
-    ],
-  },
+  // "pre-commit": {
+  //   commitMessageTopic: "pre-commit hook {{depName}}",
+  //   enabled: true,
+  //   managerFilePatterns: [
+  //     // Renovate will _extend_ the existing managerFilePatterns; the patterns are "additive"
+  //     "/(^|/)template/\\.pre-commit-config\\.ya?ml(?:\\.jinja)?$/",
+  //   ],
+  //   prBodyNotes: [
+  //     "Note: The `pre-commit` manager in Renovate is not supported by the `pre-commit` maintainers or community.\\\nPlease do not report any problems there, instead [create a Discussion in the Renovate repository](https://github.com/renovatebot/renovate/discussions/new) if you have any questions.",
+  //   ],
+  // },
 }
