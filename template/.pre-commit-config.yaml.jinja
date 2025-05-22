@@ -82,7 +82,7 @@ repos:
         stages: [pre-commit]
   {%- endif %}{% if exif-stripper %}
   - repo: https://github.com/stefmolin/exif-stripper
-    rev: 0.5.0
+    rev: 0.6.2
     hooks:
       - id: strip-exif
         name: Strip exif metadata from images
