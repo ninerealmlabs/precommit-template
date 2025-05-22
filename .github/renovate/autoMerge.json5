@@ -1,0 +1,31 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "packageRules": [
+    {
+      "description": ["Auto-merge updates for trusted pre-commit packages"],
+      "matchDatasources": ["github-tags"],
+      "automerge": true,
+      "automergeType": "branch",
+      "matchUpdateTypes": ["patch"],
+      "matchPackagePatterns": [
+        "pre-commit/pre-commit-hooks",
+        "Lucas-C/pre-commit-hooks",
+        "sirosen/texthooks/",
+        "zricethezav/gitleaks/",
+        "stefmolin/exif-stripper",
+        "charliermarsh/ruff-pre-commit/",
+        "igorshubovych/markdownlint-cli/",
+        "adrienverge/yamllint/",
+        "crate-ci/typos/",
+      ]
+    },
+    {
+      "description": ["Auto-merge GitHub Actions for minor and patch"],
+      "matchManagers": ["github-actions"],
+      "matchDatasources": ["github-tags"],
+      "automerge": true,
+      "automergeType": "branch",
+      "matchUpdateTypes": ["minor", "patch"]
+    }
+  ]
+}

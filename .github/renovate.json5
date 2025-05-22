@@ -5,6 +5,14 @@
     ":dependencyDashboard",
     ":enablePreCommit",
     ":automergeBranch",
+    ":semanticCommits",
+    ":timezone(America/New_York)",
+    "github>ninerealmlabs/pre-commit-template//.github/renovate/autoMerge.json5",
+    "github>ninerealmlabs/pre-commit-template//.github/renovate/customManagers.json5",
+    "github>ninerealmlabs/pre-commit-template//.github/renovate/labels.json5",
+    "github>ninerealmlabs/pre-commit-template//.github/renovate/packageRules.json5",
+    "github>ninerealmlabs/pre-commit-template//.github/renovate/semanticCommits.json5",
+
   ],
   dependencyDashboard: true,
   dependencyDashboardTitle: "Renovate Dashboard 🤖",
@@ -12,122 +20,15 @@
   commitMessageTopic: "{{depName}}",
   commitMessageExtra: "to {{newVersion}}",
   commitMessageSuffix: "",
-  packageRules: [
-    // automerge
-    {
-      description: ["Auto merge Github Actions"],
-      matchManagers: ["github-actions"],
-      automerge: true,
-      automergeType: "branch",
-      ignoreTests: true,
-      matchUpdateTypes: ["minor", "patch"],
-    },
-    {
-      description: ["Auto-merge updates for trusted pre-commit packages"],
-      matchDatasources: ["github-tags"],
-      automerge: true,
-      automergeType: "branch",
-      matchUpdateTypes: ["patch"],
-      matchPackageNames: [
-        "/pre-commit/pre-commit-hooks",
-        "/Lucas-C/pre-commit-hooks",
-        "/sirosen/texthooks/",
-        "/zricethezav/gitleaks/",
-        "/stefmolin/exif-stripper",
-        "/charliermarsh/ruff-pre-commit/",
-        "/igorshubovych/markdownlint-cli/",
-        "/adrienverge/yamllint/",
-        "/crate-ci/typos/",
-      ],
-    },
-    {
-      matchDatasources: ["github-releases", "github-tags"],
-      matchUpdateTypes: ["major"],
-      commitMessagePrefix: "feat(github-release)!: ",
-    },
-    {
-      matchDatasources: ["github-releases", "github-tags"],
-      matchUpdateTypes: ["minor"],
-      semanticCommitType: "feat",
-      semanticCommitScope: "github-release",
-    },
-    {
-      matchDatasources: ["github-releases", "github-tags"],
-      matchUpdateTypes: ["patch"],
-      semanticCommitType: "fix",
-      semanticCommitScope: "github-release",
-    },
-    {
-      matchManagers: ["github-actions"],
-      matchUpdateTypes: ["major"],
-      commitMessagePrefix: "feat(github-action)!: ",
-    },
-    {
-      matchManagers: ["github-actions"],
-      matchUpdateTypes: ["minor"],
-      semanticCommitType: "feat",
-      semanticCommitScope: "github-action",
-    },
-    {
-      matchManagers: ["github-actions"],
-      matchUpdateTypes: ["patch"],
-      semanticCommitType: "fix",
-      semanticCommitScope: "github-action",
-    },
-    // labels
-    {
-      matchUpdateTypes: ["major"],
-      labels: ["type/major"],
-    },
-    {
-      matchUpdateTypes: ["minor"],
-      labels: ["type/minor"],
-    },
-    {
-      matchUpdateTypes: ["patch"],
-      labels: ["type/patch"],
-    },
-    {
-      matchDatasources: ["github-releases", "github-tags"],
-      addLabels: ["renovate/github-release"],
-    },
-    {
-      matchManagers: ["github-actions"],
-      addLabels: ["renovate/github-action"],
-    },
-    // version detection
-      {
-      description: "Support loose versioning",
-      matchDepNames: ["shellcheck-py/shellcheck-py", "scop/pre-commit-shfmt"],
-      versioning: "loose",
-    },
-  ],
-  "pre-commit": {
-    commitMessageTopic: "pre-commit hook {{depName}}",
-    enabled: true,
-    managerFilePatterns: [
-      // Renovate will _extend_ the existing managerFilePatterns; the patterns are "additive"
-      "/(^|/)template/\\.pre-commit-config\\.ya?ml(?:\\.jinja)?$/",
-    ],
-    prBodyNotes: [
-      "Note: The `pre-commit` manager in Renovate is not supported by the `pre-commit` maintainers or community.\\\nPlease do not report any problems there, instead [create a Discussion in the Renovate repository](https://github.com/renovatebot/renovate/discussions/new) if you have any questions.",
-    ],
-  },
-  // customManagers: [
-  //   // from https://github.com/bassemkaroui/python-template-uv
-  //   {
-  //     "description": "Update pre-commit hook revs in Jinja template",
-  //     "customType": "regex",
-  //     "datasourceTemplate": "github-tags",
-  //     "depNameTemplate": "{{{ depName }}}",
-  //     "extractVersionTemplate": "{{currentValue}}",
-  //     versioningTemplate: '{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}',
-  //     "matchStrings": [
-  //       "(?ms)^\\s*-\\s*repo:\\s*https?://github\\.com/(?<depName>[^/\\s]+/[^/\\s]+)\\b.*?\\n\\s*rev:\\s*[\"']?(?<currentValue>v?\\d+\\.\\d+\\.\\d+)[\"']?"
-  //     ],
-  //     "managerFilePatterns": [
-  //       "/(^|/)template/\\.pre-commit-config\\.ya?ml(?:\\.jinja)?$/"
-  //     ]
-  //   }
-  // ]
+  // "pre-commit": {
+  //   commitMessageTopic: "pre-commit hook {{depName}}",
+  //   enabled: true,
+  //   managerFilePatterns: [
+  //     // Renovate will _extend_ the existing managerFilePatterns; the patterns are "additive"
+  //     "/(^|/)template/\\.pre-commit-config\\.ya?ml(?:\\.jinja)?$/",
+  //   ],
+  //   prBodyNotes: [
+  //     "Note: The `pre-commit` manager in Renovate is not supported by the `pre-commit` maintainers or community.\\\nPlease do not report any problems there, instead [create a Discussion in the Renovate repository](https://github.com/renovatebot/renovate/discussions/new) if you have any questions.",
+  //   ],
+  // },
 }
