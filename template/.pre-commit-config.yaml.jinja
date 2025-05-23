@@ -3,6 +3,20 @@
 #
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
+
+default_install_hook_types:
+  - pre-commit
+  - post-checkout
+  - post-merge
+  - post-rewrite
+  {%- if conventional_commits %}
+  - pre-push
+  - commit-msg
+  {%- endif %}
+
+default_stages:
+  - pre-commit
+
 exclude: |
   (?x)^(
     ^.*(copier-answers\.ya?ml)$
@@ -75,7 +89,30 @@ repos:
     rev: "v8.26.0"
     hooks:
       - id: gitleaks
-  {%- if editorconfig %}
+  # renovate: datasource=github-tags depName=stefmolin/exif-stripper
+  - repo: https://github.com/stefmolin/exif-stripper
+    rev: 0.6.2
+    hooks:
+      - id: strip-exif
+        name: Strip exif metadata from images
+        stages: [pre-commit]
+  {% if conventional_commits -%}
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.8.2
+    hooks:
+    - id: commitizen
+      {%- if cz_gitmoji %}
+      {%- if repository_provider == 'github' %}
+      # needed by Renovate to support additional dependencies
+      # see https://docs.renovatebot.com/modules/manager/pre-commit/
+      language: python
+      {%- endif %}
+      additional_dependencies:
+        - cz-conventional-gitmoji
+      {%- endif %}
+      stages:
+      - commit-msg
+  {%- endif %}{%- if editorconfig %}
   # renovate: datasource=github-tags depName=editorconfig-checker/editorconfig-checker.python
   - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
     rev: "3.2.1"
@@ -90,24 +127,22 @@ repos:
             ^.*(\.rst)$
           )$
         stages: [pre-commit]
-  {%- endif %}{% if exif-stripper %}
-  # renovate: datasource=github-tags depName=stefmolin/exif-stripper
-  - repo: https://github.com/stefmolin/exif-stripper
-    rev: 0.6.2
+  {%- endif %}{% if markdown %}
+  # renovate: datasource=github-tags depName=hukkin/mdformat
+  - repo: https://github.com/hukkin/mdformat
+    rev: 0.7.22
     hooks:
-      - id: strip-exif
-        name: Strip exif metadata from images
-        stages: [pre-commit]
-  {%- endif %}{% if hadolint %}
-  - repo: local
-    hooks:
-      - id: hadolint
-        name: Lint Dockerfiles
-        language: system
-        entry: hadolint
-        types: ["dockerfile"]
-        stages: [pre-commit]
-  {%- endif %}{% if markdownlint %}
+      - id: mdformat
+        additional_dependencies:
+          - mdformat-gfm
+          - mdformat-frontmatter
+          - mdformat-footnote
+          - mdformat-gfm-alerts
+          - mdformat-tables
+          - mdformat-toc
+          - mdformat-config
+          - mdformat-ruff
+          # - mdformat-shfmt # disable until can pass args (ref: https://github.com/hukkin/mdformat-shfmt/issues/7)
   # renovate: datasource=github-tags depName=igorshubovych/markdownlint-cli
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: "v0.45.0"
@@ -118,13 +153,52 @@ repos:
           - --config=.markdownlint.yaml
           - --fix
         stages: [pre-commit]
-  {%- endif %}{% if nbstripout %}
+  {%- endif %}{% if python %}
+  # renovate: datasource=github-tags depName=charliermarsh/ruff-pre-commit
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: "v0.11.10"
+    hooks:
+      - id: ruff
+        name: Lint and Format with Ruff
+        args: [--fix]
+        stages: [pre-commit]
   # renovate: datasource=github-tags depName=kynan/nbstripout
   - repo: https://github.com/kynan/nbstripout
     rev: 0.8.1
     hooks:
       - id: nbstripout
         name: Strip metadata and outputs from ipynb files
+        stages: [pre-commit]
+  {%- endif %}{% if docker %}
+  - repo: local
+    hooks:
+      - id: hadolint
+        name: Lint Dockerfiles
+        language: system
+        entry: hadolint
+        types: ["dockerfile"]
+        stages: [pre-commit]
+  {%- endif %}{% if shell %}
+  - repo: local
+    hooks:
+      - id: shellcheck
+        name: Lint shell scripts
+        language: system
+        entry: shellcheck
+        types: ["shell"]
+        exclude: "^.*zsh$" # ignore '*.zsh" scripts'
+        stages: [pre-commit]
+  # renovate: datasource=github-tags depName=scop/pre-commit-shfmt versioning=loose
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: "v3.8.0-1"
+    hooks:
+      - id: shfmt
+        name: Format shell scripts
+        args:
+          - -i
+          - "2"
+          - -ci
+          - -bn
         stages: [pre-commit]
   {%- endif %}{% if prettier %}
   - repo: local
@@ -140,37 +214,14 @@ repos:
           # - "--ignore-path '**/*.md'"
           # - "--ignore-path '**/*.y*ml'"
         stages: [pre-commit]
-  {%- endif %}{% if ruff %}
-  # renovate: datasource=github-tags depName=charliermarsh/ruff-pre-commit
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: "v0.11.11"
+  {%- endif %}{% if yaml %}
+  # renovate: datasource=github-tags depName=adrienverge/yamllint
+  - repo: https://github.com/adrienverge/yamllint
+    rev: "v1.37.1"
     hooks:
-      - id: ruff
-        name: Lint and Format with Ruff
-        args: [--fix]
-        stages: [pre-commit]
-  {%- endif %}{% if shellcheck %}
-  - repo: local
-    hooks:
-      - id: shellcheck
-        name: Lint shell scripts
-        language: system
-        entry: shellcheck
-        types: ["shell"]
-        exclude: "^.*zsh$" # ignore '*.zsh" scripts'
-        stages: [pre-commit]
-  {%- endif %}{% if shfmt %}
-  # renovate: datasource=github-tags depName=scop/pre-commit-shfmt versioning=loose
-  - repo: https://github.com/scop/pre-commit-shfmt
-    rev: "v3.8.0-1"
-    hooks:
-      - id: shfmt
-        name: Format shell scripts
-        args:
-          - -i
-          - "2"
-          - -ci
-          - -bn
+      - id: yamllint
+        name: Lint yaml files
+        args: [-c=.yamllint.yaml]
         stages: [pre-commit]
   {%- endif %}{% if typos %}
   ### NOTE: ".typos.toml" may be required to have _already been committed_
@@ -188,14 +239,5 @@ repos:
             ^.*(\.typos\.toml)$ |
             ^.*(\.git.*)$
           )$
-        stages: [pre-commit]
-  {%- endif %}{% if yamllint %}
-  # renovate: datasource=github-tags depName=adrienverge/yamllint
-  - repo: https://github.com/adrienverge/yamllint
-    rev: "v1.37.1"
-    hooks:
-      - id: yamllint
-        name: Lint yaml files
-        args: [-c=.yamllint.yaml]
         stages: [pre-commit]
   {%- endif %}
