@@ -10,13 +10,13 @@
       "matchPackagePatterns": [
         "pre-commit/pre-commit-hooks",
         "Lucas-C/pre-commit-hooks",
-        "sirosen/texthooks/",
-        "zricethezav/gitleaks/",
+        "sirosen/texthooks",
+        "zricethezav/gitleaks",
         "stefmolin/exif-stripper",
-        "charliermarsh/ruff-pre-commit/",
-        "igorshubovych/markdownlint-cli/",
-        "adrienverge/yamllint/",
-        "crate-ci/typos/",
+        "charliermarsh/ruff-pre-commit",
+        "igorshubovych/markdownlint-cli",
+        "adrienverge/yamllint",
+        "crate-ci/typos",
       ]
     },
     {
