@@ -6,10 +6,12 @@ extend-exclude = [
   ".typos.toml",
   "_typos.toml",
   "typos.toml",
+  "*.csv",
+  "*.git*",
 ]
-ignore-hidden = false   # ignore hidden files/dirs
+ignore-hidden = true   # ignore hidden files/dirs
 ignore-files = true     # respect ignore files
-ignore-dot = true       # respect .ignore files
+ignore-dot = true       # respect ignore files
 ignore-vcs = true       # ignore version-control directories
 ignore-global = true    # respect global ignore files
 
@@ -49,7 +51,9 @@ AKS = "AKS"
 [default.extend-words]
 "arange" = "arange"  # e.g. `numpy.arange`
 keypair = "keypair"
-
+raison = "raison"
+ba = "ba"
+autonymous = "autonymous"
 
 ## Specific rules for lockfiles
 [type.lock]

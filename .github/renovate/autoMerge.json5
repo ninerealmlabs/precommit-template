@@ -1,13 +1,21 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "packageRules": [
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  packageRules: [
     {
-      "description": ["Auto-merge updates for trusted pre-commit packages"],
-      "matchDatasources": ["github-tags"],
-      "automerge": true,
-      "automergeType": "branch",
-      "matchUpdateTypes": ["patch"],
-      "matchPackagePatterns": [
+      description: ["Auto-merge container digests updates for trusted containers"],
+      matchDatasources: ["docker"],
+      automerge: true,
+      automergeType: "branch",
+      matchUpdateTypes: ["digest"],
+      matchPackagePatterns: ["ghcr.io/ahgraber", "ghcr.io/ninerealmlabs"]
+    },
+    {
+      description: ["Auto-merge updates trusted pre-commit packages"],
+      matchDatasources: ["github-tags"],
+      automerge: true,
+      automergeType: "branch",
+      matchUpdateTypes: ["patch"],
+      matchPackagePatterns: [
         "pre-commit/pre-commit-hooks",
         "Lucas-C/pre-commit-hooks",
         "sirosen/texthooks",
@@ -20,12 +28,35 @@
       ]
     },
     {
-      "description": ["Auto-merge GitHub Actions for minor and patch"],
-      "matchManagers": ["github-actions"],
-      "matchDatasources": ["github-tags"],
-      "automerge": true,
-      "automergeType": "branch",
-      "matchUpdateTypes": ["minor", "patch"]
-    }
+      description: "Auto-merge GitHub Actions",
+      matchManagers: ["github-actions"],
+      automerge: true,
+      automergeType: "branch",
+      matchUpdateTypes: ["minor", "patch", "digest"],
+      minimumReleaseAge: "3 days",
+      ignoreTests: true,
+    },
+    {
+      description: "Auto-merge trusted GitHub Actions",
+      matchManagers: ["github-actions"],
+      matchPackageNames: [
+        "/^actions\//",
+        "/^renovatebot\//",
+      ],
+      automerge: true,
+      automergeType: "branch",
+      matchUpdateTypes: ["minor", "patch", "digest"],
+      minimumReleaseAge: "1 minute",
+      ignoreTests: true,
+    },
+    // {
+    //   description: "Auto-merge GitHub Releases",
+    //   matchDatasources: ["github-releases"],
+    //   automerge: true,
+    //   automergeType: "branch",
+    //   matchUpdateTypes: ["minor", "patch"],
+    //   matchPackageNames: [],
+    //   ignoreTests: true,
+    // }
   ]
 }

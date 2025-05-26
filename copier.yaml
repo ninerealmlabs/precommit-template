@@ -18,57 +18,47 @@ _message_after_update: *postmessage
 _templates_suffix: .jinja
 
 # --- PROMPT -----------------------------------------------------------------
+conventional_commits:
+  type: bool
+  help: "Use conventional commits?"
+  default: true
+
 editorconfig:
   type: bool
   help: "Use editorconfig?"
   default: true
 
-exif-stripper:
+markdown:
   type: bool
-  help: "Use exif-stripper?"
+  help: "Lint and format markdown?"
   default: true
 
-hadolint:
+python:
   type: bool
-  help: "Use hadolint?"
+  help: "Lint and format python?"
   default: true
 
-markdownlint:
+docker:
   type: bool
-  help: "Use markdownlint?"
+  help: "Lint and check docker files?"
   default: true
 
-nbstripout:
+shell:
   type: bool
-  help: "Use nbstripout?"
+  help: "Lint and format shell scripts?"
   default: true
 
 prettier:
   type: bool
-  help: "Use prettier?"
+  help: "Use prettier to lint and format json, JS, TS, etc.?"
   default: true
 
-ruff:
+yaml:
   type: bool
-  help: "Use ruff?"
-  default: true
-
-shellcheck:
-  type: bool
-  help: "Use shellcheck?"
-  default: true
-
-shfmt:
-  type: bool
-  help: "Use shfmt?"
+  help: "Lint and format YAML?"
   default: true
 
 typos:
   type: bool
-  help: "Use typos?"
-  default: true
-
-yamllint:
-  type: bool
-  help: "Use yamllint?"
+  help: "Check for typos?"
   default: true
