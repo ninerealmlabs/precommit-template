@@ -230,7 +230,9 @@ repos:
         args: ["--config", ".typos.toml"]
         exclude: |
           (?x)^(
+            ^.*(typos\.toml)$ |
             ^.*(\.typos\.toml)$ |
+            ^.*(\.sops\.yaml)$ |
             ^.*(\.git.*)$
           )$
         stages: [pre-commit]
