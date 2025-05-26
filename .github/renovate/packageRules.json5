@@ -1,6 +1,6 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "packageRules": [
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  packageRules: [
     {
       description: "Support semvar versioning",
       matchDepNames: ["shellcheck-py/shellcheck-py", "scop/pre-commit-shfmt"],
