@@ -96,23 +96,16 @@ repos:
       - id: strip-exif
         name: Strip exif metadata from images
         stages: [pre-commit]
-  {% if conventional_commits -%}
+  {%- if conventional_commits %}
+  # renovate: datasource=github-tags depName=commitizen-tools/commitizen
   - repo: https://github.com/commitizen-tools/commitizen
     rev: v4.8.2
     hooks:
-    - id: commitizen
-      {%- if cz_gitmoji %}
-      {%- if repository_provider == 'github' %}
-      # needed by Renovate to support additional dependencies
-      # see https://docs.renovatebot.com/modules/manager/pre-commit/
-      language: python
-      {%- endif %}
-      additional_dependencies:
-        - cz-conventional-gitmoji
-      {%- endif %}
-      stages:
-      - commit-msg
-  {%- endif %}{%- if editorconfig %}
+      - id: commitizen
+        language: python
+        stages:
+          - commit-msg
+  {%- endif %}{% if editorconfig %}
   # renovate: datasource=github-tags depName=editorconfig-checker/editorconfig-checker.python
   - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
     rev: "3.2.1"

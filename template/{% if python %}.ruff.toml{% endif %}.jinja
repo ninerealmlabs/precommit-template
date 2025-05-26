@@ -66,7 +66,9 @@ select = [
 ignore = [
   "B905",  # zip strict=True; remove once python <3.10 support is dropped.
   "D100",  # do not require module-level docstrings
+  "D101",  # do not require docstrings in public classes
   "D104",  # do not require package docstrings
+  "D105",  # do not require docstrings in magic (dunder) methods
   "D107",  # do not require docstrings in __init__ files
   # "D205",  # don't require linebreak after docstring (ruff vs black conflict)
   "D206",  # redundant w formatter
@@ -100,7 +102,7 @@ ignore = [
 # Avoid trying to fix extension types:
 unfixable = ["B"]
 
-[lint.per-file-ignores]
+[lint.extend-per-file-ignores]
 # # Ignore `E402` (import violations) in all `__init__.py` files,
 # # and in `path/to/file.py`.
 # "__init__.py" = ["E402"]
@@ -108,8 +110,7 @@ unfixable = ["B"]
 ".ci/*" = ["D"]
 "docs/*" = ["D"]
 "notebooks/*" = ["B018", "D", "S"]
-"tests/*" = ["D", "S101", "S301"]
-
+"**/tests/*" = ["D", "S101", "S301"]
 
 # --- ruff plugins --------------------
 [lint.flake8-bugbear]
@@ -128,15 +129,17 @@ force-to-top = ["src", "torch"]
 # forced-separate = ["scipy", "sklearn", "statsmodels", "torch"]
 relative-imports-order = "closest-to-furthest"
 
+# known-first-party = [""]
 known-local-folder = ["src"] # for relative imports
-section-order = ["future", "standard-library", "third-party", "sci", "torch", "llm", "plot", "first-party", "local-folder"]
+section-order = ["future", "standard-library", "third-party", "torch", "llm", "web", "sci","plot", "first-party", "local-folder"]
 
 [lint.isort.sections]
 "sci" = ["numpy", "pandas", "scipy", "sklearn", "statsmodels"]
-"torch" = ["datasets", "lightning", "torch", "torch*", "tokenizers", "transformers", "sentence_transformers", "spacy"]
-"llm" = ["langchain*", "llama_index*", "openai", "semantic_kernel", "ragas"]
+"nlp" = ["nltk", "spacy", "langcodes"]
+"torch" = ["datasets", "lightning", "torch", "torch*", "tokenizers", "transformers", "sentence_transformers"]
+"llm" = ["aisuite", "langchain*", "llama_index*", "openai", "semantic_kernel", "ragas", "tiktoken"]
 "plot" = ["cmcrameri", "matplotlib", "mizani", "plotly", "plotnine", "seaborn"]
-
+"web" = ["fastapi", "reflex*", "requests", "responses", "tenacity"]
 [lint.mccabe]
 max-complexity = 18
 
