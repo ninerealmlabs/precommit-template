@@ -188,10 +188,11 @@ repos:
       - id: shfmt
         name: Format shell scripts
         args:
-          - -i
+          - "--binary-next-line"
+          - "--case-indent"
+          - "--space-redirects"
+          - "--indent"
           - "2"
-          - -ci
-          - -bn
         stages: [pre-commit]
   {%- endif %}{% if prettier %}
   - repo: local
