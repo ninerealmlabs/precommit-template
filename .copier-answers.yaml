@@ -1,13 +1,12 @@
 # Changes here will be overwritten by Copier
-_commit: 2024.5.2
+_commit: 2025.3.0-56-g7c1a46e
 _src_path: .
+conventional_commits: true
+docker: false
 editorconfig: true
-hadolint: false
-markdownlint: true
+markdown: true
 prettier: true
-ruff: true
-shellcheck: false
-shfmt: false
+python: true
+shell: false
 typos: true
-yamllint: true
-
+yaml: true
