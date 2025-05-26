@@ -40,7 +40,7 @@ python:
 
 docker:
   type: bool
-  help: "Is this a docker project?"
+  help: "Lint and check docker files?"
   default: true
 
 shell:

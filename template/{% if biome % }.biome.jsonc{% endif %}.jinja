@@ -1,0 +1,62 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "files": {
+    "ignore": [
+      ".*/*",
+      ".*",
+      "**/dist/",
+      "**/*.sops.*",
+      "**/gotk-components.y*ml",
+      "**/node_modules",
+      "**/lib",
+      "**/package.json",
+      "**/tests"
+    ],
+    "ignoreUnknown": false // enable to suppress unknown file warnings
+  },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 119,
+    "attributePosition": "auto",
+    "useEditorconfig": false // some settings conflict (i.e., editorconfig .csv ignore final newline)
+  },
+  "organizeImports": { "enabled": true }
+  // use language defaults, per above global settings
+  // "javascript": {
+  //   "formatter": {
+  //     "indentStyle": "space",
+  //     "lineWidth": 119
+  //   }
+  // },
+  // "json": {
+  //   "parser": {
+  //     "allowComments": true,
+  //     "allowTrailingCommas": true
+  //   },
+  //   "formatter": {
+  //     "indentStyle": "space",
+  //     "lineWidth": 119
+  //   }
+  // },
+  // "css": {
+  //   "formatter": {
+  //     "indentStyle": "space",
+  //     "lineWidth": 119
+  //   }
+  // }
+}
