@@ -86,12 +86,12 @@ repos:
         stages: [pre-commit]
   # renovate: datasource=github-tags depName=zricethezav/gitleaks
   - repo: https://github.com/zricethezav/gitleaks
-    rev: "v8.26.0"
+    rev: "v8.27.2"
     hooks:
       - id: gitleaks
   # renovate: datasource=github-tags depName=stefmolin/exif-stripper
   - repo: https://github.com/stefmolin/exif-stripper
-    rev: 0.6.2
+    rev: 1.0.0
     hooks:
       - id: strip-exif
         name: Strip exif metadata from images
@@ -99,7 +99,7 @@ repos:
   {%- if conventional_commits %}
   # renovate: datasource=github-tags depName=commitizen-tools/commitizen
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: v4.8.2
+    rev: v4.8.3
     hooks:
       - id: commitizen
         language: python
@@ -149,7 +149,7 @@ repos:
   {%- endif %}{% if python %}
   # renovate: datasource=github-tags depName=charliermarsh/ruff-pre-commit
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: "v0.11.11"
+    rev: "v0.11.13"
     hooks:
       - id: ruff
         name: Lint and Format with Ruff
@@ -223,7 +223,7 @@ repos:
   ### In this case, comment out this block until ".typos.toml" has been committed successfully
   # renovate: datasource=github-tags depName=crate-ci/typos
   - repo: https://github.com/crate-ci/typos
-    rev: "v1.32.0"
+    rev: "v1.33.1"
     hooks:
       - id: typos
         name: Spellcheck with Typos
