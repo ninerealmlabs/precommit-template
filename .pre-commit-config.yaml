@@ -40,7 +40,7 @@ repos:
         files: \.rej$
   # renovate: datasource=github-tags depName=pre-commit/pre-commit-hooks
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: "v5.0.0"
+    rev: "v6.0.0"
     hooks:
       - id: check-added-large-files
         args: [--maxkb=500000]
@@ -59,6 +59,7 @@ repos:
         stages: [pre-commit]
       - id: check-yaml
         stages: [pre-commit]
+        args: [--allow-multiple-documents]
       - id: end-of-file-fixer
         stages: [pre-commit]
       - id: mixed-line-ending
