@@ -134,7 +134,7 @@ repos:
           # - mdformat-shfmt # disable until can pass args (ref: https://github.com/hukkin/mdformat-shfmt/issues/7)
   # renovate: datasource=github-tags depName=igorshubovych/markdownlint-cli
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: "v0.45.0"
+    rev: "v0.47.0"
     hooks:
       - id: markdownlint
         name: Lint markdown files
