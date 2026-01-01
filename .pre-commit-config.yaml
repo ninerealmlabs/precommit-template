@@ -137,8 +137,9 @@ repos:
   - repo: https://github.com/rvben/rumdl-pre-commit
     rev: v0.0.207  # Use the latest release tag
     hooks:
-      - id: rumdl
-        # args: [--fix] # To automatically fix issues
+      # - id: rumdl      # Lint only (fails on issues)
+      #   stages: [pre-commit]
+      - id: rumdl-fmt  # Auto-format (fixes what it can)
         stages: [pre-commit]
   # renovate: datasource=github-tags depName=charliermarsh/ruff-pre-commit
   - repo: https://github.com/charliermarsh/ruff-pre-commit
