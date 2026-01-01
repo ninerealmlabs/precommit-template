@@ -9,11 +9,10 @@ on answers to a survey during the setup phase.
 
 ### Prerequisites
 
-We will use [pipx](https://pipx.pypa.io/stable/) to install and run applications from isolated globally-available
-python environments.
+We will use [pipx](https://pipx.pypa.io/stable/) to install and run applications from isolated globally-available python environments.
 
-Some pre-commit hooks (`hadolint`, `prettier`, `shellcheck`), expect to find the tool available in your path. You may
-need to install them.
+Some pre-commit hooks (`hadolint`, `prettier`, `shellcheck`), expect to find the tool available in your path.
+You may need to install them.
 
 ### Install `copier` and `pre-commit`
 
@@ -35,9 +34,9 @@ pipx install pre-commit
 
 2. Answer the questionnaire
 
-   `Copier` will render your configuration based on your selection. Then it will commit these new changes automatically
-   (but it will not push the commit). This allows you to have a clean git status before running
-   `pre-commit run --all-files` to ensure your repo is in compliance with your new configuration.
+   `Copier` will render your configuration based on your selection.
+   Then it will commit these new changes automatically (but it will not push the commit).
+   This allows you to have a clean git status before running `pre-commit run --all-files` to ensure your repo is in compliance with your new configuration.
 
 3. Run `pre-commit run --all-files` and fix any errors that pre-commit's checks have found
 
@@ -50,10 +49,11 @@ pipx install pre-commit
 - [EditorConfig](https://editorconfig.org/) - Maintains consistent coding styles across various editors and IDEs
 - [hadolint](https://github.com/hadolint/hadolint) - A smarter Dockerfile linter that ensures best practice Docker
   images
-- [markdownlint](https://github.com/markdownlint/markdownlint) - A tool to check markdown files and flag style issues
+- [mdformat](https://github.com/hukkin/mdformat) - A markdown formatter
 - [Prettier](https://github.com/prettier/prettier) - Opinionated code formatter (JS, TS, JSON, CSS, HTML, Markdown,
   YAML)
 - [ruff](https://github.com/astral-sh/ruff) - An extremely fast Python linter and code formatter
+- [rumdl](https://github.com/rvben/rumdl-pre-commit?tab=readme-ov-file) - A markdown linter and formatter
 - [shellcheck](https://github.com/koalaman/shellcheck) - A static analysis tool for shell scripts (sh, bash)
 - [typos](https://github.com/crate-ci/typos) - A source code spell checker
 - [yamllint](https://github.com/adrienverge/yamllint) - A linter for YAML files
@@ -69,9 +69,14 @@ pipx install pre-commit
 > **!! DO NOT MANUALLY UPDATE `copier-answers` file!!**
 
 1. Navigate to project directory: `cd <git project dir>`
+
 2. Ensure a `feature` branch is checked out.
-3. Commit (or stash) current work. Copier will not work with "unclean" file statuses.
-4. Run `copier update`. This will try to render files based on the _latest_ release of `common`:
+
+3. Commit (or stash) current work.
+   Copier will not work with "unclean" file statuses.
+
+4. Run `copier update`.
+   This will try to render files based on the _latest_ release of `common`:
 
    ```sh
    copier update --trust . --answers-file .copier-answers.yaml
@@ -83,9 +88,7 @@ pipx install pre-commit
 
 ### What does `copier update` do?
 
-`copier` documentation provides a
-[good overview of how the update process works](https://copier.readthedocs.io/en/latest/updating/#how-the-update-works)
--- but TLDR:
+`copier` documentation provides a [good overview of how the update process works](https://copier.readthedocs.io/en/latest/updating/#how-the-update-works) -- but TLDR:
 
 - It renders a fresh project from the _latest_ template version
 - Then it compares current vs new to get the diffs
