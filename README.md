@@ -9,7 +9,7 @@ on answers to a survey during the setup phase.
 
 ### Prerequisites
 
-We will use [pipx](https://pipx.pypa.io/stable/) to install and run applications from isolated globally-available python environments.
+We will use [uv](https://docs.astral.sh/uv/) to install and run tools in isolated environments.
 
 Some pre-commit hooks (`hadolint`, `prettier`, `shellcheck`), expect to find the tool available in your path.
 You may need to install them.
@@ -18,10 +18,9 @@ You may need to install them.
 
 ```sh
 # install copier and its dependencies
-pipx install copier
-pipx inject copier copier-templates-extensions jinja2-time
+uv tool install copier --with copier-templates-extensions --with jinja2-time
 # we want to manage pre-commit, so ensure it is available
-pipx install pre-commit
+uv tool install pre-commit
 ```
 
 ### Generate your custom configuration with `copier` [docs](https://copier.readthedocs.io/en/stable/generating/)
