@@ -21,6 +21,7 @@
         "sirosen/texthooks",
         "zricethezav/gitleaks",
         "stefmolin/exif-stripper",
+        "commitizen-tools/commitizen",
         "charliermarsh/ruff-pre-commit",
         "igorshubovych/markdownlint-cli",
         "adrienverge/yamllint",
