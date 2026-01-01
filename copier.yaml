@@ -62,3 +62,8 @@ typos:
   type: bool
   help: "Check for typos?"
   default: true
+
+copilot:
+  type: bool
+  help: "Add .github folder for GitHub Copilot prompts?"
+  default: true
