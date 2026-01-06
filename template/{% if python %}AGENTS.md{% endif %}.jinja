@@ -78,6 +78,84 @@ These principles apply whether the system is a **modular monolith** or a **distr
 - Do not lint or format code manually; automated tooling runs on save/commit or can be invoked using `ruff`.
 - Avoid architectural leakage in naming (e.g., `shared`, `common`, `utils` packages without clear ownership).
 
+
+## Error Handling and Logging
+
+Design errors for two audiences: **machines** (automated recovery) and **humans** (debugging context).
+
+### Structured Error Types (Machine-Readable)
+
+- Create custom exception classes that encode error categories and actionable information.
+- Use exception attributes to carry structured data (error kind, retry status, codes).
+- Prefer specific exception types over generic ones for clear handling logic.
+
+```python
+class StorageError(Exception):
+    """Storage operation failure with machine-actionable metadata."""
+
+    def __init__(self, kind: str, message: str, retryable: bool = False):
+        super().__init__(message)
+        self.kind = kind  # e.g., "NotFound", "RateLimited"
+        self.retryable = retryable
+
+
+# Usage: code can inspect attributes for recovery decisions
+try:
+    storage.write(data)
+except StorageError as e:
+    if e.kind == "RateLimited" and e.retryable:
+        schedule_retry()
+    elif e.kind == "NotFound":
+        create_resource()
+    else:
+        raise
+```
+
+### Adding Context (Human-Readable)
+
+Never blindly forward exceptions. Add context at each layer boundary.
+
+- **Exception Chaining**: Use `raise ... from ...` to preserve the cause chain while adding context.
+
+```python
+try:
+    data = fetch_external_api(user_id)
+except HTTPError as err:
+    raise RuntimeError(f"Failed to fetch data for user {user_id}") from err
+```
+
+### Logging Best Practices
+
+- Use `logging.getLogger(__name__)` for module-level loggers.
+- Log exceptions with full context: `logger.exception(msg)`.
+- Use %-formatting for log messages: `logger.error("Failed for user %s", user_id)`.
+- Include structured context via the `extra` parameter for machine-parseable logs.
+- Log at appropriate boundaries (typically once per request/operation at the top level) to avoid duplicate log entries.
+
+```python
+import logging
+
+logger = logging.getLogger(__name__)
+
+try:
+    result = call_service(param)
+except ServiceError as e:
+    logger.error(
+        "Service call failed for param=%s",
+        param,
+        exc_info=True,
+        extra={"error_kind": e.kind, "retryable": e.retryable},
+    )
+    raise
+```
+
+### Principles
+
+- Design error types around what callers need to **do**, not just where they originated.
+- Add context at **module boundaries** where high-level operations are known.
+- Make errors carry both **machine-actionable metadata** (for recovery logic) and **human context** (for debugging).
+- Avoid exception hierarchies that leak internal implementation details across module boundaries.
+
 ## Python Environment
 
 - When running Python commands, activate the virtual environment first.
