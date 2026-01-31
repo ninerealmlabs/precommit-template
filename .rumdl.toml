@@ -70,9 +70,9 @@ strict = false  # Remove all trailing spaces, even line breaks (default: false)
 [MD013] # Line length / wrap
 line_length = 119
 paragraphs = false  # Do not warn about long paragraphs
-headings = true  # Check headings length
-code-blocks = true  # Check code block length
-tables = false  # Check table length
+headings = false  # Do not warn about long headings
+code-blocks = true # Warn on extended code blocks
+tables = false # Do not warn about wide tables
 reflow = true
 reflow-mode = "sentence-per-line"
 abbreviations = ["e.g.", "i.e.", "vs.", "U.S."]
