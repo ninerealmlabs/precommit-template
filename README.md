@@ -11,7 +11,7 @@ on answers to a survey during the setup phase.
 
 We will use [uv](https://docs.astral.sh/uv/) to install and run tools in isolated environments.
 
-Some pre-commit hooks (`hadolint`, `prettier`, `shellcheck`), expect to find the tool available in your path.
+Some pre-commit hooks (`hadolint`, `shellcheck`, and `prettier` if selected), expect to find the tool available in your path.
 You may need to install them.
 
 ### Install `copier` and `pre-commit`
@@ -46,6 +46,7 @@ uv tool install pre-commit
 (opinionated) configuration of formatting and linting tools, including:
 
 - [EditorConfig](https://editorconfig.org/) - Maintains consistent coding styles across various editors and IDEs
+- [Biome](https://biomejs.dev/) - A fast formatter and linter for JS, TS, JSON, CSS, and HTML
 - [hadolint](https://github.com/hadolint/hadolint) - A smarter Dockerfile linter that ensures best practice Docker
   images
 - [mdformat](https://github.com/hukkin/mdformat) - A markdown formatter

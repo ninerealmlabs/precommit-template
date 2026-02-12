@@ -194,7 +194,7 @@ repos:
           - "--indent"
           - "2"
         stages: [pre-commit]
-  {%- endif %}{% if prettier %}
+  {%- endif %}{% if web_format and web_format_tool == "prettier" %}
   - repo: local
     hooks:
       - id: prettier
@@ -207,6 +207,13 @@ repos:
           - --no-error-on-unmatched-pattern
           # - "--ignore-path '**/*.md'"
           # - "--ignore-path '**/*.y*ml'"
+        stages: [pre-commit]
+  {%- endif %}{% if web_format and web_format_tool == "biome" %}
+  # renovate: datasource=github-tags depName=biomejs/pre-commit
+  - repo: https://github.com/biomejs/pre-commit
+    rev: v2.3.14
+    hooks:
+      - id: biome-check
         stages: [pre-commit]
   {%- endif %}{% if yaml %}
   # renovate: datasource=github-tags depName=adrienverge/yamllint

@@ -33,7 +33,7 @@ You do **not** directly test rendered templates—human users handle local valid
 ├── template/                    # Jinja2 templates (what gets rendered)
 │   ├── {{_copier_conf.answers_file}}.jinja
 │   ├── {% if python %}AGENTS.md{% endif %}.jinja
-│   ├── {% if prettier %}.prettierrc.yaml{% endif %}.jinja
+│   ├── {% if web_format and web_format_tool == "prettier" %}.prettierrc.yaml{% endif %}.jinja
 │   ├── {% if [COPIER_VAR] %}<file>{% endif %}.jinja
 │   └── {% if copilot %}.github{% endif %}/
 │       ├── {% if copilot %}agents{% endif %}/
@@ -103,7 +103,7 @@ cd <target-project> && copier update --trust
 ```jinja
 ✅ Good - clear conditional logic
 {% if python %}.ruff.toml{% endif %}.jinja
-{% if prettier %}.prettierrc.yaml{% endif %}.jinja
+{% if web_format and web_format_tool == "prettier" %}.prettierrc.yaml{% endif %}.jinja
 
 ❌ Bad - nested or complex conditions in filename
 {% if python and ruff %}.ruff.toml{% endif %}.jinja
@@ -258,7 +258,7 @@ repos:
       - id: ruff-format
 {% endif %}
 
-{% if prettier %}
+{% if web_format and web_format_tool == "prettier" %}
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v3.1.0
     hooks:
@@ -275,10 +275,19 @@ yaml:
   help: Lint and format YAML?
   default: true
 
-prettier:
+web_format:
   type: bool
-  help: Use prettier to lint and format json, JS, TS, etc.?
+  help: Lint and format JS/TS/JSON/HTML/CSS and related files?
   default: true
+
+web_format_tool:
+  type: str
+  help: Select the web formatter
+  choices:
+    - biome
+    - prettier
+  default: biome
+  when: '{{ web_format }}'
 ```
 
 ### Example 3: Well-Documented Templates

@@ -48,10 +48,19 @@ shell:
   help: "Lint and format shell scripts?"
   default: true
 
-prettier:
+web_format:
   type: bool
-  help: "Use prettier to lint and format json, JS, TS, etc.?"
+  help: "Lint and format JS/TS/JSON/HTML/CSS and related files?"
   default: true
+
+web_format_tool:
+  type: str
+  help: "Select the web formatter"
+  choices:
+    - biome
+    - prettier
+  default: biome
+  when: "{{ web_format }}"
 
 yaml:
   type: bool
