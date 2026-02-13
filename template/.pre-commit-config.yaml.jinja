@@ -100,7 +100,7 @@ repos:
   {%- if conventional_commits %}
   # renovate: datasource=github-tags depName=commitizen-tools/commitizen
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: v4.11.6
+    rev: v4.13.7
     hooks:
       - id: commitizen
         language: python
@@ -140,7 +140,7 @@ repos:
           - mdformat-simple-breaks
   # renovate: datasource=github-tags depName=rvben/rumdl-pre-commit
   - repo: https://github.com/rvben/rumdl-pre-commit
-    rev: v0.0.207  # Use the latest release tag
+    rev: v0.1.18
     hooks:
       # - id: rumdl      # Lint only (fails on issues)
       #   stages: [pre-commit]
@@ -149,7 +149,7 @@ repos:
   {%- endif %}{% if python %}
   # renovate: datasource=github-tags depName=astral-sh/ruff-pre-commit
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.14.14"
+    rev: "v0.15.1"
     hooks:
       - id: ruff-check
         name: Lint with Ruff
@@ -160,7 +160,7 @@ repos:
         stages: [pre-commit]
   # renovate: datasource=github-tags depName=kynan/nbstripout
   - repo: https://github.com/kynan/nbstripout
-    rev: 0.8.2
+    rev: 0.9.0
     hooks:
       - id: nbstripout
         name: Strip metadata and outputs from ipynb files
@@ -220,7 +220,7 @@ repos:
   {%- endif %}{% if yaml %}
   # renovate: datasource=github-tags depName=adrienverge/yamllint
   - repo: https://github.com/adrienverge/yamllint
-    rev: "v1.37.1"
+    rev: "v1.38.0"
     hooks:
       - id: yamllint
         name: Lint yaml files
@@ -232,7 +232,7 @@ repos:
   ### In this case, comment out this block until ".typos.toml" has been committed successfully
   # renovate: datasource=github-tags depName=crate-ci/typos
   - repo: https://github.com/crate-ci/typos
-    rev: "v1.41.0"
+    rev: "v1.43.4"
     hooks:
       - id: typos
         name: Spellcheck with Typos

@@ -107,7 +107,7 @@ If these tools are not available in your `$PATH`, the corresponding pre-commit h
 
 ## Local development
 
-1. Install development dependencides
+1. Install development dependencies
 
    ```sh
    python -m venv .venv
@@ -121,5 +121,5 @@ If these tools are not available in your `$PATH`, the corresponding pre-commit h
 
    ```sh
    # use current branch's committed files ("HEAD") to run precommit-template on itself
-   copier recopy --trust --vcs-ref "HEAD" /path/to/precommit-template /path/to/precommit-template  --answers-file .copier-answers.yaml
+   copier recopy --trust --vcs-ref "HEAD" /path/to/precommit-template  --answers-file .copier-answers.yaml
    ```

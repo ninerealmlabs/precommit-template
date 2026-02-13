@@ -1,12 +1,14 @@
 # Changes here will be overwritten by Copier
-_commit: 2025.3.0-76-g45692f1
+_commit: 2026.2.0-6-gb38d24d
 _src_path: .
+ai: true
 conventional_commits: true
 docker: false
 editorconfig: true
 markdown: true
-prettier: true
 python: true
 shell: false
 typos: true
+web_format: true
+web_format_tool: biome
 yaml: true
