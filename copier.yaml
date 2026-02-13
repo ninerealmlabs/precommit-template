@@ -18,6 +18,11 @@ _message_after_update: *postmessage
 _templates_suffix: .jinja
 
 # --- PROMPT -----------------------------------------------------------------
+ai:
+  type: bool
+  help: "Prepare AGENTS.md?"
+  default: true
+
 conventional_commits:
   type: bool
   help: "Use conventional commits?"
