@@ -1,13 +1,18 @@
-site_name: "Copier UV"
-site_description: "Copier template for Python projects managed by uv"
+site_name: "Pre-commit Template"
+site_description: "Copier template for pre-commit configurations and tool settings"
 site_url: "https://ninerealmlabs.github.io/precommit-template"
 repo_url: "https://github.com/ninerealmlabs/precommit-template"
 repo_name: "ninerealmlabs/precommit-template"
+docs_dir: docs
+site_dir: site
 
 validation:
   omitted_files: warn
   absolute_links: warn
   unrecognized_links: warn
+
+plugins:
+  - search
 
 nav:
   - Home:
@@ -30,6 +35,7 @@ theme:
     - content.code.annotate
     - content.code.copy
     - content.tooltips
+    - navigation.expand
     - navigation.footer
     - navigation.indexes
     - navigation.sections
@@ -40,29 +46,26 @@ theme:
     - search.suggest
     - toc.follow
   palette:
-    # Palette toggle for automatic mode
-    - media: "(prefers-color-scheme)"
-      toggle:
-        icon: material/brightness-auto
-        name: Switch to light mode
-
-    # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
+      primary: indigo
+      accent: indigo
       toggle:
-        icon: material/brightness-7
+        icon: material/weather-night
         name: Switch to dark mode
 
-    # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
+      primary: indigo
+      accent: indigo
       toggle:
-        icon: material/brightness-4
-        name: Switch to system preference
+        icon: material/weather-sunny
+        name: Switch to light mode
 
 markdown_extensions:
   - admonition
   - callouts
+  - pymdownx.highlight
   - pymdownx.emoji
   - pymdownx.magiclink
   - pymdownx.snippets:

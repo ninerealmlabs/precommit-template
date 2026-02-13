@@ -1,3 +1,42 @@
+/*
+ * Brand theme overrides for MkDocs Material.
+ */
+
+:root {
+  --xanthous: #f4b300;
+  --xanthous-darker: #bf8c00;
+  --xanthous-darkest: #997000;
+  --chefchaouen-blue: #4d78ae;
+  --eerie-black: #1f1f1f;
+  --white-smoke: #f2f2f2;
+}
+
+/* Light mode overrides */
+[data-md-color-scheme="default"] {
+  --md-default-bg-color: var(--white-smoke);
+  --md-default-fg-color: var(--eerie-black);
+
+  --md-primary-fg-color: var(--xanthous-darker);
+  --md-primary-fg-color--light: var(--xanthous);
+  --md-primary-fg-color--dark: var(--xanthous-darkest);
+
+  --md-accent-fg-color: var(--xanthous-darker);
+  --md-typeset-a-color: var(--chefchaouen-blue);
+}
+
+/* Dark mode overrides */
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: var(--eerie-black);
+  --md-default-fg-color: var(--white-smoke);
+
+  --md-primary-fg-color: var(--xanthous);
+  --md-primary-fg-color--light: #ffd466;
+  --md-primary-fg-color--dark: var(--xanthous-darker);
+
+  --md-accent-fg-color: var(--xanthous);
+  --md-typeset-a-color: var(--chefchaouen-blue);
+}
+
 /* More space at the bottom of the page */
 .md-main__inner {
   margin-bottom: 1.5rem;

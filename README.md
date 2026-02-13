@@ -60,6 +60,16 @@ uv tool install pre-commit
 
 ### Dependencies and Gotchas
 
+Some pre-commit hooks rely on tools that must be installed separately (they are not managed by pre-commit):
+
+| Tool                                                 | Required when               | Install                                                                                    |
+| ---------------------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------ |
+| [hadolint](https://github.com/hadolint/hadolint)     | `docker: true`              | `brew install hadolint` or [binary release](https://github.com/hadolint/hadolint/releases) |
+| [shellcheck](https://github.com/koalaman/shellcheck) | `shell: true`               | `brew install shellcheck` or `apt install shellcheck`                                      |
+| [prettier](https://prettier.io/)                     | `web_format_tool: prettier` | `npm install -g prettier`                                                                  |
+
+If these tools are not available in your `$PATH`, the corresponding pre-commit hooks will fail.
+
 ### Other (unrelated) project setup tools
 
 - [gitignore.io - Create Useful .gitignore Files For Your Project](https://www.toptal.com/developers/gitignore)
