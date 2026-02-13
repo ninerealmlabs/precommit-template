@@ -147,13 +147,16 @@ repos:
       - id: rumdl-fmt  # Auto-format (fixes what it can)
         stages: [pre-commit]
   {%- endif %}{% if python %}
-  # renovate: datasource=github-tags depName=charliermarsh/ruff-pre-commit
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
+  # renovate: datasource=github-tags depName=astral-sh/ruff-pre-commit
+  - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: "v0.14.14"
     hooks:
-      - id: ruff
-        name: Lint and Format with Ruff
+      - id: ruff-check
+        name: Lint with Ruff
         args: [--fix]
+        stages: [pre-commit]
+      - id: ruff-format
+        name: Format with Ruff
         stages: [pre-commit]
   # renovate: datasource=github-tags depName=kynan/nbstripout
   - repo: https://github.com/kynan/nbstripout
