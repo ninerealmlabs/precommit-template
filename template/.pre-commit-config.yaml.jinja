@@ -85,8 +85,8 @@ repos:
         stages: [pre-commit]
       - id: fix-ligatures
         stages: [pre-commit]
-  # renovate: datasource=github-tags depName=zricethezav/gitleaks
-  - repo: https://github.com/zricethezav/gitleaks
+  # renovate: datasource=github-tags depName=gitleaks/gitleaks
+  - repo: https://github.com/gitleaks/gitleaks
     rev: "v8.30.0"
     hooks:
       - id: gitleaks
@@ -166,6 +166,7 @@ repos:
         name: Strip metadata and outputs from ipynb files
         stages: [pre-commit]
   {%- endif %}{% if docker %}
+  # hadolint's native pre-commit hook uses the local/system install
   - repo: local
     hooks:
       - id: hadolint
@@ -208,8 +209,6 @@ repos:
           - --write
           - --ignore-unknown
           - --no-error-on-unmatched-pattern
-          # - "--ignore-path '**/*.md'"
-          # - "--ignore-path '**/*.y*ml'"
         stages: [pre-commit]
   {%- endif %}{% if web_format and web_format_tool == "biome" %}
   # renovate: datasource=github-tags depName=biomejs/pre-commit
