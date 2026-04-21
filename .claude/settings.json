@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Installed skills:'; ls ~/.claude/skills/ 2>/dev/null; ls .claude/skills/ 2>/dev/null"
+          }
+        ]
+      }
+    ]
+  }
+}
