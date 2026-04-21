@@ -11,11 +11,51 @@ Common vulnerabilities you may want to ignore (add "--ignore-vuln", "<CVE>" to t
 Ref: https://gist.github.com/mikeckennedy/de70ce13231b407a8dccea758f83a5cd
 """
 
+import json
 from pathlib import Path
 import subprocess
 import sys
 
 import pytest
+
+
+def _format_fix_versions(fix_versions: list[str]) -> str:
+    if not fix_versions:
+        return "no fix published"
+    return ", ".join(fix_versions)
+
+
+def _summarize_pip_audit_json(raw_output: str) -> str:
+    payload = json.loads(raw_output)
+    dependencies = payload.get("dependencies", [])
+
+    vulnerable_dependencies = []
+    skipped_dependencies = []
+    for dependency in dependencies:
+        vulns = dependency.get("vulns", [])
+        if vulns:
+            vulnerable_dependencies.append(dependency)
+        elif dependency.get("skip_reason"):
+            skipped_dependencies.append(dependency)
+
+    lines: list[str] = []
+    lines.append(f"Vulnerable packages: {len(vulnerable_dependencies)}")
+    for dependency in vulnerable_dependencies:
+        name = dependency["name"]
+        version = dependency.get("version", "unknown")
+        lines.append(f"- {name} {version}")
+        for vulnerability in dependency.get("vulns", []):
+            vuln_id = vulnerability.get("id", "unknown-id")
+            fix_versions = _format_fix_versions(vulnerability.get("fix_versions", []))
+            lines.append(f"  - {vuln_id}; fix: {fix_versions}")
+
+    if skipped_dependencies:
+        lines.append("")
+        lines.append(f"Skipped dependencies: {len(skipped_dependencies)}")
+        for dependency in skipped_dependencies:
+            lines.append(f"- {dependency['name']}: {dependency['skip_reason']}")
+
+    return "\n".join(lines)
 
 
 def test_pip_audit_no_vulnerabilities():
@@ -58,9 +98,13 @@ def test_pip_audit_no_vulnerabilities():
 
         # Check if it's an actual vulnerability vs an error
         if "vulnerabilities found" in error_output.lower() or '"dependencies"' in result.stdout:
+            try:
+                summarized_output = _summarize_pip_audit_json(result.stdout)
+            except json.JSONDecodeError:
+                summarized_output = result.stdout
             pytest.fail(
                 f"pip-audit detected security vulnerabilities!\n\n"
-                f"Output:\n{result.stdout}\n\n"
+                f"Output:\n{summarized_output}\n\n"
                 f"Please review and update vulnerable packages.\n"
                 f"Run manually with: python -m pip_audit --skip-editable"
             )
