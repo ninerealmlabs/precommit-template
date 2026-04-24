@@ -4,9 +4,8 @@ Security audit tests using pip-audit to detect known vulnerabilities.
 This test runs pip-audit against the installed packages and fails if any
 vulnerabilities are detected, ensuring continuous security monitoring.
 
-Common vulnerabilities you may want to ignore (add "--ignore-vuln", "<CVE>" to the pip-audit args):
-
-- CVE-2025-53000: nbconvert Windows-only vulnerability (no risk on Linux/macOS)
+To ignore a CVE, add an entry to ``IGNORED_VULNERABILITIES`` below with a
+justification. Entries are passed to pip-audit via ``--ignore-vuln``.
 
 Ref: https://gist.github.com/mikeckennedy/de70ce13231b407a8dccea758f83a5cd
 """
@@ -17,6 +16,20 @@ import subprocess
 import sys
 
 import pytest
+
+# Map of CVE id -> reason for ignoring. Revisit periodically; remove entries
+# once an upstream fix is released or the risk assessment changes.
+IGNORED_VULNERABILITIES: dict[str, str] = {
+    # "CVE-2025-53000": "nbconvert Windows-only vulnerability (no risk on Linux/macOS)",
+    "CVE-2025-69872": "#nofix / #wontfix per https://github.com/grantjenks/python-diskcache/issues/357",
+}
+
+
+def _ignore_vuln_args() -> list[str]:
+    args: list[str] = []
+    for cve in IGNORED_VULNERABILITIES:
+        args.extend(["--ignore-vuln", cve])
+    return args
 
 
 def _format_fix_versions(fix_versions: list[str]) -> str:
@@ -80,6 +93,7 @@ def test_pip_audit_no_vulnerabilities():
                 "--format=json",
                 "--progress-spinner=off",
                 "--skip-editable",
+                *_ignore_vuln_args(),
             ],
             cwd=project_root,
             capture_output=True,
