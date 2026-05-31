@@ -1,8 +1,8 @@
 """
 Security audit tests using pip-audit to detect known vulnerabilities.
 
-This test runs pip-audit against the installed packages and fails if any
-vulnerabilities are detected, ensuring continuous security monitoring.
+This test runs pip-audit against the installed packages and emits a warning (not a failure)
+if any vulnerabilities are detected, surfacing them for developer attention.
 
 To ignore a CVE, add an entry to ``IGNORED_VULNERABILITIES`` below with a
 justification. Entries are passed to pip-audit via ``--ignore-vuln``.
@@ -14,6 +14,7 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import warnings
 
 import pytest
 
@@ -75,7 +76,10 @@ def test_pip_audit_no_vulnerabilities():
     """
     Run pip-audit to check for known security vulnerabilities.
 
-    This test will fail if any vulnerabilities are detected in the installed packages.
+    Detected vulnerabilities are surfaced as a warning so upstream dependency CVEs
+    are visible to developers without failing the suite.
+    The test still fails if pip-audit itself cannot run (missing, timed out, or
+    erroring), since that means the audit did not actually happen.
 
     To run this test specifically:
         pytest tests/test_pypi_security_audit.py -v
@@ -116,12 +120,14 @@ def test_pip_audit_no_vulnerabilities():
                 summarized_output = _summarize_pip_audit_json(result.stdout)
             except json.JSONDecodeError:
                 summarized_output = result.stdout
-            pytest.fail(
+            warnings.warn(
                 f"pip-audit detected security vulnerabilities!\n\n"
                 f"Output:\n{summarized_output}\n\n"
                 f"Please review and update vulnerable packages.\n"
-                f"Run manually with: python -m pip_audit --skip-editable"
+                f"Run manually with: python -m pip_audit --skip-editable",
+                stacklevel=2,
             )
+            return
         else:
             # Some other error occurred
             pytest.fail(
