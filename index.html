@@ -1,0 +1,704 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Copier template for pre-commit configurations and tool settings">
+      
+      
+      
+        <link rel="canonical" href="https://ninerealmlabs.github.io/precommit-template/">
+      
+      
+      
+        <link rel="next" href="license/">
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
+    
+    
+      
+        <title>Overview - Pre-commit Template</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.558e4712.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.2505c338.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="css/custom.css">
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#pre-commit-template" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="Pre-commit Template" class="md-header__button md-logo" aria-label="Pre-commit Template" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m23.5 17-5 5-3.5-3.5 1.5-1.5 2 2 3.5-3.5 1.5 1.5M6 2c-1.11 0-2 .89-2 2v16c0 1.11.89 2 2 2h7.81c-.53-.91-.81-1.95-.81-3 0-3.31 2.69-6 6-6 .34 0 .67.03 1 .08V8l-6-6m-1 1.5L18.5 9H13Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Pre-commit Template
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Overview
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3 3.19.09m3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95 2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31Z"/></svg>
+            </label>
+          
+        
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5c-.84 0-1.65.15-2.39.42L12 2M3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29L3.34 7m.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14L3.36 17M20.65 7l-1.77 3.79a7.023 7.023 0 0 0-2.38-4.15l4.15.36m-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29L20.64 17M12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44L12 22Z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/ninerealmlabs/precommit-template" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ninerealmlabs/precommit-template
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="." class="md-tabs__link md-tabs__link--active">
+        Home
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="Pre-commit Template" class="md-nav__button md-logo" aria-label="Pre-commit Template" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m23.5 17-5 5-3.5-3.5 1.5-1.5 2 2 3.5-3.5 1.5 1.5M6 2c-1.11 0-2 .89-2 2v16c0 1.11.89 2 2 2h7.81c-.53-.91-.81-1.95-.81-3 0-3.31 2.69-6 6-6 .34 0 .67.03 1 .08V8l-6-6m-1 1.5L18.5 9H13Z"/></svg>
+
+    </a>
+    Pre-commit Template
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ninerealmlabs/precommit-template" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ninerealmlabs/precommit-template
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_1" type="checkbox" id="__nav_1" checked>
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index md-nav__link--active">
+          <a href=".">Home</a>
+          
+            <label for="__nav_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Home" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          Home
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/ninerealmlabs/precommit-template/releases" class="md-nav__link">
+        Changelog
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    Quick Start
+  </a>
+  
+    <nav class="md-nav" aria-label="Quick Start">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-copier-and-pre-commit" class="md-nav__link">
+    Install copier and pre-commit
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-your-custom-configuration-with-copier-docs" class="md-nav__link">
+    Generate your custom configuration with copier docs
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    Features
+  </a>
+  
+    <nav class="md-nav" aria-label="Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dependencies-and-gotchas" class="md-nav__link">
+    Dependencies and Gotchas
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#other-unrelated-project-setup-tools" class="md-nav__link">
+    Other (unrelated) project setup tools
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#update-your-custom-configuration-with-copier-docs" class="md-nav__link">
+    Update your custom configuration with copier docs
+  </a>
+  
+    <nav class="md-nav" aria-label="Update your custom configuration with copier docs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-does-copier-update-do" class="md-nav__link">
+    What does copier update do?
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#local-development" class="md-nav__link">
+    Local development
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+    <a href="https://github.com/ninerealmlabs/precommit-template/edit/master/docs/index.md" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/ninerealmlabs/precommit-template/raw/master/docs/index.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.15 8.15 0 0 1-1.23-2Z"/></svg>
+    </a>
+  
+
+
+
+<!-- markdownlint-disable MD041 -->
+
+<h1 id="pre-commit-template">Pre-commit Template<a class="headerlink" href="#pre-commit-template" title="Permanent link">¤</a></h1>
+<p>Provides a set of configuration files to standardize <a href="https://pre-commit.com/">pre-commit</a> hooks across repos.</p>
+<p><a href="https://copier.readthedocs.io/">copier</a> is used to render a pre-commit config and associated tool configurations based
+on answers to a survey during the setup phase.</p>
+<h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">¤</a></h2>
+<h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¤</a></h3>
+<p>We will use <a href="https://docs.astral.sh/uv/">uv</a> to install and run tools in isolated environments.</p>
+<p>Some pre-commit hooks (<code>hadolint</code>, <code>shellcheck</code>, and <code>prettier</code> if selected), expect to find the tool available in your path.
+You may need to install them.</p>
+<h3 id="install-copier-and-pre-commit">Install <code>copier</code> and <code>pre-commit</code><a class="headerlink" href="#install-copier-and-pre-commit" title="Permanent link">¤</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># install copier and its dependencies</span>
+uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>copier<span class="w"> </span>--with<span class="w"> </span>copier-templates-extensions<span class="w"> </span>--with<span class="w"> </span>jinja2-time
+<span class="c1"># we want to manage pre-commit, so ensure it is available</span>
+uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>pre-commit
+</code></pre></div>
+<h3 id="generate-your-custom-configuration-with-copier-docs">Generate your custom configuration with <code>copier</code> <a href="https://copier.readthedocs.io/en/stable/generating/">docs</a><a class="headerlink" href="#generate-your-custom-configuration-with-copier-docs" title="Permanent link">¤</a></h3>
+<ol>
+<li>Run <code>copier</code> in your local repo</li>
+</ol>
+<div class="highlight"><pre><span></span><code>copier<span class="w"> </span>copy<span class="w"> </span>--trust<span class="w"> </span><span class="s2">&quot;gh:ninerealmlabs/precommit-template&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>git<span class="w"> </span>rev-parse<span class="w"> </span>--show-toplevel<span class="k">)</span><span class="s2">&quot;</span>
+</code></pre></div>
+<ol>
+<li>Answer the questionnaire</li>
+</ol>
+<p><code>Copier</code> will render your configuration based on your selection.
+   Then it will commit these new changes automatically (but it will not push the commit).
+   This allows you to have a clean git status before running <code>pre-commit run --all-files</code> to ensure your repo is in compliance with your new configuration.</p>
+<ol>
+<li>
+<p>Run <code>pre-commit run --all-files</code> and fix any errors that pre-commit's checks have found</p>
+</li>
+<li>
+<p>Commit</p>
+</li>
+</ol>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">¤</a></h2>
+<p>(opinionated) configuration of formatting and linting tools, including:</p>
+<ul>
+<li><a href="https://editorconfig.org/">EditorConfig</a> - Maintains consistent coding styles across various editors and IDEs</li>
+<li><a href="https://biomejs.dev/">Biome</a> - A fast formatter and linter for JS, TS, JSON, CSS, and HTML</li>
+<li><a href="https://github.com/hadolint/hadolint">hadolint</a> - A smarter Dockerfile linter that ensures best practice Docker
+  images</li>
+<li><a href="https://github.com/hukkin/mdformat">mdformat</a> - A markdown formatter</li>
+<li><a href="https://github.com/prettier/prettier">Prettier</a> - Opinionated code formatter (JS, TS, JSON, CSS, HTML, Markdown,
+  YAML)</li>
+<li><a href="https://github.com/astral-sh/ruff">ruff</a> - An extremely fast Python linter and code formatter</li>
+<li><a href="https://github.com/rvben/rumdl-pre-commit?tab=readme-ov-file">rumdl</a> - A markdown linter and formatter</li>
+<li><a href="https://github.com/koalaman/shellcheck">shellcheck</a> - A static analysis tool for shell scripts (sh, bash)</li>
+<li><a href="https://github.com/crate-ci/typos">typos</a> - A source code spell checker</li>
+<li><a href="https://github.com/adrienverge/yamllint">yamllint</a> - A linter for YAML files</li>
+</ul>
+<h3 id="dependencies-and-gotchas">Dependencies and Gotchas<a class="headerlink" href="#dependencies-and-gotchas" title="Permanent link">¤</a></h3>
+<p>Some pre-commit hooks rely on tools that must be installed separately (they are not managed by pre-commit):</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Required when</th>
+<th>Install</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/hadolint/hadolint">hadolint</a></td>
+<td><code>docker: true</code></td>
+<td><code>brew install hadolint</code> or <a href="https://github.com/hadolint/hadolint/releases">binary release</a></td>
+</tr>
+<tr>
+<td><a href="https://github.com/koalaman/shellcheck">shellcheck</a></td>
+<td><code>shell: true</code></td>
+<td><code>brew install shellcheck</code> or <code>apt install shellcheck</code></td>
+</tr>
+<tr>
+<td><a href="https://prettier.io/">prettier</a></td>
+<td><code>web_format_tool: prettier</code></td>
+<td><code>npm install -g prettier</code></td>
+</tr>
+</tbody>
+</table>
+<p>If these tools are not available in your <code>$PATH</code>, the corresponding pre-commit hooks will fail.</p>
+<h3 id="other-unrelated-project-setup-tools">Other (unrelated) project setup tools<a class="headerlink" href="#other-unrelated-project-setup-tools" title="Permanent link">¤</a></h3>
+<ul>
+<li><a href="https://www.toptal.com/developers/gitignore">gitignore.io - Create Useful .gitignore Files For Your Project</a></li>
+</ul>
+<h2 id="update-your-custom-configuration-with-copier-docs">Update your custom configuration with <code>copier</code> <a href="https://copier.readthedocs.io/en/stable/updating/">docs</a><a class="headerlink" href="#update-your-custom-configuration-with-copier-docs" title="Permanent link">¤</a></h2>
+<blockquote>
+<p><strong>!! DO NOT MANUALLY UPDATE <code>copier-answers</code> file!!</strong></p>
+</blockquote>
+<ol>
+<li>
+<p>Navigate to project directory: <code>cd &lt;git project dir&gt;</code></p>
+</li>
+<li>
+<p>Ensure a <code>feature</code> branch is checked out.</p>
+</li>
+<li>
+<p>Commit (or stash) current work.
+   Copier will not work with "unclean" file statuses.</p>
+</li>
+<li>
+<p>Run <code>copier update</code>.
+   This will try to render files based on the <em>latest</em> release of <code>common</code>:</p>
+</li>
+</ol>
+<div class="highlight"><pre><span></span><code>copier<span class="w"> </span>update<span class="w"> </span>--trust<span class="w"> </span>.<span class="w"> </span>--answers-file<span class="w"> </span>.copier-answers.yaml
+</code></pre></div>
+<blockquote>
+<p>If <code>copier</code> is unable to resolve the diff between current and latest revisions, it will create <code>*.rej</code> files that
+contain the unresolved differences. These must be reviewed (and resolved/implemented) prior to commit (this is
+enforced by <code>pre-commit</code>)</p>
+</blockquote>
+<h3 id="what-does-copier-update-do">What does <code>copier update</code> do?<a class="headerlink" href="#what-does-copier-update-do" title="Permanent link">¤</a></h3>
+<p><code>copier</code> documentation provides a <a href="https://copier.readthedocs.io/en/latest/updating/#how-the-update-works">good overview of how the update process works</a> -- but TLDR:</p>
+<ul>
+<li>It renders a fresh project from the <em>latest</em> template version</li>
+<li>Then it compares current vs new to get the diffs</li>
+<li>Next it updates the current project with the latest template changes (asking confirmation)</li>
+<li>Finally, it re-applies the previously obtained diff, and then run the post-migrations</li>
+</ul>
+<h2 id="local-development">Local development<a class="headerlink" href="#local-development" title="Permanent link">¤</a></h2>
+<ol>
+<li>Install development dependencies</li>
+</ol>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</code></pre></div>
+<ol>
+<li>Test updates</li>
+</ol>
+<p>You can run <code>precommit-template</code> to update itself using:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># use current branch&#39;s committed files (&quot;HEAD&quot;) to run precommit-template on itself</span>
+copier<span class="w"> </span>recopy<span class="w"> </span>--trust<span class="w"> </span>--vcs-ref<span class="w"> </span><span class="s2">&quot;HEAD&quot;</span><span class="w"> </span>/path/to/precommit-template<span class="w">  </span>--answers-file<span class="w"> </span>.copier-answers.yaml
+</code></pre></div>
+<!-- markdownlint-enable -->
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+        
+          
+          <a href="license/" class="md-footer__link md-footer__link--next" aria-label="Next: License" rel="next">
+            <div class="md-footer__title">
+              <div class="md-ellipsis">
+                <span class="md-footer__direction">
+                  Next
+                </span>
+                License
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": ".", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tooltips", "navigation.expand", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="assets/javascripts/bundle.51d95adb.min.js"></script>
+      
+    
+  </body>
+</html>
