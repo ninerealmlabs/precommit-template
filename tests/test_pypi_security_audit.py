@@ -12,11 +12,22 @@ Ref: https://gist.github.com/mikeckennedy/de70ce13231b407a8dccea758f83a5cd
 
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import warnings
 
 import pytest
+
+
+def _uv_audit_available() -> bool:
+    """True when ``uv audit`` can run for this project (uv installed and a lockfile present).
+
+    pip-audit is the fallback auditor: when uv audit is available it runs instead
+    (see ``test_uv_security_audit.py``), so these tests skip to avoid auditing twice.
+    """
+    project_root = Path(__file__).parent.parent
+    return shutil.which("uv") is not None and (project_root / "uv.lock").exists()
 
 # Map of CVE id -> reason for ignoring. Revisit periodically; remove entries
 # once an upstream fix is released or the risk assessment changes.
@@ -84,6 +95,9 @@ def test_pip_audit_no_vulnerabilities():
     To run this test specifically:
         pytest tests/test_pypi_security_audit.py -v
     """
+    if _uv_audit_available():
+        pytest.skip("uv audit is available; using it instead of pip-audit")
+
     # Get the project root directory
     project_root = Path(__file__).parent.parent.parent
 
@@ -145,6 +159,9 @@ def test_pip_audit_runs_successfully():
 
     This is a smoke test to ensure pip-audit is properly installed and functional.
     """
+    if _uv_audit_available():
+        pytest.skip("uv audit is available; using it instead of pip-audit")
+
     try:
         result = subprocess.run(  # NOQA: S603
             [sys.executable, "-m", "pip_audit", "--version"],
