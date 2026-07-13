@@ -70,7 +70,13 @@ For multi-step tasks, state a brief plan defining the step task and associated v
 
 - Use descriptive, consistent naming conventions.
 - Write docstrings or comments for public contracts and non-obvious behavior.
+- Comments and docstrings describe what exists now (or the rationale for the current design), never what the code used to be. No "previously…", "no longer…", "changed from…", or "renamed from…" — that history belongs in commit messages and changelogs. When editing, delete stale historical asides you encounter rather than preserving them.
 - Use type annotations where the language supports them.
 - Use structured logging where the project uses logging.
 - Run lint/format/test through project tooling when available; do not hand-format code.
 - Write tests for public behavior and regressions, not implementation details.
+
+## Sandbox Limitations
+
+- The sandbox may not be able to run installs, network calls, or other privileged commands (permission errors) — attempt the command first rather than assuming failure.
+- **Delegate to the user** only if a command actually fails on a permission or network error. Describe the exact command to run.
