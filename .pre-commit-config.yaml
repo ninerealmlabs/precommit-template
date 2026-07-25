@@ -1,8 +1,8 @@
 ---
 # renovate: datasource=github-tags depName=pre-commit/pre-commit-hooks
 #
-# See https://pre-commit.com for more information
-# See https://pre-commit.com/hooks.html for more hooks
+# Run these hooks with `prek`: https://github.com/j178/prek
+# prek reads this file; see https://pre-commit.com/hooks.html for more hooks
 
 default_install_hook_types:
   - pre-commit
