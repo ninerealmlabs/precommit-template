@@ -17,6 +17,13 @@ _message_after_copy: &postmessage |
   3. Run `{{ hook_runner }} install` to ensure these checks run on every commit
 _message_after_update: *postmessage
 _templates_suffix: .jinja
+_migrations:
+  # Copier renders a renamed file as delete-then-create, which discards a project's local edits with no
+  # conflict marker. Renaming in place before the update diff is computed carries those edits across.
+  # Guarded because projects on `web_format_tool: prettier` (or `web_format: false`) never had the file.
+  - version: "2026.7.1"
+    when: "{{ _stage == 'before' }}"
+    command: "test -f biome.jsonc && git mv biome.jsonc .biome.jsonc || true"
 
 # --- COMPUTED ---------------------------------------------------------------
 # Detected rather than asked: prek and pre-commit read the same `.pre-commit-config.yaml`, so this only
