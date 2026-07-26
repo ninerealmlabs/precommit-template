@@ -21,7 +21,8 @@ You do **not** directly test rendered templates—human users handle local valid
 
 - **Copier** (v9+) - Template rendering and project generation tool
 - **Jinja2** - Template engine for conditional file generation
-- **pre-commit** - Git hook framework (what templates configure)
+- **prek** / **pre-commit** - Git hook runners (what templates configure); `prek` is the default, both read the
+  generated `.pre-commit-config.yaml`
 - **MkDocs Material** - Documentation site generator
 - **uv** - Fast Python package and project manager
 
@@ -30,6 +31,8 @@ You do **not** directly test rendered templates—human users handle local valid
 ```text
 .
 ├── copier.yaml                  # Copier configuration and survey questions
+├── extensions/                  # Jinja2 extensions loaded by copier.yaml (outside template/, never rendered)
+│   └── detect.py                # Seeds question defaults from the target repo's existing tooling
 ├── template/                    # Jinja2 templates (what gets rendered)
 │   ├── {{_copier_conf.answers_file}}.jinja
 │   ├── {% if python %}AGENTS.md{% endif %}.jinja
@@ -50,10 +53,21 @@ You do **not** directly test rendered templates—human users handle local valid
 
 **Copier workflow:**
 
-1. User runs: `copier copy gh:ninerealmlabs/precommit-template <target-dir>`
+1. User runs: `copier copy --trust gh:ninerealmlabs/precommit-template <target-dir>`
 2. Copier asks survey questions from `copier.yaml`
 3. Templates in `template/` are rendered based on answers
 4. Generated files are written to `<target-dir>`
+
+**Detection:**
+
+`copier.yaml` loads `extensions/detect.py`, which registers `detect_hook_runner()` and `detect_web_format_tool()` as Jinja globals.
+Both are called with `_copier_conf.dst_path` so an existing project keeps the runner and formatter it already uses, and both fall back to the template's preference (`prek`, `biome`) when nothing is detected.
+These helpers must never raise — an exception while rendering a default aborts the survey.
+Loading a Jinja extension requires `--trust`.
+
+`hook_runner` is a computed value (`when: false`), not a question: both runners read the same `.pre-commit-config.yaml`, so the value only selects which one generated comments and messages name.
+Being hidden, it is excluded from `.copier-answers.yaml` and recomputed on every run.
+`web_format_tool` stays a question — the two tools need different config files — and detection only supplies its default.
 
 **Jinja2 patterns in this repo:**
 
@@ -74,14 +88,16 @@ mkdocs serve
 mkdocs build
 ```
 
-### Pre-commit (for this repo itself)
+### Hooks (for this repo itself)
+
+This repo uses `prek` as its hook runner.
 
 ```bash
-# Run all pre-commit hooks on all files
-pre-commit run --all-files
+# Run all hooks on all files
+prek run --all-files
 
 # Run specific hook
-pre-commit run --all-files <hook-id>
+prek run --all-files <hook-id>
 ```
 
 ### Copier (testing - ask first)
@@ -289,7 +305,8 @@ web_format_tool:
   choices:
     - biome
     - prettier
-  default: biome
+  # Detected from the target repo so an existing setup is preserved; falls back to biome.
+  default: '{{ detect_web_format_tool(_copier_conf.dst_path) }}'
   when: '{{ web_format }}'
 ```
 
