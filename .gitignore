@@ -54,8 +54,13 @@ site/
 # -------------------------------------------------------
 *.bak
 *.log
+*.zip
+*.tmp
+.archive/
+.logs/
 .temp*
 .task/
+TODO.md
 
 # --- repo-specific ---
 *.so
@@ -73,3 +78,7 @@ db.sqlite3-journal
 !.gitignore
 !.env.example
 !.env.sample
+
+# generated from root README.md / LICENSE by scripts/copy_root_docs.py
+docs/index.md
+docs/license.md

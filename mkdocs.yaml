@@ -11,6 +11,10 @@ validation:
   absolute_links: warn
   unrecognized_links: warn
 
+# `docs/index.md` and `docs/license.md` are generated from the root README and LICENSE; see the hook.
+hooks:
+  - scripts/copy_root_docs.py
+
 plugins:
   - search
 
