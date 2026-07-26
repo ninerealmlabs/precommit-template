@@ -17,7 +17,7 @@ default_stages:
 
 exclude: |
   (?x)^(
-    ^.*(copier-answers\.ya?ml)$
+    ^.*(copier-answers\.ya?ml)$ |
     ^.*\.rej$
   )$
 
