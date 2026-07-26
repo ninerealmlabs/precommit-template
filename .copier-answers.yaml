@@ -7,7 +7,7 @@ docker: false
 editorconfig: true
 markdown: true
 python: true
-shell: false
+shell: true
 typos: true
 web_format: true
 web_format_tool: biome
