@@ -46,8 +46,10 @@ __pycache__/
 node_modules/
 build/
 dist/
-site/
 **/cache/
+
+# Great Docs build output
+great-docs/
 
 # -------------------------------------------------------
 # Temp, logs, & working files
@@ -78,7 +80,3 @@ db.sqlite3-journal
 !.gitignore
 !.env.example
 !.env.sample
-
-# generated from root README.md / LICENSE by scripts/copy_root_docs.py
-docs/index.md
-docs/license.md

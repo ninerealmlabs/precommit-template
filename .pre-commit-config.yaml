@@ -29,9 +29,11 @@ repos:
         entry: YAML file extensions must be .yaml
         language: fail
         files: \.yml$
+        # `great-docs.yml`: fixed filename, local to this repo and not part of the template.
         exclude: |
           (?x)^(
-            ^.*(copier-answers\.ya?ml)$
+            ^.*(copier-answers\.ya?ml)$ |
+            ^great-docs\.yml$
           )$
       - id: forbid-rej
         name: Forbid .rej file extensions from `copier update`

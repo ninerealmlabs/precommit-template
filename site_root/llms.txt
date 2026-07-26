@@ -1,0 +1,61 @@
+# precommit-template
+
+> A Copier template that generates a `.pre-commit-config.yaml` and matching tool configuration files for a
+> repository. Hooks are declared once and read by both prek (the default runner) and pre-commit.
+
+This is not a Python library — there is no importable API. The template is applied with `copier copy` and
+kept current with `copier update`.
+
+## Docs
+
+- [Overview](https://ninerealmlabs.github.io/precommit-template/): quick start, feature list, detection
+  behavior, and the update workflow
+- [License](https://ninerealmlabs.github.io/precommit-template/license.html): CC0 1.0 Universal
+- [Changelog](https://github.com/ninerealmlabs/precommit-template/releases): published GitHub Releases
+
+## Agent skill
+
+- [SKILL.md](https://ninerealmlabs.github.io/precommit-template/.well-known/agent-skills/precommit-template/SKILL.md):
+  how to apply, update, and debug this template in a repository
+- [Skills page](https://ninerealmlabs.github.io/precommit-template/skills.html): install instructions
+
+## Commands
+
+- `copier copy --trust "gh:ninerealmlabs/precommit-template" "$(git rev-parse --show-toplevel)"`: generate
+  the configuration in an existing repo
+- `copier update --trust --answers-file .copier-answers.yaml`: pull in newer template revisions
+- `copier recopy --trust --answers-file .copier-answers.yaml`: re-render with the recorded answers
+- `prek run --all-files`: run every hook
+- `prek install`: install the git hooks
+
+`--trust` is required: `copier.yaml` loads `extensions/detect.py` as a Jinja extension.
+
+## Survey questions
+
+Each is a boolean defaulting to true, except `web_format_tool`.
+
+- `ai`: generate `AGENTS.md`
+- `conventional_commits`: add commitizen, plus `pre-push` and `commit-msg` hook types
+- `editorconfig`: generate `.editorconfig`, add editorconfig-checker
+- `markdown`: generate `.mdformat.toml` and `.rumdl.toml`, add mdformat and rumdl-fmt
+- `python`: generate `.ruff.toml` and security-audit tests, add ruff-check, ruff-format, nbstripout
+- `docker`: generate `.hadolint.yaml`, add hadolint
+- `shell`: generate `.shellcheckrc`, add shellcheck and shfmt
+- `web_format`: enable JS/TS/JSON/HTML/CSS formatting
+- `web_format_tool`: `biome` (default) or `prettier`; asked only when `web_format` is true
+- `yaml`: generate `.yamllint.yaml`, add yamllint
+- `typos`: generate `.typos.toml`, add typos
+
+## Detected values
+
+- hook runner: from installed git hook shims, a `prek.toml`, CI invocations, or `PATH`; falls back to
+  `prek`. Not a question and not recorded in `.copier-answers.yaml` — recomputed on every run.
+- `web_format_tool`: from an existing `.pre-commit-config.yaml`, biome/prettier config files, or
+  `package.json` dependencies; falls back to `biome`. Detection only sets the prompt default.
+
+## Optional
+
+- [Copier documentation](https://copier.readthedocs.io/)
+- [prek](https://github.com/j178/prek)
+- [pre-commit](https://pre-commit.com/)
+- [GitHub repository](https://github.com/ninerealmlabs/precommit-template)

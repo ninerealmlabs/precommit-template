@@ -1,0 +1,24 @@
+# Not a distributable package; `[project]` is here as Great Docs' source of site metadata.
+
+[project]
+name = "precommit-template"
+version = "0"
+description = "Copier template for pre-commit configurations and tool settings"
+readme = "README.md"
+license = "CC0-1.0"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+authors = [{ name = "ninerealmlabs" }]
+
+[project.urls]
+Homepage = "https://github.com/ninerealmlabs/precommit-template"
+Repository = "https://github.com/ninerealmlabs/precommit-template"
+Documentation = "https://ninerealmlabs.github.io/precommit-template/"
+
+[dependency-groups]
+# `quarto-cli` bundles the pandoc Quarto expects; a system Quarto may be paired with an
+# incompatible one.
+dev = ["great-docs>=0.15.0", "quarto-cli>=1.10.18"]
+
+[tool.uv]
+package = false
