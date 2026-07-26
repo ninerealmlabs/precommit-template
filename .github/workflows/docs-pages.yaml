@@ -1,21 +1,66 @@
+---
 name: Publish docs via GitHub Pages
-on:
+
+on: # yamllint disable-line rule:truthy
   push:
     branches:
       - main
+  pull_request:
   workflow_dispatch:
+
+# OIDC deployment; requires Settings -> Pages -> Source: "GitHub Actions".
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let an in-flight deployment finish rather than cancelling it mid-publish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   build:
-    name: Deploy docs
+    name: Build docs
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout main
+      - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
 
-      - name: Deploy docs
-        uses: mhausenblas/mkdocs-deploy-gh-pages@d77dd03172e96abbcdb081d8c948224762033653 # 1.26
+      # renovate: datasource=github-tags depName=astral-sh/setup-uv
+      - name: Install uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          enable-cache: true
+
+      # Quarto and its pandoc come from `quarto-cli` in uv.lock; no separate install step.
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Build site
+        # Token lifts the anonymous API rate limit for the changelog's Releases fetch.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CONFIG_FILE: mkdocs.yaml
-          # REQUIREMENTS: requirements.txt
+        run: uv run great-docs build
+
+      # renovate: datasource=github-tags depName=actions/upload-pages-artifact
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: great-docs/_site
+          # Without this the action's tar drops `.well-known/`, and agent skill discovery 404s.
+          include-hidden-files: true
+
+  deploy:
+    name: Deploy docs
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      # renovate: datasource=github-tags depName=actions/deploy-pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0

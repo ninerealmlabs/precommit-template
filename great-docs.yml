@@ -1,0 +1,43 @@
+---
+# Great Docs configuration: https://posit-dev.github.io/great-docs/
+# Filename is fixed, hence the `forbid-yml` exemption in `.pre-commit-config.yaml`.
+
+# No importable API to introspect, and nothing on PyPI.
+reference: false
+pypi: false
+
+display_name: Pre-commit Template
+repo: https://github.com/ninerealmlabs/precommit-template
+site_url: https://ninerealmlabs.github.io/precommit-template/
+
+# Rendered from the root README.md.
+homepage: index
+github_style: widget
+dark_mode_toggle: true
+attribution: true
+
+navbar_color:
+  light: "#bf8c00"
+  dark: "#1f1f1f"
+
+# Brand palette overrides.
+include_in_header:
+  - file: assets/brand.html
+
+# `output: "."` serves the hand-written `llms.txt` and `llms-full.txt` from the site root.
+custom_pages:
+  - dir: site_root
+    output: "."
+
+# Built from GitHub Releases; set `GITHUB_TOKEN` to avoid API rate limits.
+changelog:
+  enabled: true
+
+skill:
+  enabled: true
+  file: skills/precommit-template/SKILL.md
+
+seo:
+  # Quarto already suffixes the site name. Great Docs' default template appends it again, because
+  # its skip guard tests for "-" while Quarto separates with an en dash.
+  title_template: "{page_title}"

@@ -1,0 +1,33 @@
+<!--
+  Brand palette, overriding the Great Docs theme's `--gd-*` properties.
+  Loaded via `include_in_header` in `great-docs.yml`.
+  Dark mode keys off Quarto's `.quarto-dark` class, not a media query, so the navbar toggle works.
+-->
+<style>
+  :root {
+    --brand-xanthous: #f4b300;
+    --brand-xanthous-darker: #bf8c00;
+    --brand-xanthous-darkest: #997000;
+    --brand-blue: #4d78ae;
+    --brand-black: #1f1f1f;
+    --brand-smoke: #f2f2f2;
+  }
+
+  :root,
+  html:not(.quarto-dark) {
+    --gd-bg-primary: var(--brand-smoke);
+    --gd-text-primary: var(--brand-black);
+    --gd-link-color: var(--brand-blue);
+    --gd-citation-color: var(--brand-blue);
+    --gd-active-link: var(--brand-xanthous-darkest);
+  }
+
+  html.quarto-dark,
+  body.quarto-dark {
+    --gd-bg-primary: var(--brand-black);
+    --gd-text-primary: var(--brand-smoke);
+    --gd-link-color: var(--brand-blue);
+    --gd-citation-color: var(--brand-blue);
+    --gd-active-link: var(--brand-xanthous);
+  }
+</style>

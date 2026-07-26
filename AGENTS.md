@@ -21,8 +21,10 @@ You do **not** directly test rendered templates—human users handle local valid
 
 - **Copier** (v9+) - Template rendering and project generation tool
 - **Jinja2** - Template engine for conditional file generation
-- **pre-commit** - Git hook framework (what templates configure)
-- **MkDocs Material** - Documentation site generator
+- **prek** / **pre-commit** - Git hook runners (what templates configure); `prek` is the default, both read the
+  generated `.pre-commit-config.yaml`
+- **Great Docs** - Documentation site generator, rendering through **Quarto** (pinned in `uv.lock` via
+  `quarto-cli`, which bundles a matching pandoc)
 - **uv** - Fast Python package and project manager
 
 ### Repository Structure
@@ -30,30 +32,48 @@ You do **not** directly test rendered templates—human users handle local valid
 ```text
 .
 ├── copier.yaml                  # Copier configuration and survey questions
+├── extensions/                  # Jinja2 extensions loaded by copier.yaml (outside template/, never rendered)
+│   └── detect.py                # Seeds question defaults from the target repo's existing tooling
 ├── template/                    # Jinja2 templates (what gets rendered)
 │   ├── {{_copier_conf.answers_file}}.jinja
-│   ├── {% if python %}AGENTS.md{% endif %}.jinja
+│   ├── {% if ai %}AGENTS.md{% endif %}.jinja
 │   ├── {% if web_format and web_format_tool == "prettier" %}.prettierrc.yaml{% endif %}.jinja
 │   ├── {% if [COPIER_VAR] %}<file>{% endif %}.jinja
-│   └── {% if copilot %}.github{% endif %}/
-│       ├── {% if copilot %}agents{% endif %}/
-│       │   ├── code-review.agent.md
-│       │   ├── plan.agent.md
-│       │   └── test.agent.md
-│       └── {% if copilot %}prompts{% endif %}/
-├── docs/                        # MkDocs documentation source
-├── mkdocs.yaml                  # MkDocs configuration
+│   └── {% if python %}tests{% endif %}/
+├── great-docs.yml               # Documentation site configuration
+├── assets/                      # Site assets (brand palette override)
+├── site_root/                   # Copied verbatim to the root of the built site
+│   ├── llms.txt                 # Hand-written; Great Docs only generates these from a Python API
+│   └── llms-full.txt
+├── skills/precommit-template/   # Hand-written agent skill published with the docs
+│   ├── SKILL.md
+│   └── references/
+├── pyproject.toml               # Site metadata and the docs toolchain
 └── AGENTS.md                    # This file (root-level agent instructions)
 ```
+
+The site has no hand-written page files: the homepage is rendered from `README.md`, the license page from
+`LICENSE`, and the changelog from published GitHub Releases.
 
 ### Key Concepts
 
 **Copier workflow:**
 
-1. User runs: `copier copy gh:ninerealmlabs/precommit-template <target-dir>`
+1. User runs: `copier copy --trust gh:ninerealmlabs/precommit-template <target-dir>`
 2. Copier asks survey questions from `copier.yaml`
 3. Templates in `template/` are rendered based on answers
 4. Generated files are written to `<target-dir>`
+
+**Detection:**
+
+`copier.yaml` loads `extensions/detect.py`, which registers `detect_hook_runner()` and `detect_web_format_tool()` as Jinja globals.
+Both are called with `_copier_conf.dst_path` so an existing project keeps the runner and formatter it already uses, and both fall back to the template's preference (`prek`, `biome`) when nothing is detected.
+These helpers must never raise — an exception while rendering a default aborts the survey.
+Loading a Jinja extension requires `--trust`.
+
+`hook_runner` is a computed value (`when: false`), not a question: both runners read the same `.pre-commit-config.yaml`, so the value only selects which one generated comments and messages name.
+Being hidden, it is excluded from `.copier-answers.yaml` and recomputed on every run.
+`web_format_tool` stays a question — the two tools need different config files — and detection only supplies its default.
 
 **Jinja2 patterns in this repo:**
 
@@ -66,22 +86,28 @@ You do **not** directly test rendered templates—human users handle local valid
 
 ### Documentation
 
-```bash
-# Build and serve docs locally (check for errors)
-mkdocs serve
+`uv sync` installs Quarto alongside Great Docs; `uv run` puts it on `PATH` ahead of any system copy.
 
-# Build docs for deployment
-mkdocs build
+```bash
+# Build the site (output in great-docs/_site/, regenerated every run)
+uv run great-docs build
+
+# Serve locally on port 3000
+uv run great-docs preview
 ```
 
-### Pre-commit (for this repo itself)
+`great-docs/` is ephemeral and gitignored — never edit files inside it.
+
+### Hooks (for this repo itself)
+
+This repo uses `prek` as its hook runner.
 
 ```bash
-# Run all pre-commit hooks on all files
-pre-commit run --all-files
+# Run all hooks on all files
+prek run --all-files
 
 # Run specific hook
-pre-commit run --all-files <hook-id>
+prek run --all-files <hook-id>
 ```
 
 ### Copier (testing - ask first)
@@ -155,16 +181,17 @@ python:
 
 When adding or modifying template features:
 
-1. Update relevant docs in `docs/`
-2. Check that MkDocs builds without errors
-3. Ensure examples match actual template output
+1. Update `README.md` — it is the site homepage, so there is no separate overview page to keep in sync
+2. Update `skills/precommit-template/` and `site_root/llms*.txt` so agent-facing context stays accurate
+3. Check that `uv run great-docs build` completes without errors
+4. Ensure examples match actual template output
 
 **Example - adding a new tool:**
 
 - Update `README.md` feature list
-- Add documentation to `docs/` if substantial
 - Update `copier.yaml` with new question
 - Create template files with appropriate conditionals
+- Add the answer to the tables in `skills/precommit-template/references/` and `site_root/llms*.txt`
 
 ## Boundaries
 
@@ -173,7 +200,7 @@ When adding or modifying template features:
 - Read and analyze template files before making changes
 - Follow existing Jinja2 patterns and naming conventions
 - Keep documentation synchronized with template changes
-- Run `mkdocs build` to verify docs compile
+- Run `uv run great-docs build` to verify the docs site compiles
 - Use conditional file generation (`{% if condition %}filename{% endif %}`) for optional features
 - Respect copier configuration structure in `copier.yaml`
 - Check for Jinja2 syntax errors before committing
@@ -201,7 +228,7 @@ When adding or modifying template features:
 - Hard-code values that should be configurable
 - Modify generated output files (only edit templates)
 - Change copier minimum version without testing
-- Add dependencies to `requirements.txt` without justification
+- Add dependencies to `pyproject.toml` without justification
 
 ## Working with This Repository
 
@@ -211,14 +238,14 @@ When adding or modifying template features:
 2. **Locate relevant files:**
    - Template file in `template/`
    - Survey question in `copier.yaml` (if adding new option)
-   - Documentation in `docs/` or `README.md`
+   - `README.md` (the site homepage), plus `skills/` and `site_root/` for agent-facing context
 3. **Make coordinated changes:**
    - Edit Jinja2 template
    - Update copier config if needed
    - Update documentation
 4. **Verify:**
    - Check Jinja2 syntax is valid
-   - Run `mkdocs build` to ensure docs compile
+   - Run `uv run great-docs build` to ensure the docs site compiles
    - Flag for human testing with copier
 
 ### Common Tasks
@@ -289,7 +316,8 @@ web_format_tool:
   choices:
     - biome
     - prettier
-  default: biome
+  # Detected from the target repo so an existing setup is preserved; falls back to biome.
+  default: '{{ detect_web_format_tool(_copier_conf.dst_path) }}'
   when: '{{ web_format }}'
 ```
 

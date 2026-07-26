@@ -1,0 +1,333 @@
+----------------------------------------------------------------------
+This is the full documentation for precommit-template, a Copier template
+that generates pre-commit configurations and tool settings for a repo.
+Source: https://github.com/ninerealmlabs/precommit-template
+Site: https://ninerealmlabs.github.io/precommit-template/
+License: CC0 1.0 Universal
+----------------------------------------------------------------------
+
+## What this is
+
+precommit-template is a Copier template, not a Python library. There is no
+importable API and nothing to `pip install`. You run it against a git
+repository and it writes a `.pre-commit-config.yaml` plus the configuration
+files the declared hooks need.
+
+Hooks are declared once and read by two interchangeable runners:
+
+- prek (https://github.com/j178/prek), the default: a Rust reimplementation
+  of pre-commit that reads the same `.pre-commit-config.yaml`, supports the
+  same `run` and `install` commands, is considerably faster, and manages its
+  own tool environments.
+- pre-commit (https://pre-commit.com/), the original Python framework.
+
+Substituting one for the other requires no config change.
+
+----------------------------------------------------------------------
+Installation and prerequisites
+----------------------------------------------------------------------
+
+Install copier and a hook runner with uv (https://docs.astral.sh/uv/):
+
+  uv tool install copier --with copier-templates-extensions --with jinja2-time
+  uv tool install prek
+  # ...or, if you prefer pre-commit
+  # uv tool install pre-commit
+
+Three hooks shell out to tools the runner does not install. Install them
+separately if you enable the corresponding question:
+
+- hadolint: required when `docker: true`.
+  Install with `brew install hadolint`.
+- shellcheck: required when `shell: true`.
+  Install with `brew install shellcheck` or `apt install shellcheck`.
+- prettier: required when `web_format_tool: prettier`.
+  Install with `npm install -g prettier`.
+
+If they are missing from PATH the hooks fail with "command not found".
+
+----------------------------------------------------------------------
+Generating a configuration
+----------------------------------------------------------------------
+
+1. Run copier from the root of your repository:
+
+  copier copy --trust "gh:ninerealmlabs/precommit-template" "$(git rev-parse --show-toplevel)"
+
+2. Answer the questionnaire. Copier renders the configuration from your
+  answers and commits the new files automatically (it does not push).
+  The clean git status that leaves you with matters for the next step.
+
+3. Run `prek run --all-files` and fix what the checks report. Expect a large
+  diff: the formatters rewrite the whole repository on first contact. Commit
+  that churn separately from the config change so review stays readable.
+
+4. Run `prek install` so the checks run on every commit.
+
+5. Commit.
+
+`--trust` is mandatory on copy, update, and recopy. `copier.yaml` loads
+`extensions/detect.py` as a Jinja extension, and Copier will not execute
+extension code without it. Omitting `--trust` makes the survey abort with
+`'detect_hook_runner' is undefined`.
+
+Copier also refuses to run against a dirty working tree; commit or stash
+first.
+
+----------------------------------------------------------------------
+Survey questions
+----------------------------------------------------------------------
+
+Defined in `copier.yaml`. All are booleans defaulting to true, except
+`web_format_tool`. Answers are recorded in `.copier-answers.yaml`.
+
+- ai: Prepare AGENTS.md?
+- conventional_commits: Use conventional commits?
+- editorconfig: Use editorconfig?
+- markdown: Lint and format markdown?
+- python: Lint and format python?
+- docker: Lint and check docker files?
+- shell: Lint and format shell scripts?
+- web_format: Lint and format JS/TS/JSON/HTML/CSS and related files?
+- web_format_tool: Select the web formatter, biome or prettier.
+  Asked only when web_format is true.
+- yaml: Lint and format YAML?
+- typos: Check for typos?
+
+What each answer produces:
+
+- ai -> AGENTS.md
+- conventional_commits -> commitizen hook; adds pre-push and commit-msg to
+  default_install_hook_types
+- editorconfig -> .editorconfig; editorconfig-checker hook
+- markdown -> .mdformat.toml and .rumdl.toml; mdformat and rumdl-fmt hooks
+- python -> .ruff.toml, tests/test_pypi_security_audit.py,
+  tests/test_uv_security_audit.py; ruff-check, ruff-format, nbstripout hooks
+- docker -> .hadolint.yaml; hadolint hook (system)
+- shell -> .shellcheckrc; shellcheck (system) and shfmt hooks
+- web_format + biome -> .biome.jsonc; biome-check hook
+- web_format + prettier -> .prettierrc.yaml and .prettierignore; prettier
+  hook (system)
+- yaml -> .yamllint.yaml; yamllint hook
+- typos -> .typos.toml; typos hook
+
+----------------------------------------------------------------------
+Detection
+----------------------------------------------------------------------
+
+Where the template can work out what a repository already uses, it does,
+rather than asking. Detection lives in `extensions/detect.py`, which
+registers `detect_hook_runner()` and `detect_web_format_tool()` as Jinja
+globals. Both are called with `_copier_conf.dst_path`. Neither may raise:
+an exception while rendering a question default aborts the whole survey.
+
+hook runner
+
+  Detected from installed git hook shims, a `prek.toml`, how CI pipelines
+  invoke the runner, or which runner is on PATH. Falls back to prek.
+
+  This is not a survey question. It is declared with `when: false`, making
+  it a computed value that is excluded from `.copier-answers.yaml` and
+  recomputed on every run, so it follows the repo if you switch runners.
+  Both runners read the same `.pre-commit-config.yaml`, so the value only
+  decides which runner the generated comments and the post-copy message
+  name. A wrong guess is cosmetic.
+
+web_format_tool
+
+  Detected from an existing `.pre-commit-config.yaml`, biome or prettier
+  config files, or `package.json` dependencies. Falls back to biome.
+
+  This is a real question, because the two tools need genuinely different
+  config files. Detection only pre-selects the prompt's default; your answer
+  is recorded in `.copier-answers.yaml` and reused on every update.
+
+----------------------------------------------------------------------
+Tools configured
+----------------------------------------------------------------------
+
+- prek (https://github.com/j178/prek): a fast Rust reimplementation of
+  pre-commit; the default runner.
+- pre-commit (https://pre-commit.com/): the original git hook framework,
+  selectable as an alternative.
+- EditorConfig (https://editorconfig.org/): consistent coding styles across
+  editors and IDEs.
+- Biome (https://biomejs.dev/): fast formatter and linter for JS, TS, JSON,
+  CSS, and HTML; the default web formatter.
+- Prettier (https://prettier.io/): opinionated formatter for JS, TS, JSON,
+  CSS, HTML, Markdown, and YAML; the alternative to Biome.
+- hadolint (https://github.com/hadolint/hadolint): Dockerfile linter.
+- mdformat (https://github.com/hukkin/mdformat): markdown formatter.
+- rumdl (https://github.com/rvben/rumdl-pre-commit): markdown linter and
+  formatter.
+- ruff (https://github.com/astral-sh/ruff): extremely fast Python linter and
+  code formatter.
+- shellcheck (https://github.com/koalaman/shellcheck): static analysis for
+  shell scripts (sh, bash).
+- typos (https://github.com/crate-ci/typos): source code spell checker.
+- yamllint (https://github.com/adrienverge/yamllint): YAML linter.
+
+----------------------------------------------------------------------
+Hooks always present
+----------------------------------------------------------------------
+
+Regardless of how the survey is answered:
+
+- forbid-yml: fails on any .yml extension. YAML files must use .yaml.
+  Excludes .copier-answers.yml.
+- forbid-rej: fails while *.rej files from a conflicted copier update remain
+  in the tree.
+- pre-commit-hooks: check-added-large-files, check-merge-conflict,
+  detect-private-key, check-case-conflict, check-ast, check-json,
+  check-toml, check-yaml, end-of-file-fixer, mixed-line-ending,
+  trailing-whitespace.
+- remove-crlf.
+- fix-smartquotes and fix-ligatures: normalize typographic characters.
+- gitleaks: secret scanning.
+- strip-exif: remove exif metadata from images.
+
+Global settings in the generated config:
+
+- default_install_hook_types: pre-commit, post-checkout, post-merge,
+  post-rewrite, plus pre-push and commit-msg when conventional_commits is
+  enabled.
+- default_stages: pre-commit.
+- exclude: *copier-answers.ya?ml and *.rej.
+
+----------------------------------------------------------------------
+Updating a configuration
+----------------------------------------------------------------------
+
+DO NOT MANUALLY EDIT `.copier-answers.yaml`. It is Copier's record of the
+template version and every answer; hand-editing it desynchronizes the next
+update and produces conflicts that look like template bugs.
+
+1. Navigate to the project directory.
+
+2. Check out a feature branch. Updates can touch many files.
+
+3. Commit or stash current work. Copier will not run against an unclean
+  working tree.
+
+4. Run:
+
+  copier update --trust --answers-file .copier-answers.yaml
+
+  This renders against the *latest* template release, not the next one, so
+  several revisions can arrive at once. Pin with `--vcs-ref <tag>` to step
+  forward one release at a time.
+
+5. Resolve any `*.rej` files, then delete them. The forbid-rej hook blocks
+  commits while they exist, deliberately: deleting a `.rej` unread silently
+  drops a template change.
+
+6. Run `prek run --all-files` and commit.
+
+How the update works (see
+https://copier.readthedocs.io/en/latest/updating/#how-the-update-works):
+
+- Copier renders a fresh project from the latest template version
+- It compares current versus new to obtain the diffs
+- It updates the current project with the latest template changes, asking
+  for confirmation
+- It re-applies the previously obtained diff, then runs post-migrations
+
+Changing an answer: re-run `copier update --trust` and answer differently at
+the prompt. Files gated on the old answer are deleted and files gated on the
+new one are created. A rename renders as delete-then-create, which discards
+local edits with no conflict marker, so move anything worth keeping out of
+the way first. Switching web_format_tool from biome to prettier removes
+.biome.jsonc and adds .prettierrc.yaml and .prettierignore.
+
+----------------------------------------------------------------------
+Troubleshooting
+----------------------------------------------------------------------
+
+'detect_hook_runner' is undefined
+  --trust was omitted. Re-run with --trust.
+
+Destination repository is dirty
+  Commit or stash before running copier.
+
+Survey aborts partway through
+  A detection helper raised while rendering a question default. This is a
+  template bug; report it. Workaround: pass the value directly, e.g.
+  `copier copy --trust --data web_format_tool=biome ...`.
+
+*.rej files after an update
+  Open each one, apply the rejected hunk by hand, then delete the file.
+
+hadolint / shellcheck / prettier: command not found
+  These hooks use `language: system`; the runner does not install them.
+  Install the tool or answer no to the corresponding question.
+
+typos cannot find its config
+  The typos hook may require `.typos.toml` to already be committed before
+  it will read it. Commit the config first, then re-run. If that is not
+  possible, comment out the typos block until it is committed.
+
+shfmt fails to build
+  shfmt-py's sdist only builds on CPython 3.13 or earlier, which is why the
+  hook pins `language_version: python3.13`. Make a 3.13 interpreter
+  available to the runner.
+
+The whole repository was rewritten on first run
+  Expected. mdformat, rumdl-fmt, ruff-format, shfmt, and biome or prettier
+  all reformat on first contact. Commit the churn separately.
+
+A formatter and a linter disagree
+  mdformat and rumdl both touch markdown and can fight over the same
+  construct. Disable the offending rule in `.rumdl.toml`. MD060 (table
+  spacing) is already disabled for this reason.
+
+YAML file extensions must be .yaml
+  The forbid-yml hook rejects .yml files. Rename to .yaml, or add the file
+  to the hook's exclude pattern if a tool hard-codes the extension.
+
+commitizen rejects the message
+  conventional_commits is enabled, so messages must match
+  `type(scope): subject`, e.g. `fix(hooks): correct shfmt args`.
+
+----------------------------------------------------------------------
+Template repository layout
+----------------------------------------------------------------------
+
+Relevant when contributing to the template rather than consuming it.
+
+- copier.yaml: Copier configuration and survey questions.
+- extensions/detect.py: Jinja extension loaded by copier.yaml, seeding
+  question defaults from the target repo. Outside template/, so never
+  rendered.
+- template/: the Jinja templates that get rendered.
+- skills/: hand-written agent skill published with the docs.
+- site_root/: files copied verbatim to the root of the built site.
+- great-docs.yml: documentation site configuration.
+- README.md: rendered as the documentation homepage.
+
+Optional files are gated by a Jinja conditional embedded in the filename.
+When the condition is false the filename renders empty and Copier writes
+nothing:
+
+  template/{% if python %}.ruff.toml{% endif %}.jinja
+  template/{% if web_format and web_format_tool == "prettier" %}.prettierrc.yaml{% endif %}.jinja
+
+The `.jinja` suffix is stripped on render and is configured by
+`_templates_suffix` in `copier.yaml`. Files without the suffix are copied
+verbatim.
+
+Local development:
+
+  uv sync                     # installs Great Docs and Quarto
+  uv run great-docs build
+  uv run great-docs preview
+
+  # Run the template against itself using the current branch's commits
+  copier recopy --trust --vcs-ref "HEAD" /path/to/precommit-template \
+    --answers-file .copier-answers.yaml
+
+----------------------------------------------------------------------
+Other project setup tools
+----------------------------------------------------------------------
+
+gitignore.io - Create Useful .gitignore Files For Your Project
+https://www.toptal.com/developers/gitignore

@@ -46,16 +46,23 @@ __pycache__/
 node_modules/
 build/
 dist/
-site/
 **/cache/
+
+# Great Docs build output
+great-docs/
 
 # -------------------------------------------------------
 # Temp, logs, & working files
 # -------------------------------------------------------
 *.bak
 *.log
+*.zip
+*.tmp
+.archive/
+.logs/
 .temp*
 .task/
+TODO.md
 
 # --- repo-specific ---
 *.so

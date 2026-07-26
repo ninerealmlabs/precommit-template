@@ -7,15 +7,32 @@ _envops:
   keep_trailing_newline: true
 _jinja_extensions:
   - copier_templates_extensions.TemplateExtensionLoader
+  - extensions/detect.py:DetectExtension
 _subdirectory: template
 _message_after_copy: &postmessage |
   Your pre-commit configuration has been generated.
   You should:
   1. Review and commit these changes
-  2. Run `pre-commit run --all-files` to ensure your repo's current state matches the configured rules
-  3. Run `pre-commit install` to ensure these checks run on every commit
+  2. Run `{{ hook_runner }} run --all-files` to ensure your repo's current state matches the configured rules
+  3. Run `{{ hook_runner }} install` to ensure these checks run on every commit
 _message_after_update: *postmessage
 _templates_suffix: .jinja
+_migrations:
+  # Copier renders a renamed file as delete-then-create, which discards a project's local edits with no
+  # conflict marker. Renaming in place before the update diff is computed carries those edits across.
+  # Guarded because projects on `web_format_tool: prettier` (or `web_format: false`) never had the file.
+  - version: "2026.7.1"
+    when: "{{ _stage == 'before' }}"
+    command: "test -f biome.jsonc && git mv biome.jsonc .biome.jsonc || true"
+
+# --- COMPUTED ---------------------------------------------------------------
+# Detected rather than asked: prek and pre-commit read the same `.pre-commit-config.yaml`, so this only
+# decides which runner the generated comments and messages point at. `when: false` keeps it out of
+# `.copier-answers.yaml`, so it is recomputed on every run and tracks whatever the repo actually uses.
+hook_runner:
+  type: str
+  default: "{{ detect_hook_runner(_copier_conf.dst_path) }}"
+  when: false
 
 # --- PROMPT -----------------------------------------------------------------
 ai:
@@ -64,7 +81,8 @@ web_format_tool:
   choices:
     - biome
     - prettier
-  default: biome
+  # Detected from the target repo so an existing setup is preserved; falls back to biome.
+  default: "{{ detect_web_format_tool(_copier_conf.dst_path) }}"
   when: "{{ web_format }}"
 
 yaml:

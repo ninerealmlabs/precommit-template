@@ -1,8 +1,8 @@
 ---
 # renovate: datasource=github-tags depName=pre-commit/pre-commit-hooks
 #
-# See https://pre-commit.com for more information
-# See https://pre-commit.com/hooks.html for more hooks
+# Run these hooks with `prek`: https://github.com/j178/prek
+# prek reads this file; see https://pre-commit.com/hooks.html for more hooks
 
 default_install_hook_types:
   - pre-commit
@@ -17,7 +17,7 @@ default_stages:
 
 exclude: |
   (?x)^(
-    ^.*(copier-answers\.ya?ml)$
+    ^.*(copier-answers\.ya?ml)$ |
     ^.*\.rej$
   )$
 
@@ -29,9 +29,11 @@ repos:
         entry: YAML file extensions must be .yaml
         language: fail
         files: \.yml$
+        # `great-docs.yml`: fixed filename, local to this repo and not part of the template.
         exclude: |
           (?x)^(
-            ^.*(copier-answers\.ya?ml)$
+            ^.*(copier-answers\.ya?ml)$ |
+            ^great-docs\.yml$
           )$
       - id: forbid-rej
         name: Forbid .rej file extensions from `copier update`
@@ -151,7 +153,7 @@ repos:
           - mdformat-simple-breaks
   # renovate: datasource=github-tags depName=rvben/rumdl-pre-commit
   - repo: https://github.com/rvben/rumdl-pre-commit
-    rev: v0.1.93
+    rev: v0.2.43
     hooks:
       # - id: rumdl      # Lint only (fails on issues)
       #   stages: [pre-commit]
@@ -159,7 +161,7 @@ repos:
         stages: [pre-commit]
   # renovate: datasource=github-tags depName=astral-sh/ruff-pre-commit
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.15.13"
+    rev: "v0.16.0"
     hooks:
       - id: ruff-check
         name: Lint with Ruff
@@ -175,9 +177,36 @@ repos:
       - id: nbstripout
         name: Strip metadata and outputs from ipynb files
         stages: [pre-commit]
+  - repo: local
+    hooks:
+      - id: shellcheck
+        name: Lint shell scripts
+        language: system
+        entry: shellcheck
+        types: ["shell"]
+        exclude: "^.*zsh$" # ignore '*.zsh" scripts'
+        stages: [pre-commit]
+  # renovate: datasource=github-tags depName=scop/pre-commit-shfmt versioning=loose
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: "v3.13.1-1"
+    hooks:
+      - id: shfmt
+        name: Format shell scripts
+        # shfmt-py's sdist build only supports CPython <= 3.13
+        language_version: python3.13
+        # `args` replaces the hook's default `[--write]` rather than appending to it, so `--write` must be
+        # repeated here; without it shfmt prints to stdout, changes nothing, and always exits 0.
+        args:
+          - "--write"
+          - "--binary-next-line"
+          - "--case-indent"
+          - "--space-redirects"
+          - "--indent"
+          - "2"
+        stages: [pre-commit]
   # renovate: datasource=github-tags depName=biomejs/pre-commit
   - repo: https://github.com/biomejs/pre-commit
-    rev: v2.4.15
+    rev: v2.5.5
     hooks:
       - id: biome-check
         stages: [pre-commit]
@@ -194,11 +223,13 @@ repos:
   ### In this case, comment out this block until ".typos.toml" has been committed successfully
   # renovate: datasource=github-tags depName=crate-ci/typos
   - repo: https://github.com/crate-ci/typos
-    rev: "v1.46.3"
+    rev: "v1.48.0"
     hooks:
       - id: typos
         name: Spellcheck with Typos
-        args: ["--config", ".typos.toml"]
+        # `args` replaces the hook's default `[--write-changes, --force-exclude]` rather than appending to it.
+        # `--force-exclude` is repeated so `.typos.toml`'s exclusions still apply to explicitly-passed files.
+        args: ["--force-exclude", "--config", ".typos.toml"]
         exclude: |
           (?x)^(
             ^.*(typos\.toml)$ |
