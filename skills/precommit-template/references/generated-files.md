@@ -29,8 +29,8 @@ These appear no matter how the survey is answered:
 - `gitleaks`
 - `strip-exif`
 
-The config also sets `default_install_hook_types` to `pre-commit`, `post-checkout`, `post-merge`, and
-`post-rewrite`, plus `pre-push` and `commit-msg` when `conventional_commits` is enabled.
+The config also sets `default_install_hook_types` to `pre-commit`, `post-checkout`, `post-merge`, and `post-rewrite`,
+plus `pre-push` and `commit-msg` when `conventional_commits` is enabled.
 
 `exclude` skips `*copier-answers.ya?ml` and `*.rej` globally.
 
@@ -42,7 +42,7 @@ The config also sets `default_install_hook_types` to `pre-commit`, `post-checkou
 | `editorconfig`            | `.editorconfig`                                                        | `editorconfig-checker`, editors |
 | `markdown`                | `.mdformat.toml`                                                       | `mdformat`                      |
 | `markdown`                | `.rumdl.toml`                                                          | `rumdl-fmt`                     |
-| `python`                  | `.ruff.toml`                                                           | `ruff-check`, `ruff-format`     |
+| `python`                  | `.ruff.toml`                                                           | `ruff-check`, `ruff-format`[^1] |
 | `python`                  | `tests/test_pypi_security_audit.py`, `tests/test_uv_security_audit.py` | your test runner                |
 | `docker`                  | `.hadolint.yaml`                                                       | `hadolint`                      |
 | `shell`                   | `.shellcheckrc`                                                        | `shellcheck`                    |
@@ -77,3 +77,7 @@ template/{% if python %}tests{% endif %}/test_uv_security_audit.py
 
 The `.jinja` suffix is stripped on render and is configured by `_templates_suffix` in `copier.yaml`.
 Files without the suffix — such as the generated test files — are copied verbatim.
+
+[^1]: When `markdown` is also enabled, `ruff-format` gains `types_or: [python, pyi, jupyter, markdown]` and
+    formats python code blocks inside markdown. `ruff-check` deliberately stays on python files only, so
+    illustrative snippets in docs are not held to import and unused-name rules.

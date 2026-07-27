@@ -11,8 +11,8 @@
 
 ### `'detect_hook_runner' is undefined`
 
-**Cause**: `--trust` was omitted, so Copier skipped `extensions/detect.py` and the Jinja globals it
-registers were never defined.
+**Cause**: `--trust` was omitted, so Copier skipped `extensions/detect.py`
+and the Jinja globals it registers were never defined.
 
 **Fix**: re-run with `--trust`.
 It is required on `copy`, `update`, and `recopy`.
@@ -26,8 +26,8 @@ It is required on `copy`, `update`, and `recopy`.
 ### Survey aborts partway through
 
 **Cause**: a detection helper raised.
-`detect_hook_runner()` and `detect_web_format_tool()` are called while rendering question defaults, and
-an exception there kills the whole survey.
+`detect_hook_runner()` and `detect_web_format_tool()` are called while rendering question defaults,
+and an exception there kills the whole survey.
 
 **Fix**: this is a template bug, not a usage error — report it.
 As a workaround, pass the value on the command line: `copier copy --trust --data web_format_tool=biome ...`.
@@ -45,7 +45,8 @@ As a workaround, pass the value on the command line: `copier copy --trust --data
 **Cause**: Copier could not merge a template change into a file you had edited locally.
 
 **Fix**: open each `.rej`, apply the rejected hunk by hand, then delete the `.rej` file.
-The `forbid-rej` hook blocks commits until they are gone, deliberately: deleting a `.rej` unread silently drops a template change.
+The `forbid-rej` hook blocks commits until they are gone, deliberately:
+deleting a `.rej` unread silently drops a template change.
 
 ### Local edits vanished after switching an answer
 
@@ -57,8 +58,8 @@ To avoid it, copy customizations out before re-answering.
 
 ### Update pulled in far more than expected
 
-**Cause**: `copier update` renders against the _latest_ template release, not the next one, so several
-revisions can land at once.
+**Cause**: `copier update` renders against the _latest_ template release, not the next one,
+so several revisions can land at once.
 
 **Fix**: pin with `--vcs-ref <tag>` to step forward one release at a time.
 
@@ -68,8 +69,8 @@ revisions can land at once.
 
 **Cause**: these three hooks use `language: system` — the runner does not install them.
 
-**Fix**: install the tool (`brew install hadolint`, `brew install shellcheck`,
-`npm install -g prettier`), or answer `no` to the corresponding question.
+**Fix**: install the tool (`brew install hadolint`, `brew install shellcheck`, `npm install -g prettier`),
+or answer `no` to the corresponding question.
 
 ### `typos` cannot find its config
 
@@ -86,8 +87,8 @@ If that is not possible, comment out the `typos` block until the config is commi
 
 ### The whole repo was rewritten on the first run
 
-**Cause**: expected. `mdformat`, `rumdl-fmt`, `ruff-format`, `shfmt`, and biome or prettier all reformat
-on first contact.
+**Cause**: expected.
+`mdformat`, `rumdl-fmt`, `ruff-format`, `shfmt`, and biome or prettier all reformat on first contact.
 
 **Fix**: commit the formatting churn on its own so the config change stays reviewable.
 
@@ -97,6 +98,17 @@ on first contact.
 
 **Fix**: disable the offending rule in `.rumdl.toml`.
 `MD060` (table spacing) is already disabled in this template for exactly that reason.
+
+### Python code blocks in markdown get reformatted
+
+**Cause**: expected.
+`ruff-format` owns python code blocks inside markdown,
+so a single pinned ruff formats both `.py` files and the snippets in your docs.
+
+**Fix**: none needed.
+To exempt one block, wrap it in `<!-- fmt:off -->` / `<!-- fmt:on -->`.
+To exempt markdown entirely, add `"*.md"` to `extend-exclude` in `.ruff.toml`
+and drop `markdown` from the `ruff-format` hook's `types_or`.
 
 ## Commit rejections
 

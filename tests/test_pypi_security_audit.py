@@ -97,8 +97,7 @@ def _summarize_pip_audit_json(raw_output: str) -> str:
     if skipped_dependencies:
         lines.append("")
         lines.append(f"Skipped dependencies: {len(skipped_dependencies)}")
-        for dependency in skipped_dependencies:
-            lines.append(f"- {dependency['name']}: {dependency['skip_reason']}")
+        lines.extend(f"- {dependency['name']}: {dependency['skip_reason']}" for dependency in skipped_dependencies)
 
     return "\n".join(lines)
 
@@ -134,6 +133,7 @@ def test_pip_audit_no_vulnerabilities():
                 *_ignore_vuln_args(),
             ],
             cwd=project_root,
+            check=False,
             capture_output=True,
             text=True,
             timeout=120,  # 2 minute timeout
@@ -162,11 +162,8 @@ def test_pip_audit_no_vulnerabilities():
                 stacklevel=2,
             )
             return
-        else:
-            # Some other error occurred
-            pytest.fail(
-                f"pip-audit failed to run properly:\n\nReturn code: {result.returncode}\nOutput: {error_output}\n"
-            )
+        # Some other error occurred
+        pytest.fail(f"pip-audit failed to run properly:\n\nReturn code: {result.returncode}\nOutput: {error_output}\n")
 
     # Success - no vulnerabilities found
     if result.returncode != 0:
@@ -183,8 +180,9 @@ def test_pip_audit_runs_successfully():
         pytest.skip("uv audit is available; using it instead of pip-audit")
 
     try:
-        result = subprocess.run(  # NOQA: S603
+        result = subprocess.run(
             [sys.executable, "-m", "pip_audit", "--version"],
+            check=False,
             capture_output=True,
             text=True,
             timeout=10,
