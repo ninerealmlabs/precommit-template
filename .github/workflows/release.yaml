@@ -7,6 +7,10 @@ on:
   schedule:
     - cron: "0 0 1 * *"
 
+permissions:
+  contents: write # `gh release create` writes the tag and release
+  actions: write # dispatching the docs rebuild
+
 jobs:
   release:
     if: ${{ github.repository == 'ninerealmlabs/precommit-template' }}
@@ -42,3 +46,14 @@ jobs:
               --repo="${GITHUB_REPOSITORY}" \
               --title="${release_tag}" \
               --generate-notes
+
+      # The docs changelog is fetched from the Releases API at build time, and the docs
+      # workflow only runs on pushes to `main`. Dispatch it so the new release is published
+      # instead of waiting for the next merge. A `release` trigger would not work: events
+      # raised by `GITHUB_TOKEN` do not start workflows, and `workflow_dispatch` is one of
+      # the few exceptions to that rule.
+      - name: Rebuild docs with the new release
+        shell: bash
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        run: gh workflow run docs-pages.yaml --repo="${GITHUB_REPOSITORY}" --ref main
