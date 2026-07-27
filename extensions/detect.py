@@ -15,10 +15,12 @@ import json
 from pathlib import Path
 import re
 from shutil import which
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from jinja2 import Environment
 from jinja2.ext import Extension
+
+if TYPE_CHECKING:
+    from jinja2 import Environment
 
 # What this template recommends when a project shows no existing preference.
 PREFERRED_HOOK_RUNNER = "prek"
