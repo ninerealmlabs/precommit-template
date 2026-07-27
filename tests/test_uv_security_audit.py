@@ -126,7 +126,7 @@ def test_uv_audit_no_vulnerabilities():
 
     try:
         result = subprocess.run(  # NOQA: S603
-            [  # NOQA: S607
+            [
                 "uv",
                 "audit",
                 "--frozen",
@@ -137,6 +137,7 @@ def test_uv_audit_no_vulnerabilities():
                 *_ignore_args(),
             ],
             cwd=project_root,
+            check=False,
             capture_output=True,
             text=True,
             timeout=120,  # 2 minute timeout
@@ -182,8 +183,9 @@ def test_uv_audit_runs_successfully():
         pytest.skip("uv is not installed")
 
     try:
-        result = subprocess.run(  # NOQA: S603
-            ["uv", "audit", "--help"],  # NOQA: S607
+        result = subprocess.run(
+            ["uv", "audit", "--help"],
+            check=False,
             capture_output=True,
             text=True,
             timeout=10,

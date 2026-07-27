@@ -39,6 +39,7 @@ Each is a boolean defaulting to true, except `web_format_tool`.
 - `editorconfig`: generate `.editorconfig`, add editorconfig-checker
 - `markdown`: generate `.mdformat.toml` and `.rumdl.toml`, add mdformat and rumdl-fmt
 - `python`: generate `.ruff.toml` and security-audit tests, add ruff-check, ruff-format, nbstripout
+  (with `markdown` also on, ruff-format additionally formats python code blocks inside markdown)
 - `docker`: generate `.hadolint.yaml`, add hadolint
 - `shell`: generate `.shellcheckrc`, add shellcheck and shfmt
 - `web_format`: enable JS/TS/JSON/HTML/CSS formatting

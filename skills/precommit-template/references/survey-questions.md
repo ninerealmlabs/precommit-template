@@ -11,8 +11,8 @@ Answers are recorded in `.copier-answers.yaml` and replayed on `copier update`.
 
 ## Asked questions
 
-All ten questions default to `true` (or to a detected value), so accepting every default produces the
-full configuration.
+All ten questions default to `true`
+(or to a detected value), so accepting every default produces the full configuration.
 
 | Question               | Type | Default  | Prompt                                                 |
 | ---------------------- | ---- | -------- | ------------------------------------------------------ |
@@ -46,10 +46,9 @@ full configuration.
 | `yaml`                    | `.yamllint.yaml`                               | `yamllint`                                                |
 | `typos`                   | `.typos.toml`                                  | `typos`                                                   |
 
-Hooks that are always present regardless of answers: `forbid-yml`, `forbid-rej`, the
-`pre-commit/pre-commit-hooks` set (large files, merge conflicts, private keys, case conflicts, AST,
-JSON/TOML/YAML syntax, EOF, line endings, trailing whitespace), `remove-crlf`, `fix-smartquotes`,
-`fix-ligatures`, `gitleaks`, and `strip-exif`.
+Hooks that are always present regardless of answers: `forbid-yml`, `forbid-rej`, the `pre-commit/pre-commit-hooks` set
+(large files, merge conflicts, private keys, case conflicts, AST, JSON/TOML/YAML syntax, EOF, line endings,
+trailing whitespace), `remove-crlf`, `fix-smartquotes`, `fix-ligatures`, `gitleaks`, and `strip-exif`.
 
 ## Detected values
 
@@ -89,6 +88,7 @@ Detection order:
 Run `copier update --trust --answers-file .copier-answers.yaml` and give a different answer at the prompt.
 
 Copier deletes files gated on the old answer and creates files gated on the new one.
-Switching `web_format_tool` from `biome` to `prettier` removes `.biome.jsonc` and adds `.prettierrc.yaml` and `.prettierignore`; any local edits to the removed file are lost, so copy them somewhere safe first.
+Switching `web_format_tool` from `biome` to `prettier` removes `.biome.jsonc` and adds `.prettierrc.yaml`
+and `.prettierignore`; any local edits to the removed file are lost, so copy them somewhere safe first.
 
 Answering `no` to a question that was previously `yes` removes that tool's config file and hook block.

@@ -143,7 +143,6 @@ repos:
           # - mdformat-tables # now included in mdformat-gfm
           - mdformat-toc
           - mdformat-config
-          - mdformat-ruff
           # - mdformat-shfmt # disable until can pass args (ref: https://github.com/hukkin/mdformat-shfmt/issues/7)
           - mdformat-simple-breaks
   # renovate: datasource=github-tags depName=rvben/rumdl-pre-commit
@@ -165,6 +164,9 @@ repos:
         stages: [pre-commit]
       - id: ruff-format
         name: Format with Ruff
+        {%- if markdown %}
+        types_or: [python, pyi, jupyter, markdown]  # also formats python blocks in md
+        {%- endif %}
         stages: [pre-commit]
   # renovate: datasource=github-tags depName=kynan/nbstripout
   - repo: https://github.com/kynan/nbstripout
