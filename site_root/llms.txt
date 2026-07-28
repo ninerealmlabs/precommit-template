@@ -32,15 +32,24 @@ kept current with `copier update`.
 
 ## Survey questions
 
-Each is a boolean defaulting to true, except `web_format_tool`.
+Each is a boolean defaulting to true, except `web_format_tool`, `markdown_render_check_dir`, and
+`markdown_render_check` (which defaults to false).
 
 - `ai`: generate `AGENTS.md`
 - `conventional_commits`: add commitizen, plus `pre-push` and `commit-msg` hook types
 - `editorconfig`: generate `.editorconfig`, add editorconfig-checker
 - `markdown`: generate `.mdformat.toml` and `.rumdl.toml`, add mdformat and rumdl-fmt
+- `markdown_render_check`: generate `check_markdown_render.py`, a script that renders markdown through
+  pandoc before and after formatting and reports anything a reader would see differently. Defaults to
+  false and needs pandoc on PATH; asked only when `markdown` is true
+- `markdown_render_check_dir`: where that script goes, relative to the project root (default `scripts`);
+  asked only when `markdown_render_check` is true
 - `python`: generate `.ruff.toml` and security-audit tests, add ruff-check, ruff-format, nbstripout
   (with `markdown` also on, ruff-format additionally formats python code blocks inside markdown)
 - `docker`: generate `.hadolint.yaml`, add hadolint
+- `github_actions`: add check-github-workflows and check-github-actions (SchemaStore validation) and
+  zizmor (security audit of workflows). No config file; all three are scoped by their own `files`
+  patterns to `.github/` and a top-level `action.yaml`
 - `shell`: generate `.shellcheckrc`, add shellcheck and shfmt
 - `web_format`: enable JS/TS/JSON/HTML/CSS formatting
 - `web_format_tool`: `biome` (default) or `prettier`; asked only when `web_format` is true

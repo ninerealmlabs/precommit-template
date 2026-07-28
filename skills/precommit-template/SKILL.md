@@ -40,8 +40,7 @@ prek install           # run the checks on every commit
 ```
 
 `--trust` is mandatory.
-`copier.yaml` loads `extensions/detect.py` as a Jinja extension,
-and Copier refuses to execute extension code without it.
+`copier.yaml` loads `extensions/detect.py` as a Jinja extension, and Copier refuses to execute extension code without it.
 
 ## Skill directory structure
 
@@ -72,8 +71,7 @@ skills/precommit-template/
 ### The answers file
 
 `copier copy` writes `.copier-answers.yaml` recording the template version and every answer.
-`copier update` reads it to replay your choices, so **never edit it by hand** —
-a stale or hand-tweaked answers file makes the next update produce conflicts that look like template bugs.
+`copier update` reads it to replay your choices, so **never edit it by hand** — a stale or hand-tweaked answers file makes the next update produce conflicts that look like template bugs.
 
 ### Detection instead of questions
 
@@ -85,8 +83,7 @@ Two values are worked out from the target repo rather than asked:
 | `web_format_tool` | an existing `.pre-commit-config.yaml`, biome/prettier config files, or `package.json` deps       | `biome`  |
 
 The hook runner is **not** a survey question and is **not** recorded in `.copier-answers.yaml`.
-Both runners read the same `.pre-commit-config.yaml`,
-so the detected value only decides which runner the generated comments and post-copy messages name.
+Both runners read the same `.pre-commit-config.yaml`, so the detected value only decides which runner the generated comments and post-copy messages name.
 It is recomputed on every run, so it follows the repo if you switch runners.
 
 `web_format_tool` **is** a question, because biome and prettier need genuinely different config files.
@@ -134,8 +131,7 @@ Without them the corresponding hooks fail with "command not found", not with a c
 2. Commit or stash current work.
 3. Run `copier update --trust --answers-file .copier-answers.yaml`.
 4. Resolve any `*.rej` files, then delete them.
-   A `forbid-rej` hook blocks commits while they exist, which is deliberate:
-   an unresolved `.rej` means template changes were silently dropped.
+   A `forbid-rej` hook blocks commits while they exist, which is deliberate: an unresolved `.rej` means template changes were silently dropped.
 5. Run `prek run --all-files` and commit.
 
 ### Changing an answer

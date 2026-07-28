@@ -79,14 +79,25 @@ Survey questions
 ----------------------------------------------------------------------
 
 Defined in `copier.yaml`. All are booleans defaulting to true, except
-`web_format_tool`. Answers are recorded in `.copier-answers.yaml`.
+`web_format_tool` and `markdown_render_check_dir` (strings) and
+`markdown_render_check` (a boolean defaulting to false). Answers are
+recorded in `.copier-answers.yaml`.
 
 - ai: Prepare AGENTS.md?
 - conventional_commits: Use conventional commits?
 - editorconfig: Use editorconfig?
 - markdown: Lint and format markdown?
+- markdown_render_check: Include a script that checks markdown still renders
+  the same after formatting? Defaults to false, since it needs pandoc on
+  PATH. Asked only when markdown is true.
+- markdown_render_check_dir: Which directory should the render check script
+  go in? Defaults to scripts. Asked only when markdown_render_check is true.
+  Must be relative to the project root, with no leading or trailing slash
+  and no `..`.
 - python: Lint and format python?
 - docker: Lint and check docker files?
+- github_actions: Validate GitHub Actions workflows and audit their
+  security posture?
 - shell: Lint and format shell scripts?
 - web_format: Lint and format JS/TS/JSON/HTML/CSS and related files?
 - web_format_tool: Select the web formatter, biome or prettier.
@@ -101,12 +112,27 @@ What each answer produces:
   default_install_hook_types
 - editorconfig -> .editorconfig; editorconfig-checker hook
 - markdown -> .mdformat.toml and .rumdl.toml; mdformat and rumdl-fmt hooks
+- markdown_render_check -> <markdown_render_check_dir>/check_markdown_render.py;
+  no hook. A standalone script: it renders each markdown file through pandoc
+  before and after a formatting pass and reports only what a reader would see
+  differently, ignoring rewrapping and marker churn. Run with no arguments to
+  compare the working tree against HEAD, or --run-hooks to compare against a
+  throwaway copy of the tree the repo's own hooks have been run over.
+  --doctor reports which dependencies are missing.
 - python -> .ruff.toml, tests/test_pypi_security_audit.py,
   tests/test_uv_security_audit.py; ruff-check, ruff-format, nbstripout hooks.
   With markdown also enabled, ruff-format takes
   types_or: [python, pyi, jupyter, markdown] and formats python code blocks
   inside markdown; ruff-check stays on python files only.
 - docker -> .hadolint.yaml; hadolint hook (system)
+- github_actions -> no config file; check-github-workflows and
+  check-github-actions hooks (SchemaStore validation of workflow and
+  composite-action files) and the zizmor hook (security audit: unpinned
+  actions, excessive permissions, credential persistence, template
+  injection, cache poisoning). All three carry their own `files` patterns
+  scoping them to `.github/workflows/`, `.github/actions/`,
+  `dependabot.yaml`, and a top-level `action.yaml`, so they are inert in a
+  repo with none of those.
 - shell -> .shellcheckrc; shellcheck (system) and shfmt hooks
 - web_format + biome -> .biome.jsonc; biome-check hook
 - web_format + prettier -> .prettierrc.yaml and .prettierignore; prettier
