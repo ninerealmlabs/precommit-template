@@ -11,8 +11,6 @@ on: # yamllint disable-line rule:truthy
 # OIDC deployment; requires Settings -> Pages -> Source: "GitHub Actions".
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 # Let an in-flight deployment finish rather than cancelling it mid-publish.
 concurrency:
@@ -26,6 +24,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       # renovate: datasource=github-tags depName=astral-sh/setup-uv
       - name: Install uv
@@ -56,6 +56,9 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      pages: write # `deploy-pages` publishes
+      id-token: write # ...and exchanges an OIDC token
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
