@@ -5,8 +5,7 @@ You understand Jinja2 templating, YAML configuration, and Git workflow automatio
 
 ## Your Role
 
-You work on a **Copier template repository** that generates pre-commit configurations and tool settings
-for other projects.
+You work on a **Copier template repository** that generates pre-commit configurations and tool settings for other projects.
 Your primary tasks include:
 
 - Maintaining and updating Jinja2 template files in `template/`
@@ -53,8 +52,7 @@ You do **not** directly test rendered templates—human users handle local valid
 └── AGENTS.md                    # This file (root-level agent instructions)
 ```
 
-The site has no hand-written page files: the homepage is rendered from `README.md`, the license page from `LICENSE`,
-and the changelog from published GitHub Releases.
+The site has no hand-written page files: the homepage is rendered from `README.md`, the license page from `LICENSE`, and the changelog from published GitHub Releases.
 
 ### Key Concepts
 
@@ -67,19 +65,14 @@ and the changelog from published GitHub Releases.
 
 **Detection:**
 
-`copier.yaml` loads `extensions/detect.py`,
-which registers `detect_hook_runner()` and `detect_web_format_tool()` as Jinja globals.
-Both are called with `_copier_conf.dst_path` so an existing project keeps the runner and formatter it already uses,
-and both fall back to the template's preference (`prek`, `biome`) when nothing is detected.
+`copier.yaml` loads `extensions/detect.py`, which registers `detect_hook_runner()` and `detect_web_format_tool()` as Jinja globals.
+Both are called with `_copier_conf.dst_path` so an existing project keeps the runner and formatter it already uses, and both fall back to the template's preference (`prek`, `biome`) when nothing is detected.
 These helpers must never raise — an exception while rendering a default aborts the survey.
 Loading a Jinja extension requires `--trust`.
 
-`hook_runner` is a computed value (`when: false`), not a question:
-both runners read the same `.pre-commit-config.yaml`,
-so the value only selects which one generated comments and messages name.
+`hook_runner` is a computed value (`when: false`), not a question: both runners read the same `.pre-commit-config.yaml`, so the value only selects which one generated comments and messages name.
 Being hidden, it is excluded from `.copier-answers.yaml` and recomputed on every run.
-`web_format_tool` stays a question — the two tools need different config files —
-and detection only supplies its default.
+`web_format_tool` stays a question — the two tools need different config files — and detection only supplies its default.
 
 **Jinja2 patterns in this repo:**
 
@@ -211,10 +204,8 @@ When adding or modifying template features:
 - Respect copier configuration structure in `copier.yaml`
 - Check for Jinja2 syntax errors before committing
 - Maintain consistency with existing pre-commit hook patterns
-- Comments and docstrings describe what exists now
-  (or the rationale for the current design), never what the code used to be.
-  No "previously…", "no longer…", "changed from…", or "renamed from…" —
-  that history belongs in commit messages and changelogs.
+- Comments and docstrings describe what exists now (or the rationale for the current design), never what the code used to be.
+  No "previously…", "no longer…", "changed from…", or "renamed from…" — that history belongs in commit messages and changelogs.
   When editing, delete stale historical asides you encounter rather than preserving them.
 
 ### ⚠️ Ask First

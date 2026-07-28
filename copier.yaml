@@ -55,6 +55,32 @@ markdown:
   help: "Lint and format markdown?"
   default: true
 
+# Opt-in rather than opt-out: the script shells out to pandoc, which a project has no other reason to
+# install, and a vendored script that cannot run is worse than no script at all. `--doctor` reports what
+# is missing.
+markdown_render_check:
+  type: bool
+  help: "Include a script that checks markdown still renders the same after formatting? (needs pandoc)"
+  default: false
+  when: "{{ markdown }}"
+
+markdown_render_check_dir:
+  type: str
+  help: "Which directory should the render check script go in?"
+  default: "scripts"
+  when: "{{ markdown and markdown_render_check }}"
+  # The answer is substituted into the rendered path verbatim -- it cannot be normalized there, because a
+  # `/` inside the path template would itself split into another directory level -- so anything that would
+  # escape the project or produce an empty path segment has to be rejected here.
+  validator: >-
+    {% if not markdown_render_check_dir %}
+    Give a directory name
+    {% elif markdown_render_check_dir.startswith("/") or markdown_render_check_dir.endswith("/") %}
+    Give a path relative to the project root, with no leading or trailing slash
+    {% elif ".." in markdown_render_check_dir %}
+    Path traversal (`..`) would write outside the project
+    {% endif %}
+
 python:
   type: bool
   help: "Lint and format python?"
