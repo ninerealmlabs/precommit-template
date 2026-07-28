@@ -98,6 +98,23 @@ repos:
   # # renovate: datasource=github-tags depName=betterleaks/betterleaks
   # - repo: https://github.com/betterleaks/betterleaks
   #   rev: "v1.1.0"
+  {%- if github_actions %}
+  # renovate: datasource=github-tags depName=python-jsonschema/check-jsonschema
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: "0.37.4"
+    hooks:
+      - id: check-github-workflows
+      # check-github-workflows does not cover composite actions
+      - id: check-github-actions
+  # Lint: GitHub Actions security posture (unpinned actions, excessive
+  # permissions, credential persistence, template injection, cache poisoning).
+  # check-jsonschema above only validates shape, not security.
+  # renovate: datasource=github-tags depName=zizmorcore/zizmor-pre-commit
+  - repo: https://github.com/zizmorcore/zizmor-pre-commit
+    rev: "v1.28.0"
+    hooks:
+      - id: zizmor
+  {%- endif %}
   # renovate: datasource=github-tags depName=stefmolin/exif-stripper
   - repo: https://github.com/stefmolin/exif-stripper
     rev: 1.2.0

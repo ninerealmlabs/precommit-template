@@ -91,6 +91,11 @@ docker:
   help: "Lint and check docker files?"
   default: true
 
+github_actions:
+  type: bool
+  help: "Validate GitHub Actions workflows and audit their security posture?"
+  default: true
+
 shell:
   type: bool
   help: "Lint and format shell scripts?"
