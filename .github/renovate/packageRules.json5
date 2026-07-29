@@ -3,8 +3,15 @@
   packageRules: [
     {
       description: "Support semvar versioning",
-      matchDepNames: ["shellcheck-py/shellcheck-py", "scop/pre-commit-shfmt"],
+      matchDepNames: ["shellcheck-py/shellcheck-py"],
       versioning: "semver-coerced",
+    },
+    {
+      // scop/pre-commit-shfmt tags as `<shfmt version>-<wrapper build number>` (e.g. v3.13.1-1),
+      // not semver prerelease syntax; semver-coerced drops the build number and masks wrapper-only bumps.
+      description: "Support loose versioning for shfmt's non-semver build-tagged releases",
+      matchDepNames: ["scop/pre-commit-shfmt"],
+      versioning: "loose",
     },
   ]
 }

@@ -1,11 +1,10 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   extends: [
-    "config:recommended",
+    "config:best-practices",
     "docker:enableMajor",
     "helpers:pinGitHubActionDigestsToSemver",
     ":automergePr", // ":automergeBranch",
-    ":configMigration",
     ":dependencyDashboard",
     ":disableRateLimiting",
     ":docker",
@@ -27,6 +26,7 @@
   dependencyDashboardTitle: "Renovate Dashboard 🤖",
   ignorePaths: ["**/*.sops.*", "**/.archive/**"],
   schedule: ["before 5am"],
+  minimumReleaseAge: "3 days",
   // "pre-commit": {
   //   commitMessageTopic: "pre-commit hook {{depName}}",
   //   enabled: true,

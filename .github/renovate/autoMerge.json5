@@ -7,7 +7,7 @@
       automerge: true,
       // automergeType: "branch",
       matchUpdateTypes: ["digest"],
-      matchPackagePatterns: ["ghcr.io/ahgraber", "ghcr.io/ninerealmlabs"]
+      matchPackageNames: ["ghcr.io/ahgraber/**", "ghcr.io/ninerealmlabs/**"]
     },
     {
       description: ["Auto-merge updates trusted pre-commit packages"],
@@ -15,15 +15,22 @@
       automerge: true,
       // automergeType: "branch",
       matchUpdateTypes: ["patch"],
-      matchPackagePatterns: [
+      matchPackageNames: [
         "pre-commit/pre-commit-hooks",
         "Lucas-C/pre-commit-hooks",
         "sirosen/texthooks",
-        "zricethezav/gitleaks",
+        "gitleaks/gitleaks",
+        "python-jsonschema/check-jsonschema",
+        "zizmorcore/zizmor-pre-commit",
         "stefmolin/exif-stripper",
         "commitizen-tools/commitizen",
-        "charliermarsh/ruff-pre-commit",
-        "igorshubovych/markdownlint-cli",
+        "editorconfig-checker/editorconfig-checker.python",
+        "hukkin/mdformat",
+        "rvben/rumdl-pre-commit",
+        "astral-sh/ruff-pre-commit",
+        "kynan/nbstripout",
+        "scop/pre-commit-shfmt",
+        "biomejs/pre-commit",
         "adrienverge/yamllint",
         "crate-ci/typos",
       ]
