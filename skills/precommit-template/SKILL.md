@@ -8,7 +8,7 @@ description: >
   Use when adding, updating, or debugging pre-commit hooks in a repo that is (or should be) managed by
   this template.
 license: CC0-1.0
-compatibility: Requires copier >=9 and either prek or pre-commit. Some hooks need hadolint, shellcheck, or prettier on PATH.
+compatibility: Requires copier >=9 and either prek or pre-commit. The prettier hook needs prettier on PATH.
 metadata:
   author: ninerealmlabs
   repository: https://github.com/ninerealmlabs/precommit-template
@@ -102,13 +102,11 @@ Full list in [references/generated-files.md](references/generated-files.md).
 
 ### Externally-installed tools
 
-The hook runner manages its own environments for most hooks, but three tools must already be on `PATH`:
+The hook runner manages its own environments for most hooks, but one tool must already be on `PATH`:
 
-| Tool         | Required when               | Install                   |
-| ------------ | --------------------------- | ------------------------- |
-| `hadolint`   | `docker: true`              | `brew install hadolint`   |
-| `shellcheck` | `shell: true`               | `brew install shellcheck` |
-| `prettier`   | `web_format_tool: prettier` | `npm install -g prettier` |
+| Tool       | Required when               | Install                   |
+| ---------- | --------------------------- | ------------------------- |
+| `prettier` | `web_format_tool: prettier` | `npm install -g prettier` |
 
 Without them the corresponding hooks fail with "command not found", not with a config error.
 
@@ -181,7 +179,7 @@ Local edits to a file that gets deleted are lost, so move anything worth keeping
 
 **Requires human setup:**
 
-- Installing `copier`, a hook runner, and the external tools (`hadolint`, `shellcheck`, `prettier`)
+- Installing `copier`, a hook runner, and `prettier` if selected as the web formatter
 - Deciding whether to accept a breaking template revision
 - Reviewing the first bulk-formatting commit
 

@@ -189,13 +189,12 @@ repos:
       - id: nbstripout
         name: Strip metadata and outputs from ipynb files
         stages: [pre-commit]
-  - repo: local
+  # renovate: datasource=github-tags depName=shellcheck-py/shellcheck-py versioning=loose
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: "v0.11.0.1"
     hooks:
       - id: shellcheck
         name: Lint shell scripts
-        language: system
-        entry: shellcheck
-        types: ["shell"]
         exclude: "^.*zsh$" # ignore '*.zsh" scripts'
         stages: [pre-commit]
   # renovate: datasource=github-tags depName=scop/pre-commit-shfmt versioning=loose

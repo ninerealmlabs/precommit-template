@@ -43,9 +43,9 @@ Every question except `markdown_render_check` defaults to `true` (or to a detect
 | `markdown`                | `.mdformat.toml`, `.rumdl.toml`                | `mdformat`, `rumdl-fmt`                                    |
 | `markdown_render_check`   | `<dir>/check_markdown_render.py`               | —                                                          |
 | `python`                  | `.ruff.toml`, `tests/test_*_security_audit.py` | `ruff-check`, `ruff-format`, `nbstripout`                  |
-| `docker`                  | `.hadolint.yaml`                               | `hadolint` (system)                                        |
+| `docker`                  | `.hadolint.yaml`                               | `hadolint`                                                 |
 | `github_actions`          | —                                              | `check-github-workflows`, `check-github-actions`, `zizmor` |
-| `shell`                   | `.shellcheckrc`                                | `shellcheck` (system), `shfmt`                             |
+| `shell`                   | `.shellcheckrc`                                | `shellcheck`, `shfmt`                                      |
 | `web_format` + `biome`    | `.biome.jsonc`                                 | `biome-check`                                              |
 | `web_format` + `prettier` | `.prettierrc.yaml`, `.prettierignore`          | `prettier` (system)                                        |
 | `yaml`                    | `.yamllint.yaml`                               | `yamllint`                                                 |

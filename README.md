@@ -12,8 +12,8 @@ Hooks are declared in a `.pre-commit-config.yaml`, which is read by both [prek](
 
 We will use [uv](https://docs.astral.sh/uv/) to install and run tools in isolated environments.
 
-Some hooks (`hadolint`, `shellcheck`, and `prettier` if selected), expect to find the tool available in your path.
-You may need to install them.
+If `prettier` is selected as the web formatter, its hook expects to find the tool available in your path.
+You may need to install it.
 
 ### Install `copier` and a hook runner
 
@@ -114,12 +114,10 @@ It defaults to off because it needs `pandoc`.
 
 Some hooks rely on tools that must be installed separately (they are not managed by the hook runner):
 
-| Tool                                                 | Required when                 | Install                                                                                    |
-| ---------------------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------ |
-| [hadolint](https://github.com/hadolint/hadolint)     | `docker: true`                | `brew install hadolint` or [binary release](https://github.com/hadolint/hadolint/releases) |
-| [shellcheck](https://github.com/koalaman/shellcheck) | `shell: true`                 | `brew install shellcheck` or `apt install shellcheck`                                      |
-| [prettier](https://prettier.io/)                     | `web_format_tool: prettier`   | `npm install -g prettier`                                                                  |
-| [pandoc](https://pandoc.org/)                        | `markdown_render_check: true` | `brew install pandoc` or `apt install pandoc`                                              |
+| Tool                             | Required when                 | Install                                       |
+| -------------------------------- | ----------------------------- | --------------------------------------------- |
+| [prettier](https://prettier.io/) | `web_format_tool: prettier`   | `npm install -g prettier`                     |
+| [pandoc](https://pandoc.org/)    | `markdown_render_check: true` | `brew install pandoc` or `apt install pandoc` |
 
 If these tools are not available in your `$PATH`, the corresponding hooks will fail.
 

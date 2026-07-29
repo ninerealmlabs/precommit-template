@@ -55,14 +55,13 @@ The config also sets `default_install_hook_types` to `pre-commit`, `post-checkou
 
 ### System-installed hooks
 
-Three hooks use `language: system`, meaning the runner will not install the tool for you:
+One hook uses `language: system`, meaning the runner will not install the tool for you:
 
-| Hook         | Requires               | Install                   |
-| ------------ | ---------------------- | ------------------------- |
-| `hadolint`   | `hadolint` on `PATH`   | `brew install hadolint`   |
-| `shellcheck` | `shellcheck` on `PATH` | `brew install shellcheck` |
-| `prettier`   | `prettier` on `PATH`   | `npm install -g prettier` |
+| Hook       | Requires             | Install                   |
+| ---------- | -------------------- | ------------------------- |
+| `prettier` | `prettier` on `PATH` | `npm install -g prettier` |
 
+`shellcheck` and `hadolint` need no system install: they use [shellcheck-py](https://github.com/shellcheck-py/shellcheck-py) and [hadolint-py](https://github.com/AleksaC/hadolint-py), which fetch the tool's binary when the hook environment is installed.
 `shellcheck` skips `*.zsh` files, since ShellCheck has no zsh dialect.
 
 ## Naming convention in `template/`

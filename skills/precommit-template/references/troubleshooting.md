@@ -61,11 +61,11 @@ To avoid it, copy customizations out before re-answering.
 
 ## Hook failures
 
-### `hadolint: command not found` / `shellcheck: ...` / `prettier: ...`
+### `prettier: command not found`
 
-**Cause**: these three hooks use `language: system` — the runner does not install them.
+**Cause**: the `prettier` hook uses `language: system` — the runner does not install it.
 
-**Fix**: install the tool (`brew install hadolint`, `brew install shellcheck`, `npm install -g prettier`), or answer `no` to the corresponding question.
+**Fix**: install the tool (`npm install -g prettier`), or select `biome` as the web formatter instead.
 
 ### `typos` cannot find its config
 
