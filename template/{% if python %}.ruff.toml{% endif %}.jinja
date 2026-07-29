@@ -124,6 +124,8 @@ ignore = [
   "S311",  # pseudorandom generators; fine for statistics, never for crypto
   "S607",  # partial executable path ("git" rather than "/usr/bin/git")
   "SIM105",  # `try/except/pass` in place of `contextlib.suppress`
+  "TC003",  # stdlib typing-only imports are cheap and safe outside TYPE_CHECKING,
+            # and `from __future__ import annotations` (FA) already defers them
   "TRY003",  # long message outside the exception class; overly strict for ValueError
   "TRY201",  # `raise` without the exception name (aligns with SonarLint)
 ]
@@ -148,7 +150,7 @@ extend-immutable-calls = [
 
 [lint.flake8-type-checking]
 # Frameworks that resolve annotations at runtime need their imports to stay
-# importable, so TC001-TC003 must leave these alone.
+# importable, so TC001/TC002 must leave these alone.
 runtime-evaluated-base-classes = [
   "msgspec.Struct",
   "pydantic.BaseModel",
