@@ -7,9 +7,9 @@ on:
   schedule:
     - cron: "0 0 1 * *"
 
+# The app token carries its own `contents: write`; `GITHUB_TOKEN` only fetches the checkout.
 permissions:
-  contents: write # `gh release create` writes the tag and release
-  actions: write # dispatching the docs rebuild
+  contents: read
 
 jobs:
   release:
@@ -20,12 +20,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false # `gh` authenticates with `GITHUB_TOKEN`
+          persist-credentials: false # `gh` authenticates with the app token
+
+      # Releasing as the app, rather than with `GITHUB_TOKEN`, is what lets the
+      # `release` event start the docs rebuild: events raised by `GITHUB_TOKEN`
+      # do not trigger workflows.
+      - name: Mint an app token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: "${{ vars.APP_CLIENT_ID }}"
+          private-key: "${{ secrets.APP_PRIVATE_KEY }}"
+          # Narrow the installation's blanket grant to what `gh release create` needs.
+          permission-contents: write
 
       - name: Create Release
         shell: bash
         env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
         run: |
           # Retrieve previous release tag; `--json` names the field, where the column
           # layout of the default table output is not a stable contract.
@@ -49,14 +61,3 @@ jobs:
               --repo="${GITHUB_REPOSITORY}" \
               --title="${release_tag}" \
               --generate-notes
-
-      # The docs changelog is fetched from the Releases API at build time, and the docs
-      # workflow only runs on pushes to `main`. Dispatch it so the new release is published
-      # instead of waiting for the next merge. A `release` trigger would not work: events
-      # raised by `GITHUB_TOKEN` do not start workflows, and `workflow_dispatch` is one of
-      # the few exceptions to that rule.
-      - name: Rebuild docs with the new release
-        shell: bash
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-        run: gh workflow run docs-pages.yaml --repo="${GITHUB_REPOSITORY}" --ref main

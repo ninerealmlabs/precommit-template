@@ -6,6 +6,10 @@ on: # yamllint disable-line rule:truthy
     branches:
       - main
   pull_request:
+  # The changelog is fetched from the Releases API at build time, so a new release
+  # has to republish the site to appear.
+  release:
+    types: [published]
   workflow_dispatch:
 
 # OIDC deployment; requires Settings -> Pages -> Source: "GitHub Actions".
@@ -29,9 +33,13 @@ jobs:
 
       # renovate: datasource=github-tags depName=astral-sh/setup-uv
       - name: Install uv
+        # zizmor: ignore[cache-poisoning] — `enable-cache` below already excludes the
+        # publishing trigger, but zizmor cannot evaluate the expression statically.
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
-          enable-cache: true
+          # A release-triggered build publishes without a reviewed push behind it, so it
+          # must not restore a cache that any pull request run could have written.
+          enable-cache: ${{ github.event_name != 'release' }}
 
       # Quarto and its pandoc come from `quarto-cli` in uv.lock; no separate install step.
       - name: Install dependencies
@@ -54,7 +62,8 @@ jobs:
   deploy:
     name: Deploy docs
     needs: build
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    # A `release` event runs against `refs/tags/<tag>`, not `refs/heads/main`.
+    if: github.event_name == 'release' || (github.event_name != 'pull_request' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     permissions:
       pages: write # `deploy-pages` publishes

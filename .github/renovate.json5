@@ -5,6 +5,7 @@
     "docker:enableMajor",
     "helpers:pinGitHubActionDigestsToSemver",
     ":automergePr", // ":automergeBranch",
+    ":configMigration",
     ":dependencyDashboard",
     ":disableRateLimiting",
     ":docker",
