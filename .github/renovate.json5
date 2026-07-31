@@ -2,30 +2,31 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   extends: [
     "config:best-practices",
-    "docker:enableMajor",
+    // Supersedes the `helpers:pinGitHubActionDigests` that best-practices already pulls in,
+    // adding the semver `extractVersion` so pinned digests still show a readable version.
     "helpers:pinGitHubActionDigestsToSemver",
     ":automergePr", // ":automergeBranch",
-    ":configMigration",
-    ":dependencyDashboard",
     ":disableRateLimiting",
-    ":docker",
+    // The pre-commit manager is one of the few disabled by default.
     ":enablePreCommit",
     // ":rebaseStalePrs",
-    ":renovatePrefix",
     ":semanticCommits",
     ":separateMultipleMajorReleases",
     ":separateMultipleMinorReleases",
     ":separatePatchReleases",
     ":timezone(America/New_York)",
-    "github>ninerealmlabs/precommit-template//.github/renovate/autoMerge.json5",
-    "github>ninerealmlabs/precommit-template//.github/renovate/customManagers.json5",
-    "github>ninerealmlabs/precommit-template//.github/renovate/labels.json5",
-    "github>ninerealmlabs/precommit-template//.github/renovate/packageRules.json5",
-    "github>ninerealmlabs/precommit-template//.github/renovate/semanticCommits.json5",
+    // Local to this repo; not shared with or consumed by any other repo.
+    // NOTE: presets resolve from the default branch, so edits under
+    // .github/renovate/ do not take effect until merged to main.
+    "local>ninerealmlabs/precommit-template//.github/renovate/autoMerge.json5",
+    "local>ninerealmlabs/precommit-template//.github/renovate/customManagers.json5",
+    "local>ninerealmlabs/precommit-template//.github/renovate/labels.json5",
+    "local>ninerealmlabs/precommit-template//.github/renovate/packageRules.json5",
+    "local>ninerealmlabs/precommit-template//.github/renovate/semanticCommits.json5",
   ],
+  // Already on via config:recommended; stated here because the title below depends on it.
   dependencyDashboard: true,
   dependencyDashboardTitle: "Renovate Dashboard 🤖",
-  ignorePaths: ["**/*.sops.*", "**/.archive/**"],
   schedule: ["before 5am"],
   minimumReleaseAge: "3 days",
   // "pre-commit": {

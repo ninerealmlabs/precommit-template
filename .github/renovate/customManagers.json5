@@ -3,6 +3,10 @@
   customManagers: [
     {
       customType: "regex",
+      // Only the Jinja template needs this. A plain `.pre-commit-config.yaml` is covered by the
+      // built-in `pre-commit` manager (see `:enablePreCommit`), which parses `repo:`/`rev:`
+      // structurally — the `# renovate:` comments in these files are documentation, not config,
+      // and any `versioning=` in them is ignored. Set versioning in packageRules.json5 instead.
       description: "Update pre-commit hook revs in Jinja template",
       managerFilePatterns: [
         "/(^|/)template/\\.pre-commit-config\\.ya?ml(?:\\.jinja)?$/"

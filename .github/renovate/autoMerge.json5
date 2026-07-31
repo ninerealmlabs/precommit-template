@@ -10,7 +10,9 @@
       matchPackageNames: ["ghcr.io/ahgraber/**", "ghcr.io/ninerealmlabs/**"]
     },
     {
-      description: ["Auto-merge updates trusted pre-commit packages"],
+      // Kept in sync with .pre-commit-config.yaml and template/.pre-commit-config.yaml.jinja;
+      // a hook that isn't installed by either doesn't belong in this list.
+      description: ["Auto-merge updates to trusted pre-commit packages"],
       matchDatasources: ["github-tags"],
       automerge: true,
       // automergeType: "branch",
@@ -29,6 +31,8 @@
         "rvben/rumdl-pre-commit",
         "astral-sh/ruff-pre-commit",
         "kynan/nbstripout",
+        "AleksaC/hadolint-py",
+        "shellcheck-py/shellcheck-py",
         "scop/pre-commit-shfmt",
         "biomejs/pre-commit",
         "adrienverge/yamllint",

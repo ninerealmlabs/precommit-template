@@ -75,6 +75,9 @@ For multi-step tasks, state a brief plan defining the step task and associated v
 - Use structured logging where the project uses logging.
 - Run lint/format/test through project tooling when available; do not hand-format code.
 - Write tests for public behavior and regressions, not implementation details.
+{%- if python %}
+- Give executable Python scripts a `uv` shebang, not a system interpreter: `#!/usr/bin/env -S uv run --script`, paired with a PEP 723 `# /// script` block declaring `requires-python` and `dependencies`. This makes the script self-contained and reproducible; `#!/usr/bin/env python3` picks up whatever interpreter and site-packages happen to be on `PATH`.
+{%- endif %}
 
 ## Sandbox Limitations
 

@@ -18,10 +18,6 @@
       labels: ["type/digest"],
     },
     {
-      matchDatasources: ["copier"],
-      addLabels: ["renovate/copier"],
-    },
-    {
       matchDatasources: ["galaxy", "galaxy-collection"],
       addLabels: ["renovate/ansible"],
     },

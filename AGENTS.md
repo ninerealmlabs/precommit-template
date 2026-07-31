@@ -204,6 +204,8 @@ When adding or modifying template features:
 - Respect copier configuration structure in `copier.yaml`
 - Check for Jinja2 syntax errors before committing
 - Maintain consistency with existing pre-commit hook patterns
+- Give executable Python scripts a `uv` shebang, not a system interpreter: `#!/usr/bin/env -S uv run --script`, paired with a PEP 723 `# /// script` block declaring `requires-python` and `dependencies`.
+  This makes the script self-contained and reproducible; `#!/usr/bin/env python3` picks up whatever interpreter and site-packages happen to be on `PATH`.
 - Comments and docstrings describe what exists now (or the rationale for the current design), never what the code used to be.
   No "previously…", "no longer…", "changed from…", or "renamed from…" — that history belongs in commit messages and changelogs.
   When editing, delete stale historical asides you encounter rather than preserving them.
