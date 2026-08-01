@@ -204,6 +204,12 @@ When adding or modifying template features:
 - Respect copier configuration structure in `copier.yaml`
 - Check for Jinja2 syntax errors before committing
 - Maintain consistency with existing pre-commit hook patterns
+- Check that an edit to a shared template leaves output unchanged for every answer combination other than the one you are targeting.
+  A conditional added for one question must not shift whitespace, ordering, or content for the others.
+- If a new requirement doesn't fit an existing template's structure, say so before editing.
+  Reshaping the template is in scope when the alternative is a near-copy of an existing conditional block; propose the reshape and which answer combinations it affects.
+- Keep template conditionals flat.
+  When a new option needs another nested `{% if %}` inside an existing block, split the block or move the condition into the filename rather than deepening it.
 - Give executable Python scripts a `uv` shebang, not a system interpreter: `#!/usr/bin/env -S uv run --script`, paired with a PEP 723 `# /// script` block declaring `requires-python` and `dependencies`.
   This makes the script self-contained and reproducible; `#!/usr/bin/env python3` picks up whatever interpreter and site-packages happen to be on `PATH`.
 - Comments and docstrings describe what exists now (or the rationale for the current design), never what the code used to be.
