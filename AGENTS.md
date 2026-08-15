@@ -346,6 +346,40 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 ```
 
+## Verification Honesty
+
+- Never call a change "confirmed", "verified", or "working" unless you ran the command in this session and read its output.
+  Rendered output is the case that matters here: you do not run `copier copy`, so template output is unverified until a human renders it.
+  Say that, rather than describing output as if you had seen it.
+- If a command was blocked (sandbox permission, network, missing binary), name the exact command and what blocked it, then hand it to the user.
+- Re-read a file immediately before reporting on it.
+  Never report from a snapshot taken earlier in the session — the user edits files between turns.
+
+## Scope Discipline
+
+- Do exactly what was asked.
+  No extra questions in `copier.yaml`, hooks, helper scripts, or refactors that were not requested — propose them in one line at the end instead.
+- Change one thing at a time and report it before starting the next.
+  Do not run several analysis threads in one response.
+
+## Commit Workflow
+
+- Commit only when the user asks, and draft the message at that point, not in advance.
+- Use conventional commits.
+  Keep the subject under 72 characters and the body to 3–5 bullet lines.
+- Before committing, run `prek run --all-files` and `uv run great-docs build`.
+- Expect hooks to fail — gitleaks, zizmor, shellcheck, mdformat, rumdl, commitizen, typos.
+  Report the hook output verbatim and fix the cause.
+  Never pass `--no-verify` or work around a hook silently.
+
+## Terminology and Tone
+
+- Use the vocabulary already in this repo: question, answer, template, rendered output, hook runner, survey.
+  Do not invent jargon, and name a thing after its effect rather than its mechanism.
+- State findings plainly.
+  No flattery, no hedging.
+- Label an unresolved question `OPEN QUESTION` and queue it; do not present it as a conclusion.
+
 ## When Uncertain
 
 If you encounter ambiguity:
