@@ -252,6 +252,8 @@ When adding or modifying template features:
    - Update documentation
 4. **Verify:**
    - Check Jinja2 syntax is valid
+   - Run the hooks on everything changed since `HEAD`, staged or not, including new files.
+     Paths must be NUL-delimited — the template filenames contain spaces: `{ git diff -z --name-only --diff-filter=d HEAD; git ls-files -z --others --exclude-standard; } | xargs -0 prek run --files`
    - Run `uv run great-docs build` to ensure the docs site compiles
    - Flag for human testing with copier
 
@@ -348,10 +350,14 @@ trim_trailing_whitespace = true
 
 ## Verification Honesty
 
+- The required checks are the hooks on everything changed since `HEAD`, `uv run great-docs build`, and — for any change under `template/` — a human `copier copy` render.
+  Run the first two on every change; you cannot run the third, so hand it over explicitly.
+  Slow, or looking unrelated to the change, is not a reason to skip one.
 - Never call a change "confirmed", "verified", or "working" unless you ran the command in this session and read its output.
   Rendered output is the case that matters here: you do not run `copier copy`, so template output is unverified until a human renders it.
   Say that, rather than describing output as if you had seen it.
-- If a command was blocked (sandbox permission, network, missing binary), name the exact command and what blocked it, then hand it to the user.
+- A check is unavailable only when the command itself fails to run (missing binary, permission error, no network).
+  Then name it, quote the error, and give the user the exact command.
 - Re-read a file immediately before reporting on it.
   Never report from a snapshot taken earlier in the session — the user edits files between turns.
 
@@ -367,7 +373,6 @@ trim_trailing_whitespace = true
 - Commit only when the user asks, and draft the message at that point, not in advance.
 - Use conventional commits.
   Keep the subject under 72 characters and the body to 3–5 bullet lines.
-- Before committing, run `prek run --all-files` and `uv run great-docs build`.
 - Expect hooks to fail — gitleaks, zizmor, shellcheck, mdformat, rumdl, commitizen, typos.
   Report the hook output verbatim and fix the cause.
   Never pass `--no-verify` or work around a hook silently.
