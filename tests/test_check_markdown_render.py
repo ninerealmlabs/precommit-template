@@ -555,6 +555,77 @@ def test_broken_anchor_is_reported(tmp_path: Path):
     assert finding.targets_broken == ["#some-heading"]
 
 
+def test_percent_encoded_link_resolves_to_the_file_it_names(tmp_path: Path):
+    """An href is URL syntax: `%20` names a space, so the file is there."""
+    (tmp_path / "my file.md").write_text("# H\n", encoding="utf-8")
+    assert check_markdown_render.render("[x](my%20file.md)\n", "doc.md", tmp_path).targets == {"my%20file.md": True}
+
+
+def test_query_string_is_not_part_of_the_path(tmp_path: Path):
+    (tmp_path / "target.md").write_text("# H\n", encoding="utf-8")
+    assert check_markdown_render.render("[x](target.md?raw=1)\n", "doc.md", tmp_path).targets == {
+        "target.md?raw=1": True
+    }
+
+
+def test_percent_encoded_link_to_a_missing_file_is_still_broken(tmp_path: Path):
+    """Decoding must not turn the check into a rubber stamp."""
+    assert check_markdown_render.render("[x](no%20such.md)\n", "doc.md", tmp_path).targets == {"no%20such.md": False}
+
+
+def test_html_comment_churn_is_not_a_rendering_change(tmp_path: Path):
+    """Comments are not painted, so editing one changes nothing a reader sees."""
+    assert not compare("<!-- note: alpha -->\n\ntext\n", "<!-- note: beta -->\n\ntext\n", tmp_path)
+    assert not compare("text\n", "<!-- added -->\n\ntext\n", tmp_path)
+
+
+def test_text_turned_into_a_comment_is_reported(tmp_path: Path):
+    """Dropping comments must not hide prose that vanished into one."""
+    assert compare("visible words\n", "<!-- visible words -->\n", tmp_path)
+
+
+def test_inline_code_span_keeps_its_interior_spacing(tmp_path: Path):
+    """Spacing inside a code span is content, unlike the prose around it."""
+    assert compare("Run `a  b` now.\n", "Run `a b` now.\n", tmp_path)
+
+
+def test_code_span_rewrapped_across_a_newline_is_not_reported(tmp_path: Path):
+    """CommonMark folds a newline in a code span to a space, so this is neutral churn."""
+    assert not compare("Run `a\nb` now.\n", "Run `a b` now.\n", tmp_path)
+
+
+UNRENDERABLE = '---\nname: s\ndescription: Triggers: "why is this failing"\n---\n\n# Target\n'
+"""A document pandoc rejects outright: the inner `: ` makes the frontmatter invalid YAML."""
+
+
+def test_anchor_into_an_unrenderable_target_is_not_blamed_on_this_file(tmp_path: Path):
+    """A target pandoc cannot render says nothing about its anchors, so this file stays clean.
+
+    The href has to change for the check to bite: `compare_renders` discounts links
+    that were already broken, and an unchanged href is broken on both sides.
+    """
+    (tmp_path / "target.md").write_text(UNRENDERABLE, encoding="utf-8")
+    finding = compare("[x](./target.md#target)\n", "[x](target.md#target)\n", tmp_path)
+    assert not finding.targets_broken
+
+
+def test_anchor_into_a_renderable_target_is_still_checked(tmp_path: Path):
+    """The forgiving path above must not extend to targets that render fine."""
+    (tmp_path / "target.md").write_text("# Target\n", encoding="utf-8")
+    finding = compare("[x](./target.md#target)\n", "[x](target.md#gone)\n", tmp_path)
+    assert finding.targets_broken == ["target.md#gone"]
+
+
+def test_heading_ids_distinguishes_unrenderable_from_headingless(tmp_path: Path):
+    unrenderable = tmp_path / "broken.md"
+    unrenderable.write_text(UNRENDERABLE, encoding="utf-8")
+    headingless = tmp_path / "prose.md"
+    headingless.write_text("Just a paragraph.\n", encoding="utf-8")
+    assert check_markdown_render.heading_ids(unrenderable) is None
+    assert check_markdown_render.heading_ids(headingless) == set()
+    assert check_markdown_render.heading_ids(tmp_path / "absent.md") is None
+
+
 def test_unparsable_frontmatter_is_reported(tmp_path: Path):
     finding = compare("---\nname: s\n---\n\n# T\n", "---\nname: [unclosed\n---\n\n# T\n", tmp_path)
     assert finding.frontmatter_diff
@@ -562,11 +633,25 @@ def test_unparsable_frontmatter_is_reported(tmp_path: Path):
 
 def test_document_pandoc_refuses_is_reported_not_crashed(tmp_path: Path):
     """An unrenderable file must not read as a clean bill of health."""
-    # The inner `: ` makes this invalid YAML, which pandoc rejects outright.
-    broken = '---\nname: s\ndescription: Triggers: "why is this failing"\n---\n\n# T\n'
-    finding = compare(broken, broken + "\nA new paragraph.\n", tmp_path)
+    finding = compare(UNRENDERABLE, UNRENDERABLE + "\nA new paragraph.\n", tmp_path)
     assert finding.unrenderable
     assert finding
+
+
+def test_pandoc_timeout_is_reported_not_crashed(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
+    """A wedged pandoc has to reach the report as a difference, like any other refusal."""
+
+    def wedged(*args, **kwargs):
+        raise subprocess.TimeoutExpired(cmd="pandoc", timeout=check_markdown_render.PANDOC_TIMEOUT)
+
+    # Written first, so `heading_ids` gets as far as pandoc instead of stopping
+    # at the missing file, which returns None for a different reason.
+    (tmp_path / "doc.md").write_text("# T\n", encoding="utf-8")
+    monkeypatch.setattr(check_markdown_render.subprocess, "run", wedged)
+    with pytest.raises(check_markdown_render.PandocError):
+        check_markdown_render.to_html("# T\n")
+    assert check_markdown_render.render("# T\n", "doc.md", tmp_path).error
+    assert check_markdown_render.heading_ids(tmp_path / "doc.md") is None
 
 
 def test_external_urls_are_not_resolved(tmp_path: Path):

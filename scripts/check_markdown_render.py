@@ -68,9 +68,10 @@ import subprocess
 import sys
 import tempfile
 from textwrap import indent
+from urllib.parse import unquote
 import yaml
 
-from bs4 import BeautifulSoup, NavigableString, Tag
+from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
 logger = logging.getLogger(__name__)
 
@@ -83,6 +84,14 @@ URL_SCHEME = re.compile(r"\A[a-zA-Z][a-zA-Z0-9+.-]*:|\A//")
 # the mirror only affects speed.
 RUNNERS = ["prek", "pre-commit"]
 HOOK_CONFIG = ".pre-commit-config.yaml"
+
+# Ceilings on the two subprocesses that can legitimately run long, in seconds.
+# Neither is a performance budget: pandoc takes tens of seconds on a link-heavy
+# document, and a first hook run installs every hook's environment over the
+# network.  They are set far above either so that only a wedged process trips
+# them, failing the run instead of hanging it.
+PANDOC_TIMEOUT = 300
+HOOK_TIMEOUT = 600
 
 # Elements that own a line in the serialized document.  An element holding any
 # of these is emitted as an open/close pair with its children indented beneath;
@@ -218,14 +227,18 @@ def to_html(markdown: str) -> str:
     syntax highlighter injects, which would otherwise dominate the link inventory
     whenever a code block changes length.
     """
-    result = subprocess.run(
-        ["pandoc", "--from", "gfm", "--to", "html", "--no-highlight"],
-        input=markdown,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        check=False,
-    )
+    try:
+        result = subprocess.run(
+            ["pandoc", "--from", "gfm", "--to", "html", "--no-highlight"],
+            input=markdown,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            check=False,
+            timeout=PANDOC_TIMEOUT,
+        )
+    except subprocess.TimeoutExpired as err:
+        raise PandocError(f"did not finish within {PANDOC_TIMEOUT}s") from err
     if result.returncode != 0:
         # A document pandoc refuses is the strongest finding there is -- most
         # often a formatter has mangled the YAML frontmatter -- so this is
@@ -266,6 +279,34 @@ def hoist_inline_whitespace(soup: BeautifulSoup) -> None:
                 getattr(element, place)(NavigableString(" "))
 
 
+def strip_comments(soup: BeautifulSoup) -> None:
+    """Remove HTML comments, which pandoc passes through but no reader ever sees.
+
+    They arrive as a `NavigableString` subclass, so leaving them in place puts
+    their text into the document projection as though it were prose: an edited
+    `<!-- prettier-ignore -->` reads as a rendering change, and the comment's
+    words are indistinguishable from the surrounding paragraph in the diff.
+    """
+    for comment in soup.find_all(string=lambda text: isinstance(text, Comment)):
+        comment.extract()
+
+
+def collapse_text_nodes(soup: BeautifulSoup) -> None:
+    """Collapse runs of whitespace in every text node outside `pre` and `code`.
+
+    Normalizing the tree rather than the serialized HTML is what lets a code span
+    keep its interior spacing, which a reader sees: `collapse` applied to an
+    element's inline HTML in one pass cannot tell a code span's contents from the
+    prose around it, and would flatten `` `a  b` `` to `` `a b` `` unnoticed.
+    """
+    for text in soup.find_all(string=True):
+        if text.find_parent(["pre", "code"]):
+            continue
+        collapsed = collapse(str(text))
+        if collapsed != str(text):
+            text.replace_with(NavigableString(collapsed))
+
+
 def attrs_of(element: Tag) -> str:
     """Render the attributes that affect what a reader sees, in a stable order."""
     pairs = [(name, element.get(name)) for name in SIGNIFICANT_ATTRS if element.get(name) is not None]
@@ -286,7 +327,9 @@ def serialize(node: Tag, depth: int, out: list[str]) -> None:
     """Emit one line per block element, with inline content collapsed onto it."""
     for child in node.children:
         if isinstance(child, NavigableString):
-            text = collapse(str(child)).strip()
+            # Already collapsed by `collapse_text_nodes`, which knows which text
+            # nodes are inside a code span and must keep their spacing.
+            text = str(child).strip()
             if text:
                 out.append("  " * depth + text)
             continue
@@ -311,7 +354,7 @@ def serialize(node: Tag, depth: int, out: list[str]) -> None:
             serialize(child, depth + 1, out)
             out.append("  " * depth + f"</{child.name}>")
         else:
-            out.append("  " * depth + f"<{child.name}{attrs_of(child)}>{collapse(child.decode_contents()).strip()}")
+            out.append("  " * depth + f"<{child.name}{attrs_of(child)}>{child.decode_contents().strip()}")
 
 
 def parse_frontmatter(markdown: str) -> object:
@@ -332,6 +375,10 @@ def link_targets(links: list[str], path: str, root: Path, ids: set[str]) -> dict
         if not link or URL_SCHEME.match(link) or link.startswith(("mailto:", "tel:")):
             continue
         target, _, fragment = link.partition("#")
+        # An href is URL syntax, not a path: `%20` stands for a space in the
+        # filename and a query string is no part of the path at all.  Resolving
+        # the raw href reports every correctly encoded link as broken.
+        target = unquote(target.partition("?")[0])
         if not target:
             # An in-document anchor; pandoc derives heading ids from heading text.
             resolved[link] = fragment in ids
@@ -340,20 +387,27 @@ def link_targets(links: list[str], path: str, root: Path, ids: set[str]) -> dict
         if not file.exists():
             resolved[link] = False
         elif fragment and file.suffix == ".md":
-            resolved[link] = fragment in heading_ids(file)
+            ids_in_target = heading_ids(file)
+            # None means the target could not be rendered, so the anchor cannot
+            # be confirmed either way; count it as present rather than reporting
+            # the target's problem as a broken link in this file.
+            resolved[link] = ids_in_target is None or fragment in ids_in_target
         else:
             resolved[link] = True
     return resolved
 
 
-def heading_ids(file: Path) -> set[str]:
-    """Return the anchor ids pandoc derives for a markdown file's headings."""
+def heading_ids(file: Path) -> set[str] | None:
+    """Return the anchor ids pandoc derives for a markdown file's headings, or None if it cannot be rendered.
+
+    None and the empty set mean different things: a file with no headings has no
+    anchors to match, while a file that would not render tells us nothing about
+    which anchors it has.  The caller has to distinguish the two.
+    """
     try:
         html = to_html(file.read_text(encoding="utf-8"))
     except (OSError, PandocError):
-        # An unreadable target cannot confirm the anchor either way; treat it as
-        # present so a separate problem is not reported as a broken link here.
-        return set()
+        return None
     return {tag["id"] for tag in BeautifulSoup(html, "html.parser").find_all(id=True)}
 
 
@@ -363,7 +417,7 @@ def render(markdown: str, path: str, root: Path) -> Render:
         html = to_html(markdown)
     except PandocError as err:
         return Render(
-            document=[f"<pandoc refused this document: {err}>"],
+            document=[f"<pandoc could not render this document: {err}>"],
             links=Counter(),
             targets={},
             frontmatter=parse_frontmatter(markdown),
@@ -371,7 +425,12 @@ def render(markdown: str, path: str, root: Path) -> Render:
         )
 
     soup = BeautifulSoup(html, "html.parser")
+    strip_comments(soup)
+    # Hoisting reads the text nodes at an inline element's edges, so it runs
+    # before they are rewritten; collapsing first would not change its outcome,
+    # but the order keeps each pass reasoning about untouched input.
     hoist_inline_whitespace(soup)
+    collapse_text_nodes(soup)
 
     links = [str(tag.get("href") or tag.get("src") or "") for tag in soup.find_all(["a", "img"])]
     ids = {tag["id"] for tag in soup.find_all(id=True)}
@@ -505,7 +564,17 @@ def run_hooks(runner: str, hooks: list[str], files: list[str], workdir: Path) ->
         # The hook id is positional and has to precede `--files`, whose trailing
         # list would otherwise swallow it as a path and run every hook instead.
         argv = [runner, "run", *([hook] if hook else []), "--color=never", "--files", *files]
-        result = subprocess.run(argv, cwd=workdir, capture_output=True, text=True, check=False)  # noqa: S603
+        try:
+            result = subprocess.run(  # noqa: S603
+                argv, cwd=workdir, capture_output=True, text=True, check=False, timeout=HOOK_TIMEOUT
+            )
+        except subprocess.TimeoutExpired:
+            # Half a hook run leaves the mirror in an arbitrary state, so there is
+            # nothing left worth comparing it against.  The exception says nothing
+            # the message does not, so its traceback is noise: TRY400 wants
+            # `logger.exception` here, and every other fatal exit logs an error.
+            logger.error("%s did not finish within %ds", label, HOOK_TIMEOUT)  # noqa: TRY400
+            sys.exit(2)
         output = (result.stdout + result.stderr).strip()
         logger.debug("%s\n%s", shlex.join(argv), output)
 
@@ -541,8 +610,13 @@ def compare_hooked(files: list[str], runner: str, hooks: list[str], root: Path) 
             if before == after:
                 continue
             rewritten += 1
-            # Renders resolve link targets against the real tree, not the mirror,
-            # so a file the corpus filter excluded still counts as present.
+            # Both renders resolve link targets against the real tree, not the
+            # mirror.  That holds the rest of the repository still while only this
+            # file's content varies, so a broken target is attributable to this
+            # file's own rewrite rather than to something a hook did elsewhere --
+            # damage a hook does to a link's *destination* belongs to the report
+            # for that destination.  It also keeps a file the corpus filter
+            # excluded counting as present.
             if finding := compare_renders(path, render(before, path, root), render(after, path, root)):
                 findings.append(finding)
 
