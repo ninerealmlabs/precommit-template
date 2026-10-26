@@ -35,7 +35,7 @@ jobs:
       - name: Install uv
         # zizmor: ignore[cache-poisoning] — `enable-cache` below already excludes the
         # publishing trigger, but zizmor cannot evaluate the expression statically.
-        uses: astral-sh/setup-uv@18d369b23da25a81e9458561248e1aafff6a70fa # v10.3.1
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
           # A release-triggered build publishes without a reviewed push behind it, so it
           # must not restore a cache that any pull request run could have written.
