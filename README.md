@@ -12,7 +12,7 @@ Hooks are declared in a `.pre-commit-config.yaml`, which is read by both [prek](
 
 We will use [uv](https://docs.astral.sh/uv/) to install and run tools in isolated environments.
 
-If `prettier` is selected as the web formatter, its hook expects to find the tool available in your path.
+If your repo already uses `prettier`, the template keeps it as the web formatter, and its hook expects to find the tool available in your path.
 You may need to install it.
 
 ### Install `copier` and a hook runner
@@ -62,8 +62,10 @@ The hook runner is **not** a survey question.
 Both runners read the same `.pre-commit-config.yaml`, so the detected value only decides which one the generated comments and post-copy instructions point at.
 It is deliberately not recorded in `.copier-answers.yaml`, so it is recomputed on every run and follows your repo if you switch runners.
 
-`web_format_tool` **is** a survey question, since the two tools produce genuinely different configs.
-Detection only pre-selects the prompt's default; your answer is recorded in `.copier-answers.yaml` and reused on every `copier update`.
+`web_format_tool` is not a survey question either.
+New projects get Biome; Prettier is kept only for a repo that already uses it.
+Like the hook runner, it is not recorded in `.copier-answers.yaml` and is recomputed on every run.
+To move a Prettier project to Biome, run `copier update --trust --data web_format_tool=biome` once; after that, detection finds the Biome hook.
 
 ## Features
 
@@ -72,23 +74,18 @@ Detection only pre-selects the prompt's default; your answer is recorded in `.co
 - [prek](https://github.com/j178/prek) - A fast Rust reimplementation of pre-commit, and the default hook runner
 - [pre-commit](https://pre-commit.com/) - The original git hook framework, selectable as an alternative
 - [EditorConfig](https://editorconfig.org/) - Maintains consistent coding styles across various editors and IDEs
-- [Biome](https://biomejs.dev/) - A fast formatter and linter for JS, TS, JSON, CSS, and HTML; the default web
-  formatter
-- [check-jsonschema](https://github.com/python-jsonschema/check-jsonschema) - Validates GitHub Actions workflows
-  and composite actions against the SchemaStore schemas
-- [hadolint](https://github.com/hadolint/hadolint) - A smarter Dockerfile linter that ensures best practice Docker
-  images
+- [Biome](https://biomejs.dev/) - A fast formatter and linter for JS, TS, JSON, CSS, and HTML; the default web formatter.
+  It also formats YAML whenever `yaml` is enabled, alongside yamllint for linting
+- [check-jsonschema](https://github.com/python-jsonschema/check-jsonschema) - Validates GitHub Actions workflows and composite actions against the SchemaStore schemas
+- [hadolint](https://github.com/hadolint/hadolint) - A smarter Dockerfile linter that ensures best practice Docker images
 - [mdformat](https://github.com/hukkin/mdformat) - A markdown formatter
-- [Prettier](https://github.com/prettier/prettier) - Opinionated code formatter (JS, TS, JSON, CSS, HTML, Markdown,
-  YAML), selectable as an alternative to Biome
-- [ruff](https://github.com/astral-sh/ruff) - An extremely fast Python linter and code formatter; also formats
-  python code blocks inside markdown when both `python` and `markdown` are enabled
+- [Prettier](https://github.com/prettier/prettier) - Opinionated code formatter (JS, TS, JSON, CSS, HTML, Markdown, YAML), kept as the web formatter for repos that already use it
+- [ruff](https://github.com/astral-sh/ruff) - An extremely fast Python linter and code formatter; also formats python code blocks inside markdown when both `python` and `markdown` are enabled
 - [rumdl](https://github.com/rvben/rumdl-pre-commit?tab=readme-ov-file) - A markdown linter and formatter
 - [shellcheck](https://github.com/koalaman/shellcheck) - A static analysis tool for shell scripts (sh, bash)
 - [typos](https://github.com/crate-ci/typos) - A source code spell checker
 - [yamllint](https://github.com/adrienverge/yamllint) - A linter for YAML files
-- [zizmor](https://github.com/zizmorcore/zizmor) - Audits the security posture of GitHub Actions workflows;
-  `check-jsonschema` validates their shape, not their safety
+- [zizmor](https://github.com/zizmorcore/zizmor) - Audits the security posture of GitHub Actions workflows; `check-jsonschema` validates their shape, not their safety
 
 ### Markdown render check (optional)
 
@@ -203,5 +200,4 @@ great-docs skill install https://ninerealmlabs.github.io/precommit-template/
    copier recopy --trust --vcs-ref "HEAD" /path/to/precommit-template  --answers-file .copier-answers.yaml
    ```
 
-   `--trust` is required: `copier.yaml` loads `extensions/detect.py`, which inspects the
-   target repo to pre-select the `hook_runner` and `web_format_tool` defaults.
+   `--trust` is required: `copier.yaml` loads `extensions/detect.py`, which inspects the target repo to detect the `hook_runner` and `web_format_tool` values.

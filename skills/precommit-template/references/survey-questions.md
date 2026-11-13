@@ -26,30 +26,28 @@ Every question except `markdown_render_check` defaults to `true` (or to a detect
 | `github_actions`            | bool | `true`    | Validate GitHub Actions workflows and audit their security posture?                           |
 | `shell`                     | bool | `true`    | Lint and format shell scripts?                                                                |
 | `web_format`                | bool | `true`    | Lint and format JS/TS/JSON/HTML/CSS and related files?                                        |
-| `web_format_tool`           | str  | detected  | Select the web formatter (`biome` or `prettier`)                                              |
 | `yaml`                      | bool | `true`    | Lint and format YAML?                                                                         |
 | `typos`                     | bool | `true`    | Check for typos?                                                                              |
 
-`web_format_tool` is only asked when `web_format` is `true`.
 `markdown_render_check` is only asked when `markdown` is `true`, and `markdown_render_check_dir` only when both are.
 
 ### What each answer controls
 
-| Answer                    | Config files written                           | Hooks added                                                |
-| ------------------------- | ---------------------------------------------- | ---------------------------------------------------------- |
-| `ai`                      | `AGENTS.md`                                    | —                                                          |
-| `conventional_commits`    | —                                              | `commitizen`; adds `pre-push` and `commit-msg` hook types  |
-| `editorconfig`            | `.editorconfig`                                | `editorconfig-checker`                                     |
-| `markdown`                | `.mdformat.toml`, `.rumdl.toml`                | `mdformat`, `rumdl-fmt`                                    |
-| `markdown_render_check`   | `<dir>/check_markdown_render.py`               | —                                                          |
-| `python`                  | `.ruff.toml`, `tests/test_*_security_audit.py` | `ruff-check`, `ruff-format`, `nbstripout`                  |
-| `docker`                  | `.hadolint.yaml`                               | `hadolint`                                                 |
-| `github_actions`          | —                                              | `check-github-workflows`, `check-github-actions`, `zizmor` |
-| `shell`                   | `.shellcheckrc`                                | `shellcheck`, `shfmt`                                      |
-| `web_format` + `biome`    | `.biome.jsonc`                                 | `biome-check`                                              |
-| `web_format` + `prettier` | `.prettierrc.yaml`, `.prettierignore`          | `prettier` (system)                                        |
-| `yaml`                    | `.yamllint.yaml`                               | `yamllint`                                                 |
-| `typos`                   | `.typos.toml`                                  | `typos`                                                    |
+| Answer                            | Config files written                           | Hooks added                                                |
+| --------------------------------- | ---------------------------------------------- | ---------------------------------------------------------- |
+| `ai`                              | `AGENTS.md`                                    | —                                                          |
+| `conventional_commits`            | —                                              | `commitizen`; adds `pre-push` and `commit-msg` hook types  |
+| `editorconfig`                    | `.editorconfig`                                | `editorconfig-checker`                                     |
+| `markdown`                        | `.mdformat.toml`, `.rumdl.toml`                | `mdformat`, `rumdl-fmt`                                    |
+| `markdown_render_check`           | `<dir>/check_markdown_render.py`               | —                                                          |
+| `python`                          | `.ruff.toml`, `tests/test_*_security_audit.py` | `ruff-check`, `ruff-format`, `nbstripout`                  |
+| `docker`                          | `.hadolint.yaml`                               | `hadolint`                                                 |
+| `github_actions`                  | —                                              | `check-github-workflows`, `check-github-actions`, `zizmor` |
+| `shell`                           | `.shellcheckrc`                                | `shellcheck`, `shfmt`                                      |
+| `web_format` + `biome`, or `yaml` | `.biome.jsonc`                                 | `biome-check`                                              |
+| `web_format` + `prettier`         | `.prettierrc.yaml`, `.prettierignore`          | `prettier` (system)                                        |
+| `yaml`                            | `.yamllint.yaml`                               | `yamllint`                                                 |
+| `typos`                           | `.typos.toml`                                  | `typos`                                                    |
 
 Hooks that are always present regardless of answers: `forbid-yml`, `forbid-rej`, the `pre-commit/pre-commit-hooks` set (large files, merge conflicts, private keys, case conflicts, AST, JSON/TOML/YAML syntax, EOF, line endings, trailing whitespace), `remove-crlf`, `fix-smartquotes`, `fix-ligatures`, `gitleaks`, and `strip-exif`.
 
@@ -76,8 +74,9 @@ Both runners read the same `.pre-commit-config.yaml`, so a wrong guess is cosmet
 
 ### `web_format_tool`
 
-A real question whose _default_ is detected, because biome and prettier need different config files.
-The answer is recorded and reused on every update.
+Not a question, and not recorded in `.copier-answers.yaml`; it is recomputed on every run.
+New projects get `biome`; `prettier` is kept only for a repo that already uses it.
+The value only matters when `web_format` is `true`.
 
 Detection order:
 
@@ -91,6 +90,8 @@ Detection order:
 Run `copier update --trust --answers-file .copier-answers.yaml` and give a different answer at the prompt.
 
 Copier deletes files gated on the old answer and creates files gated on the new one.
-Switching `web_format_tool` from `biome` to `prettier` removes `.biome.jsonc` and adds `.prettierrc.yaml` and `.prettierignore`; any local edits to the removed file are lost, so copy them somewhere safe first.
+To move a Prettier project to Biome, run `copier update --trust --data web_format_tool=biome` once; after that, detection finds the Biome hook.
+This removes `.prettierrc.yaml` and `.prettierignore` and adds `.biome.jsonc` (or, with `yaml` on, widens it to web files); any local edits to the removed files are lost, so copy them somewhere safe first.
+Biome then reformats the project's JS/TS/JSON/CSS/HTML files on the next hook run.
 
 Answering `no` to a question that was previously `yes` removes that tool's config file and hook block.

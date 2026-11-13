@@ -106,20 +106,34 @@ web_format:
   help: "Lint and format JS/TS/JSON/HTML/CSS and related files?"
   default: true
 
+# Detected rather than asked: biome is the only formatter offered to new projects, and prettier is supported
+# only so a repo that already uses it keeps its setup. `when: false` keeps it out of `.copier-answers.yaml`,
+# so it is recomputed on every run from the repo's hooks, config files, and `package.json`.
 web_format_tool:
   type: str
-  help: "Select the web formatter"
   choices:
     - biome
     - prettier
-  # Detected from the target repo so an existing setup is preserved; falls back to biome.
   default: "{{ detect_web_format_tool(_copier_conf.dst_path) }}"
-  when: "{{ web_format }}"
+  when: false
+
+# Biome formats JS/TS/JSON/HTML/CSS. Kept apart from `biome_hook`, which is also true for YAML alone.
+biome_web:
+  type: bool
+  default: "{{ web_format and web_format_tool == 'biome' }}"
+  when: false
 
 yaml:
   type: bool
   help: "Lint and format YAML?"
   default: true
+
+# Biome is the YAML formatter, so its hook and `.biome.jsonc` render whenever `yaml` is on, even for prettier
+# projects or `web_format: false`. It sits after `yaml` because a default can only reference answers above it.
+biome_hook:
+  type: bool
+  default: "{{ biome_web or yaml }}"
+  when: false
 
 typos:
   type: bool

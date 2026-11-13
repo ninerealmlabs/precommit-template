@@ -75,7 +75,7 @@ Survey questions
 ----------------------------------------------------------------------
 
 Defined in `copier.yaml`. All are booleans defaulting to true, except
-`web_format_tool` and `markdown_render_check_dir` (strings) and
+`markdown_render_check_dir` (a string) and
 `markdown_render_check` (a boolean defaulting to false). Answers are
 recorded in `.copier-answers.yaml`.
 
@@ -96,8 +96,6 @@ recorded in `.copier-answers.yaml`.
   security posture?
 - shell: Lint and format shell scripts?
 - web_format: Lint and format JS/TS/JSON/HTML/CSS and related files?
-- web_format_tool: Select the web formatter, biome or prettier.
-  Asked only when web_format is true.
 - yaml: Lint and format YAML?
 - typos: Check for typos?
 
@@ -130,10 +128,12 @@ What each answer produces:
   `dependabot.yaml`, and a top-level `action.yaml`, so they are inert in a
   repo with none of those.
 - shell -> .shellcheckrc; shellcheck (via shellcheck-py) and shfmt hooks
-- web_format + biome -> .biome.jsonc; biome-check hook
+- web_format + biome, or yaml -> .biome.jsonc; biome-check hook. Biome
+  formats web files only when it is the web formatter, and YAML whenever
+  yaml is on. Markdown is left to mdformat and rumdl.
 - web_format + prettier -> .prettierrc.yaml and .prettierignore; prettier
   hook (system)
-- yaml -> .yamllint.yaml; yamllint hook
+- yaml -> .yamllint.yaml; yamllint hook (lint), plus Biome (format)
 - typos -> .typos.toml; typos hook
 
 ----------------------------------------------------------------------
@@ -163,9 +163,9 @@ web_format_tool
   Detected from an existing `.pre-commit-config.yaml`, biome or prettier
   config files, or `package.json` dependencies. Falls back to biome.
 
-  This is a real question, because the two tools need genuinely different
-  config files. Detection only pre-selects the prompt's default; your answer
-  is recorded in `.copier-answers.yaml` and reused on every update.
+  Not a question: it is a computed value that is excluded from
+  `.copier-answers.yaml` and recomputed on every run. New projects get biome;
+  prettier is kept only for a repo that already uses it.
 
 ----------------------------------------------------------------------
 Tools configured
@@ -178,7 +178,7 @@ Tools configured
 - EditorConfig (https://editorconfig.org/): consistent coding styles across
   editors and IDEs.
 - Biome (https://biomejs.dev/): fast formatter and linter for JS, TS, JSON,
-  CSS, and HTML; the default web formatter.
+  CSS, and HTML; the default web formatter. Also the YAML formatter.
 - Prettier (https://prettier.io/): opinionated formatter for JS, TS, JSON,
   CSS, HTML, Markdown, and YAML; the alternative to Biome.
 - hadolint (https://github.com/hadolint/hadolint): Dockerfile linter.
@@ -261,8 +261,9 @@ Changing an answer: re-run `copier update --trust` and answer differently at
 the prompt. Files gated on the old answer are deleted and files gated on the
 new one are created. A rename renders as delete-then-create, which discards
 local edits with no conflict marker, so move anything worth keeping out of
-the way first. Switching web_format_tool from biome to prettier removes
-.biome.jsonc and adds .prettierrc.yaml and .prettierignore.
+the way first. To move a Prettier project to Biome, run
+`copier update --trust --data web_format_tool=biome` once; this removes
+.prettierrc.yaml and .prettierignore and adds .biome.jsonc.
 
 ----------------------------------------------------------------------
 Troubleshooting
@@ -284,7 +285,8 @@ Survey aborts partway through
 
 prettier: command not found
   The prettier hook uses `language: system`; the runner does not install it.
-  Install prettier or select biome as the web formatter instead.
+  Install prettier, or move to biome with
+  `copier update --trust --data web_format_tool=biome`.
 
 typos cannot find its config
   The typos hook may require `.typos.toml` to already be committed before

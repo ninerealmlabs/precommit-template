@@ -22,8 +22,7 @@ metadata:
 # Pre-commit Template
 
 A Copier template that generates a `.pre-commit-config.yaml` plus matching tool configuration files for a repository.
-Hooks are declared once and read by both [prek](https://github.com/j178/prek) (the default runner) and
-[pre-commit](https://pre-commit.com/).
+Hooks are declared once and read by both [prek](https://github.com/j178/prek) (the default runner) and [pre-commit](https://pre-commit.com/).
 
 ## Quick start
 
@@ -60,7 +59,8 @@ skills/precommit-template/
 | Add hooks to a repo for the first time   | `copier copy --trust gh:ninerealmlabs/precommit-template .` |
 | Pull in newer template revisions         | `copier update --trust --answers-file .copier-answers.yaml` |
 | Re-render with the same answers          | `copier recopy --trust --answers-file .copier-answers.yaml` |
-| Change an answer (e.g. biome → prettier) | `copier update --trust` and re-answer at the prompt         |
+| Change an answer (e.g. disable `docker`) | `copier update --trust` and re-answer at the prompt         |
+| Move a Prettier project to Biome         | `copier update --trust --data web_format_tool=biome`        |
 | Run every hook now                       | `prek run --all-files`                                      |
 | Run one hook                             | `prek run --all-files <hook-id>`                            |
 | Install the git hooks                    | `prek install`                                              |
@@ -86,8 +86,8 @@ The hook runner is **not** a survey question and is **not** recorded in `.copier
 Both runners read the same `.pre-commit-config.yaml`, so the detected value only decides which runner the generated comments and post-copy messages name.
 It is recomputed on every run, so it follows the repo if you switch runners.
 
-`web_format_tool` **is** a question, because biome and prettier need genuinely different config files.
-Detection only pre-selects the prompt's default; the answer is recorded and reused on every update.
+`web_format_tool` is computed the same way.
+New projects get biome; prettier is kept only for a repo that already uses it.
 
 ### Conditional file generation
 
@@ -140,12 +140,9 @@ Local edits to a file that gets deleted are lost, so move anything worth keeping
 
 ## Reference files
 
-- [references/survey-questions.md](references/survey-questions.md) — every question, its default, and the
-  files and hooks it controls.
-- [references/generated-files.md](references/generated-files.md) — the full map from answer to generated
-  file, and which hooks read each config.
-- [references/troubleshooting.md](references/troubleshooting.md) — error patterns and fixes for failed
-  copies, updates, and hook runs.
+- [references/survey-questions.md](references/survey-questions.md) — every question, its default, and the files and hooks it controls.
+- [references/generated-files.md](references/generated-files.md) — the full map from answer to generated file, and which hooks read each config.
+- [references/troubleshooting.md](references/troubleshooting.md) — error patterns and fixes for failed copies, updates, and hook runs.
 
 ## Gotchas
 

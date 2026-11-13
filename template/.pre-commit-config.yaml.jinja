@@ -166,7 +166,7 @@ repos:
     hooks:
       # - id: rumdl      # Lint only (fails on issues)
       #   stages: [pre-commit]
-      - id: rumdl-fmt  # Auto-format (fixes what it can)
+      - id: rumdl-fmt # Auto-format (fixes what it can)
         stages: [pre-commit]
   {%- endif %}{% if python %}
   # renovate: datasource=github-tags depName=astral-sh/ruff-pre-commit
@@ -180,7 +180,7 @@ repos:
       - id: ruff-format
         name: Format with Ruff
         {%- if markdown %}
-        types_or: [python, pyi, jupyter, markdown]  # also formats python blocks in md
+        types_or: [python, pyi, jupyter, markdown] # also formats python blocks in md
         {%- endif %}
         stages: [pre-commit]
   # renovate: datasource=github-tags depName=kynan/nbstripout
@@ -237,7 +237,7 @@ repos:
           - --ignore-unknown
           - --no-error-on-unmatched-pattern
         stages: [pre-commit]
-  {%- endif %}{% if web_format and web_format_tool == "biome" %}
+  {%- endif %}{% if biome_hook %}
   # renovate: datasource=github-tags depName=biomejs/pre-commit
   - repo: https://github.com/biomejs/pre-commit
     rev: v2.6.7

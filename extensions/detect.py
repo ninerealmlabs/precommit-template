@@ -1,9 +1,9 @@
-"""Jinja globals that seed copier answers from an existing project's layout.
+"""Jinja globals that detect copier values from an existing project's layout.
 
 Copier renders question defaults with the template's Jinja environment, so registering these helpers as globals
 lets `copier.yaml` adopt whichever hook runner and web formatter a repository already uses instead of imposing
-the template's preference on an established project. Answers are then recorded in `.copier-answers.yaml`, so
-detection only runs the first time a project is templated.
+the template's preference on an established project. Both values are hidden from the survey and kept out of
+`.copier-answers.yaml`, so detection runs on every `copier copy` and `copier update`.
 
 Every helper falls back to the template's preferred tool and swallows filesystem errors: an exception raised
 while rendering a question default aborts the whole survey.
@@ -80,6 +80,13 @@ _PRETTIER_CONFIGS = (
 )
 
 _BIOME_HOOK = re.compile(r"biomejs/pre-commit|id:\s*[\"']?biome")
+
+# The template renders the Biome hook and config for YAML formatting alone. Such a config's `files.includes`
+# names only YAML globs, so it says nothing about the web formatter. The first `includes` key is
+# `files.includes`; later ones belong to `overrides`.
+_BIOME_INCLUDES = re.compile(r'"includes"\s*:\s*\[(.*?)\]', re.DOTALL)
+_JSON_STRING = re.compile(r'"((?:[^"\\]|\\.)*)"')
+_YAML_GLOB = re.compile(r"\.(?:ya?ml|\{ya?ml(?:,ya?ml)?\})$")
 _PRETTIER_HOOK = re.compile(r"mirrors-prettier|id:\s*[\"']?prettier")
 
 _BIOME_PACKAGE = "@biomejs/biome"
@@ -194,12 +201,31 @@ def detect_hook_runner(dst_path: Any) -> str:
     return PREFERRED_HOOK_RUNNER
 
 
+def _formats_only_yaml(config_text: str) -> bool:
+    """Return whether a Biome config's `files.includes` names YAML globs and nothing else."""
+    match = _BIOME_INCLUDES.search(config_text)
+    if match is None:
+        # Without `files.includes`, Biome formats every language it supports.
+        return False
+    globs = [glob for glob in _JSON_STRING.findall(match.group(1)) if not glob.startswith("!")]
+    return bool(globs) and all(_YAML_GLOB.search(glob) for glob in globs)
+
+
+def _biome_configs(root: Path) -> list[str]:
+    return [_read_text(root / name) for name in _BIOME_CONFIGS if (root / name).is_file()]
+
+
+def _biome_formats_web(root: Path) -> bool:
+    """Return whether Biome in this project formats more than YAML; true when there is no Biome config."""
+    return not any(_formats_only_yaml(text) for text in _biome_configs(root))
+
+
 def _hooked_web_format_tool(root: Path) -> str | None:
-    """Identify the formatter from a pre-commit config this template rendered previously."""
+    """Identify the formatter from the hooks in the project's pre-commit config."""
     found: set[str] = set()
     for name in _PRE_COMMIT_CONFIGS:
         text = _read_text(root / name)
-        if _BIOME_HOOK.search(text):
+        if _BIOME_HOOK.search(text) and _biome_formats_web(root):
             found.add("biome")
         if _PRETTIER_HOOK.search(text):
             found.add("prettier")
@@ -209,7 +235,7 @@ def _hooked_web_format_tool(root: Path) -> str | None:
 def _configured_web_format_tool(root: Path) -> str | None:
     """Identify the formatter from its own config files."""
     found: set[str] = set()
-    if any((root / name).is_file() for name in _BIOME_CONFIGS):
+    if any(not _formats_only_yaml(text) for text in _biome_configs(root)):
         found.add("biome")
     if any((root / name).is_file() for name in _PRETTIER_CONFIGS):
         found.add("prettier")

@@ -65,7 +65,7 @@ To avoid it, copy customizations out before re-answering.
 
 **Cause**: the `prettier` hook uses `language: system` — the runner does not install it.
 
-**Fix**: install the tool (`npm install -g prettier`), or select `biome` as the web formatter instead.
+**Fix**: install the tool (`npm install -g prettier`), or move to Biome with `copier update --trust --data web_format_tool=biome`.
 
 ### `typos` cannot find its config
 

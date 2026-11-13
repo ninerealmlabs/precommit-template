@@ -32,8 +32,8 @@ kept current with `copier update`.
 
 ## Survey questions
 
-Each is a boolean defaulting to true, except `web_format_tool`, `markdown_render_check_dir`, and
-`markdown_render_check` (which defaults to false).
+Each is a boolean defaulting to true, except `markdown_render_check_dir` and `markdown_render_check`
+(which defaults to false).
 
 - `ai`: generate `AGENTS.md`
 - `conventional_commits`: add commitizen, plus `pre-push` and `commit-msg` hook types
@@ -52,8 +52,8 @@ Each is a boolean defaulting to true, except `web_format_tool`, `markdown_render
   patterns to `.github/` and a top-level `action.yaml`
 - `shell`: generate `.shellcheckrc`, add shellcheck and shfmt
 - `web_format`: enable JS/TS/JSON/HTML/CSS formatting
-- `web_format_tool`: `biome` (default) or `prettier`; asked only when `web_format` is true
-- `yaml`: generate `.yamllint.yaml`, add yamllint
+- `yaml`: generate `.yamllint.yaml`, add yamllint; Biome formats YAML (generating `.biome.jsonc` and the
+  biome-check hook even when Biome is not the web formatter)
 - `typos`: generate `.typos.toml`, add typos
 
 ## Detected values
@@ -61,7 +61,9 @@ Each is a boolean defaulting to true, except `web_format_tool`, `markdown_render
 - hook runner: from installed git hook shims, a `prek.toml`, CI invocations, or `PATH`; falls back to
   `prek`. Not a question and not recorded in `.copier-answers.yaml` — recomputed on every run.
 - `web_format_tool`: from an existing `.pre-commit-config.yaml`, biome/prettier config files, or
-  `package.json` dependencies; falls back to `biome`. Detection only sets the prompt default.
+  `package.json` dependencies; falls back to `biome`. Not a question and not recorded — recomputed on
+  every run. Prettier is kept only for a repo that already uses it; move to Biome with
+  `copier update --trust --data web_format_tool=biome`.
 
 ## Optional
 

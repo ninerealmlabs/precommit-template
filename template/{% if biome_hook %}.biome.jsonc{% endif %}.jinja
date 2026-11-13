@@ -1,10 +1,16 @@
 {%- raw -%}
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.14/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.6.7/schema.json",
   "root": true,
 
   "files": {
-    "includes": ["**/*.{js,ts,jsx,tsx,json,jsonc,css,html}", "!!**/node_modules", "!!**/dist", "!!**/build"],
+{%- endraw %}
+{#- Markdown stays out: mdformat and rumdl own it, and the biome-check hook passes `.md` files to biome. #}
+{%- set web_exts = ["js", "ts", "jsx", "tsx", "json", "jsonc", "css", "html"] if biome_web else [] %}
+{%- set yaml_exts = ["yaml", "yml"] if yaml else [] %}
+{%- set formatted_glob = "**/*.{" ~ (web_exts + yaml_exts) | join(",") ~ "}" %}
+    "includes": {{ [formatted_glob, "!!**/node_modules", "!!**/dist", "!!**/build"] | tojson }},
+{%- raw %}
     "ignoreUnknown": true
   },
 
@@ -17,7 +23,7 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "preset": "recommended"
     }
   },
   "assist": {
@@ -73,5 +79,11 @@
       "enabled": true
     }
   }
+{%- endraw %}{% if yaml %},
+
+  // Matches `.yamllint.yaml`, whose `brackets` rule allows no spaces inside `[]`.
+  // Biome's `yaml` settings have no `bracketSpacing`, so this override sets it for YAML files only.
+  "overrides": [{ "includes": ["**/*.{yaml,yml}"], "formatter": { "bracketSpacing": false } }]
+{%- endif %}{% raw %}
 }
 {%- endraw %}

@@ -21,10 +21,8 @@ You do **not** directly test rendered templates—human users handle local valid
 
 - **Copier** (v9+) - Template rendering and project generation tool
 - **Jinja2** - Template engine for conditional file generation
-- **prek** / **pre-commit** - Git hook runners (what templates configure); `prek` is the default, both read the
-  generated `.pre-commit-config.yaml`
-- **Great Docs** - Documentation site generator, rendering through **Quarto** (pinned in `uv.lock` via
-  `quarto-cli`, which bundles a matching pandoc)
+- **prek** / **pre-commit** - Git hook runners (what templates configure); `prek` is the default, both read the generated `.pre-commit-config.yaml`
+- **Great Docs** - Documentation site generator, rendering through **Quarto** (pinned in `uv.lock` via `quarto-cli`, which bundles a matching pandoc)
 - **uv** - Fast Python package and project manager
 
 ### Repository Structure
@@ -72,7 +70,18 @@ Loading a Jinja extension requires `--trust`.
 
 `hook_runner` is a computed value (`when: false`), not a question: both runners read the same `.pre-commit-config.yaml`, so the value only selects which one generated comments and messages name.
 Being hidden, it is excluded from `.copier-answers.yaml` and recomputed on every run.
-`web_format_tool` stays a question — the two tools need different config files — and detection only supplies its default.
+`web_format_tool` is computed the same way.
+New projects get `biome`; `prettier` is supported only so a repo that already uses it keeps its setup.
+`--data web_format_tool=biome` overrides detection for one run, which is how a Prettier project moves to Biome.
+
+Two more computed values keep "Biome formats web files" apart from "the Biome hook is rendered":
+
+- `biome_web`: Biome is the web formatter (`web_format` on and `web_format_tool == "biome"`).
+- `biome_hook`: `biome_web or yaml`, since Biome also formats YAML.
+  It gates `.biome.jsonc` and the biome-check hook.
+
+A Prettier project with `yaml` on therefore carries the Biome hook and a `.biome.jsonc` whose `files.includes` lists only YAML.
+Detection ignores that YAML-only Biome evidence, so it does not mistake the YAML formatter for the web formatter.
 
 **Jinja2 patterns in this repo:**
 
@@ -321,13 +330,12 @@ web_format:
 
 web_format_tool:
   type: str
-  help: Select the web formatter
   choices:
     - biome
     - prettier
   # Detected from the target repo so an existing setup is preserved; falls back to biome.
   default: '{{ detect_web_format_tool(_copier_conf.dst_path) }}'
-  when: '{{ web_format }}'
+  when: false
 ```
 
 ### Example 3: Well-Documented Templates
