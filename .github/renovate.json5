@@ -24,9 +24,11 @@
     "local>ninerealmlabs/precommit-template//.github/renovate/packageRules.json5",
     "local>ninerealmlabs/precommit-template//.github/renovate/semanticCommits.json5",
   ],
-  // Already on via config:recommended; stated here because the title below depends on it.
-  dependencyDashboard: true,
-  dependencyDashboardTitle: "Renovate Dashboard 🤖",
+  dependencyDashboard: {
+    // Already on via config:recommended; stated here because the title depends on it.
+    enabled: true,
+    title: "Renovate Dashboard 🤖",
+  },
   schedule: ["before 5am"],
   minimumReleaseAge: "3 days",
   // "pre-commit": {
