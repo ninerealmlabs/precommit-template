@@ -12,5 +12,22 @@
       ],
       versioning: "loose",
     },
+    {
+      // One PR for the biome-check hook rev and the `.biome.jsonc` schema URL (customManagers.json5),
+      // so the schema never names a different Biome release than the hook runs.
+      description: "Group Biome hook and config schema updates",
+      matchDepNames: ["biomejs/pre-commit"],
+      groupName: "biome",
+    },
+    {
+      // Custom managers cannot set `prBodyNotes`. The built-in `pre-commit` manager already adds this note
+      // to its own PRs; this rule gives the template's regex-managed hook updates the same note.
+      description: "Add the pre-commit support note to hook updates in the Jinja template",
+      matchManagers: ["custom.regex"],
+      matchFileNames: ["template/.pre-commit-config.yaml.jinja"],
+      prBodyNotes: [
+        "Note: The `pre-commit` manager in Renovate is not supported by the `pre-commit` maintainers or community.\\\nPlease do not report any problems there, instead [create a Discussion in the Renovate repository](https://github.com/renovatebot/renovate/discussions/new) if you have any questions.",
+      ],
+    },
   ]
 }

@@ -15,17 +15,27 @@
         // - repo: https://github.com/pre-commit/pre-commit-hooks
         //   rev: "v5.0.0"
         "(?ms)^\\s*-\\s*repo:\\s*https?://github\\.com/(?<depName>[^/\\s]+/[^/\\s]+)\\b.*?\\n\\s*rev:\\s*[\"']?(?<currentValue>v?\\d+\\.\\d+\\.\\d+(?:[-\\.+]\\w+(?:[-.\\w])*)*)[\"']?",
-
-        // // # renovate: datasource=github-tags depName=pre-commit/pre-commit-hooks
-        // // - repo: https://github.com/pre-commit/pre-commit-hooks
-        // //   rev: "v5.0.0"
-        // "(?m:# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n.*?https://github\\.com/[^/\\s]+/[^/\\s]+\\n\\srev:\\s*[\"']?(?<currentValue>v?\\d+\\.\\d+\\.\\d+(?:[-\\.+]\\w+(?:[-.\\w])*)*)[\"']?)"
       ],
-      datasourceTemplate: "{{#if datasource}}{{{datasource}}}{{else}}github-tags{{/if}}",
-      versioningTemplate: "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
-      prBodyNotes: [
-        "Note: The `pre-commit` manager in Renovate is not supported by the `pre-commit` maintainers or community.\\\nPlease do not report any problems there, instead [create a Discussion in the Renovate repository](https://github.com/renovatebot/renovate/discussions/new) if you have any questions.",
+      datasourceTemplate: "github-tags",
+      versioningTemplate: "semver-coerced",
+    },
+    {
+      customType: "regex",
+      // The schema version tracks the biome-check hook rather than the npm package, so both bump together
+      // (grouped in packageRules.json5). Hook tags carry a `v` prefix; the schema URL does not.
+      description: "Update the Biome config schema URL to match the biome-check hook",
+      managerFilePatterns: [
+        "/(^|/)\\.biome\\.jsonc$/",
+        "/(^|/)template/.*\\.biome\\.jsonc.*\\.jinja$/",
       ],
-    }
+      matchStrings: [
+        // "$schema": "https://biomejs.dev/schemas/2.6.7/schema.json",
+        "\"\\$schema\":\\s*\"https://biomejs\\.dev/schemas/(?<currentValue>\\d+\\.\\d+\\.\\d+)/schema\\.json\"",
+      ],
+      depNameTemplate: "biomejs/pre-commit",
+      datasourceTemplate: "github-tags",
+      extractVersionTemplate: "^v(?<version>.+)$",
+      versioningTemplate: "semver",
+    },
   ]
 }
